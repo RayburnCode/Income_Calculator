@@ -1,14 +1,18 @@
+
 use dioxus::prelude::*;
 
-use crate::components::layout::Navbar;
-use crate::views::{Blog, Home};
+use crate::views::{ Home, Help};
+use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 pub enum Route {
-    #[layout(Navbar)]
+    // The layout attribute defines a wrapper for all routes under the layout. Layouts are great for wrapping
+    // many routes with a common UI like a navbar.
+    #[layout(AppLayout)]
         #[route("/")]
         Home {},
-        #[route("/blog/:id")]
-        Blog { id: i32 },
+    #[route("/help")]
+        Help {},
+
 }

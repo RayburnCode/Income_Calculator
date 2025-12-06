@@ -1,15 +1,31 @@
 [application]
+name = "Income Calculator"
+default_platform = "desktop"
+#out_dir = "dist"
+#asset_dir = "public"
+
+[bundle]
+identifier = "com.Rayburncode.IncomeCalculator"
+publisher = "RayburnCode"
+icon = ["assets/percent.png"]
+copyright = "Copyright 2025 RayburnCode"
+category = "Finance"
+short_description = "Mortgage Income Calculator."
+long_description = "A utility application built with Dioxus for individuals to calculate mortgage income."
+
 
 [web.app]
 
 # HTML title tag content
-title = "frontend"
+title = "Income Calculator"
 
 # include `assets` in web platform
 [web.resource]
 
 # Additional CSS style files
-style = []
+style = [
+    "/assets/tailwind.css",
+]
 
 # Additional JavaScript files
 script = []

@@ -10,7 +10,6 @@ impl MigratorTrait for Migrator {
     fn migrations() -> Vec<Box<dyn MigrationTrait>> {
         vec![
           //  Box::new(m001_create_contact_form::Migration),
-=
         ]
     }
 } 

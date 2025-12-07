@@ -231,65 +231,69 @@ pub fn Income() -> Element {
             }
             // Incomes list
             if !incomes_list.read().is_empty() {
-                div { class: "mt-6 space-y-2",
-                    // Table header
-                    div { class: "grid grid-cols-12 gap-2 px-3 py-2 bg-gray-100 rounded-lg font-semibold text-sm text-gray-700",
-                        div { class: "col-span-4", "Description" }
-                        div { class: "col-span-3", "Type" }
-                        div { class: "col-span-3 text-right", "Monthly Amount" }
-                        div { class: "col-span-2 text-center", "Actions" }
-                    }
-                    // Income rows
-                    {
-                        incomes_list
-                            .read()
-                            .iter()
-                            .map(|income| {
-                                let income_id = income.id;
-                                let income_desc = income.description.clone();
-                                let income_type_val = income.income_type.clone();
-                                let income_amount = income.monthly_amount;
-                                rsx! {
-                                    div {
-                                        key: "{income_id}",
-                                        class: "grid grid-cols-12 gap-2 px-3 py-3 bg-gray-50 rounded-lg items-center hover:bg-gray-100 transition",
-                                        div { class: "col-span-4 text-gray-800", "{income_desc}" }
-                                        div { class: "col-span-3 text-gray-800", "{income_type_val}" }
-                                        div { class: "col-span-3 text-right font-semibold text-gray-800 px-4",
-                                            "{format_money(income_amount)}"
-                                        }
-                                        div { class: "col-span-2 flex gap-2 justify-center",
-                                            // Edit button
-                                            button {
-                                                class: "cursor-pointer px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded transition",
-                                                onclick: move |_| {
-                                                    if let Some(i) = incomes_list.read().iter().find(|i| i.id == income_id) {
-                                                        description.set(i.description.clone());
-                                                        income_type.set(i.income_type.clone());
-                                                        monthly_amount.set(i.monthly_amount.to_string());
-                                                        editing_id.set(Some(income_id));
+                {
+                    let incomes = incomes_list.read();
+                    rsx! {
+                        div { class: "mt-6 space-y-2",
+                            // Table header
+                            div { class: "grid grid-cols-12 gap-2 px-3 py-2 bg-gray-100 rounded-lg font-semibold text-sm text-gray-700",
+                                div { class: "col-span-4", "Description" }
+                                div { class: "col-span-3", "Type" }
+                                div { class: "col-span-3 text-right", "Monthly Amount" }
+                                div { class: "col-span-2 text-center", "Actions" }
+                            }
+                            // Income rows
+                            {
+                                incomes
+                                    .iter()
+                                    .map(|income| {
+                                        let income_id = income.id;
+                                        let income_desc = income.description.clone();
+                                        let income_type_val = income.income_type.clone();
+                                        let income_amount = income.monthly_amount;
+                                        rsx! {
+                                            div {
+                                                key: "{income_id}",
+                                                class: "grid grid-cols-12 gap-2 px-3 py-3 bg-gray-50 rounded-lg items-center hover:bg-gray-100 transition",
+                                                div { class: "col-span-4 text-gray-800", "{income_desc}" }
+                                                div { class: "col-span-3 text-gray-800", "{income_type_val}" }
+                                                div { class: "col-span-3 text-right font-semibold text-gray-800 px-4",
+                                                    "{format_money(income_amount)}"
+                                                }
+                                                div { class: "col-span-2 flex gap-2 justify-center",
+                                                    // Edit button
+                                                    button {
+                                                        class: "cursor-pointer px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded transition",
+                                                        onclick: move |_| {
+                                                            if let Some(i) = incomes_list.read().iter().find(|i| i.id == income_id) {
+                                                                description.set(i.description.clone());
+                                                                income_type.set(i.income_type.clone());
+                                                                monthly_amount.set(i.monthly_amount.to_string());
+                                                                editing_id.set(Some(income_id));
+                                                            }
+                                                        },
+                                                        "Edit"
                                                     }
-                                                },
-                                                "Edit"
-                                            }
-                                            // Delete button
-                                            button {
-                                                class: "cursor-pointer px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition",
-                                                onclick: move |_| {
-                                                    incomes_list.write().retain(|i| i.id != income_id);
-                                                    if editing_id() == Some(income_id) {
-                                                        editing_id.set(None);
-                                                        description.set(String::new());
-                                                        income_type.set(String::new());
-                                                        monthly_amount.set(String::new());
+                                                    // Delete button
+                                                    button {
+                                                        class: "cursor-pointer px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition",
+                                                        onclick: move |_| {
+                                                            incomes_list.write().retain(|i| i.id != income_id);
+                                                            if editing_id() == Some(income_id) {
+                                                                editing_id.set(None);
+                                                                description.set(String::new());
+                                                                income_type.set(String::new());
+                                                                monthly_amount.set(String::new());
+                                                            }
+                                                        },
+                                                        "Delete"
                                                     }
-                                                },
-                                                "Delete"
+                                                }
                                             }
                                         }
-                                    }
-                                }
-                            })
+                                    })
+                            }
+                        }
                     }
                 }
             }

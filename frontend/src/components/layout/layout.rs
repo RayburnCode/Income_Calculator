@@ -12,6 +12,7 @@ pub struct TotalDebt(pub Signal<f64>);
 #[derive(Clone, Copy)]
 pub struct TotalHousing(pub Signal<f64>);
 
+
 #[component]
 pub fn AppLayout() -> Element {
     let reset_signal = use_signal(|| 0usize);
@@ -46,6 +47,8 @@ pub fn AppLayout() -> Element {
     
     let total_housing = use_signal(|| 0.0f64);
     use_context_provider(|| TotalHousing(total_housing));
+    
+
 
     rsx! {
         div { class: "min-h-screen bg-gray-900 text-gray-100 flex flex-col",

@@ -17,7 +17,7 @@ pub fn Navbar() -> Element {
                     Link {
                         to: Route::Home {},
                         class: "self-center text-xl text-heading font-semibold whitespace-nowrap",
-                        "DTI Calculator"
+                        "Income Calculator"
                     }
                 }
                 button {

@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn Commission() -> Element {
-    rsx! {}
+    rsx! {
+        p { "Commission" }
+    }
 
 }

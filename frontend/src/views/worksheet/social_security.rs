@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 
 #[component]
 pub fn SocialSecurity() -> Element {
-    rsx! {}
+    rsx! {
+        p { "Social Security" }
+    }
 
 }

@@ -4,11 +4,13 @@ use crate::components::Input;
 #[component]
 pub fn Information() -> Element {
     rsx! {
-        p { "Borrowers Name" }
-        Input {}
-        p { "Employer Name" }
-        p { "Income Type" }
-
-        p { "Loan Number (if applicable)" }
+        Input {
+            placeholder: "Borrower's Name",
+            label: "Borrower's Name",
+            value: "",
+        }
+        Input { placeholder: "Employer Name", label: "Employer Name", value: "" }
+        Input { placeholder: "Income Type", label: "Income Type", value: "" }
+        Input { placeholder: "Loan Number", label: "Loan Number", value: "" }
     }
 }

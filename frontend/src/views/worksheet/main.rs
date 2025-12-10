@@ -21,49 +21,64 @@ pub fn Worksheet() -> Element {
     };
 
     rsx! {
-        div { class: "space-y-6 p-6 bg-gray-50 rounded-lg",
+        div { class: "space-y-8 p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen",
             // Borrower Information (always shown)
-            div { class: "bg-white p-6 rounded-lg shadow",
-                h2 { class: "text-2xl font-bold text-gray-800 mb-4", "Borrower Information" }
+            div { class: "bg-white p-8 rounded-xl shadow-lg border border-gray-200",
+                h2 { class: "text-3xl font-bold text-gray-900 mb-6 border-b-2 border-blue-500 pb-3",
+                    "Borrower Information"
+                }
                 Information {}
             }
 
             // Pay Type Section
-            h2 { class: "text-2xl font-bold text-gray-800 mt-8 mb-4", "Pay Type" }
+            h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
+                span { class: "text-blue-600", "💼" }
+                "Pay Type"
+            }
             IncomeAccordion {
                 items: vec![
                     IncomeAccordionItem {
                         id: "hourly".to_string(),
                         title: "Hourly Pay".to_string(),
-                        content: rsx! { Hourly {} },
+                        content: rsx! {
+                            Hourly {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "salary".to_string(),
                         title: "Salary".to_string(),
-                        content: rsx! { Salary {} },
+                        content: rsx! {
+                            Salary {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "ot_bonus".to_string(),
                         title: "Overtime / Bonus".to_string(),
-                        content: rsx! { OTBonus {} },
+                        content: rsx! {
+                            OTBonus {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "commission".to_string(),
                         title: "Commission".to_string(),
-                        content: rsx! { Commission {} },
+                        content: rsx! {
+                            Commission {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "other_w2".to_string(),
                         title: "Other W2 Income".to_string(),
-                        content: rsx! { OtherW2 {} },
+                        content: rsx! {
+                            OtherW2 {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
@@ -72,34 +87,45 @@ pub fn Worksheet() -> Element {
             }
 
             // Other Income Section
-            h2 { class: "text-2xl font-bold text-gray-800 mt-8 mb-4", "Other Taxable and Nontaxable Income" }
+            h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
+                span { class: "text-green-600", "📊" }
+                "Other Taxable and Nontaxable Income"
+            }
             IncomeAccordion {
                 items: vec![
                     IncomeAccordionItem {
                         id: "social_security".to_string(),
                         title: "Social Security".to_string(),
-                        content: rsx! { SocialSecurity {} },
+                        content: rsx! {
+                            SocialSecurity {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "pension".to_string(),
                         title: "Pension".to_string(),
-                        content: rsx! { Pension {} },
+                        content: rsx! {
+                            Pension {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "ira".to_string(),
                         title: "IRA / 401(k)".to_string(),
-                        content: rsx! { IRA {} },
+                        content: rsx! {
+                            IRA {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
                     IncomeAccordionItem {
                         id: "other_income".to_string(),
                         title: "Other Income".to_string(),
-                        content: rsx! { OtherIncome {} },
+                        content: rsx! {
+                            OtherIncome {}
+                        },
                         initially_open: false,
                         include_in_calc: false,
                     },
@@ -108,36 +134,46 @@ pub fn Worksheet() -> Element {
             }
 
             // Summary section
-            div { class: "bg-blue-50 p-6 rounded-lg shadow mt-8",
-                h3 { class: "text-xl font-bold text-gray-800 mb-4", "Included in Calculations" }
+            div { class: "bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-xl shadow-lg border-2 border-blue-200 mt-10",
+                h3 { class: "text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    span { class: "text-blue-600", "✓" }
+                    "Included in Calculations"
+                }
                 div { class: "flex flex-wrap gap-2",
                     {
                         let sections = included_sections.read();
                         rsx! {
-                            {sections.iter().map(|section_id| {
-                                let badge_class = match section_id.as_str() {
-                                    "hourly" | "salary" | "ot_bonus" | "commission" | "other_w2" => 
-                                        "px-3 py-1 bg-blue-500 text-white rounded-full text-sm",
-                                    _ => "px-3 py-1 bg-green-500 text-white rounded-full text-sm",
-                                };
-                                let label = match section_id.as_str() {
-                                    "hourly" => "Hourly Pay",
-                                    "salary" => "Salary",
-                                    "ot_bonus" => "OT/Bonus",
-                                    "commission" => "Commission",
-                                    "other_w2" => "Other W2",
-                                    "social_security" => "Social Security",
-                                    "pension" => "Pension",
-                                    "ira" => "IRA/401(k)",
-                                    "other_income" => "Other Income",
-                                    _ => section_id.as_str(),
-                                };
-                                rsx! {
-                                    span { key: "{section_id}", class: "{badge_class}", "{label}" }
-                                }
-                            })}
+                            {
+                                sections
+                                    .iter()
+                                    .map(|section_id| {
+                                        let badge_class = match section_id.as_str() {
+                                            "hourly" | "salary" | "ot_bonus" | "commission" | "other_w2" => {
+                                                "px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-semibold shadow-md hover:bg-blue-700 transition-colors"
+                                            }
+                                            _ => {
+                                                "px-4 py-2 bg-green-600 text-white rounded-full text-sm font-semibold shadow-md hover:bg-green-700 transition-colors"
+                                            }
+                                        };
+                                        let label = match section_id.as_str() {
+                                            "hourly" => "Hourly Pay",
+                                            "salary" => "Salary",
+                                            "ot_bonus" => "OT/Bonus",
+                                            "commission" => "Commission",
+                                            "other_w2" => "Other W2",
+                                            "social_security" => "Social Security",
+                                            "pension" => "Pension",
+                                            "ira" => "IRA/401(k)",
+                                            "other_income" => "Other Income",
+                                            _ => section_id.as_str(),
+                                        };
+                                        rsx! {
+                                            span { key: "{section_id}", class: "{badge_class}", "{label}" }
+                                        }
+                                    })
+                            }
                             if sections.is_empty() {
-                                span { class: "text-gray-500 italic", "No income sources selected" }
+                                span { class: "text-gray-700 italic font-medium", "No income sources selected" }
                             }
                         }
                     }

@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use crate::components::{Input, Checkbox};
+use chrono::DateTime;
 
 #[component]
 pub fn Hourly() -> Element {
@@ -12,8 +13,9 @@ pub fn Hourly() -> Element {
     let mut w2_year1_months = use_signal(|| String::from("0"));
     let mut w2_year2 = use_signal(|| String::new());
     let mut w2_year2_months = use_signal(|| String::from("0"));
-    let mut check_date = use_signal(|| String::new());
-    let mut ytd_months_calc = use_signal(|| String::from("7.39"));
+    let mut check_date = use_signal(||DateTime::default());
+    let mut check_date_month = check_date.clone();
+    let mut ytd_months_calc = use_signal(|| String::from("0"));
     let mut days_in_month = use_signal(|| String::from("31"));
     
     // Checkbox states for income selection
@@ -111,6 +113,42 @@ pub fn Hourly() -> Element {
         div { class: "space-y-6 p-6 bg-white rounded-lg shadow",
             h2 { class: "text-2xl font-bold text-gray-800 mb-4", "Hourly Income Calculator" }
             // Input Section
+
+            div { class: "grid grid-cols-12 gap-4 items-center mb-4",
+                div { class: "col-span-3",
+                    Input {
+                        label: "Check Date",
+                        r#type: "date",
+                        name: "check_date",
+                        value: "{check_date}",
+                        oninput: move |evt: Event<FormData>| {
+                            if let Ok(dt) = evt.value().parse::<DateTime<chrono::Utc>>() {
+                                check_date.set(dt);
+                            }
+                        },
+                    }
+                }
+                div { class: "col-span-2",
+                    Input {
+                        label: "# YTD Months",
+                        r#type: "number",
+                        name: "ytd_months_calc",
+                        value: "{ytd_months_calc}",
+                        oninput: move |evt: Event<FormData>| ytd_months_calc.set(evt.value()),
+                    }
+                }
+                div { class: "col-span-2",
+                    Input {
+                        label: "Days in Month",
+                        r#type: "number",
+                        name: "days_in_month",
+                        value: "{days_in_month}",
+                        oninput: move |evt: Event<FormData>| days_in_month.set(evt.value()),
+                    }
+                }
+            }
+
+
             div { class: "space-y-4",
                 // Per Hour Input
                 div { class: "grid grid-cols-12 gap-4 items-center",
@@ -270,35 +308,6 @@ pub fn Hourly() -> Element {
             div { class: "space-y-4",
                 h3 { class: "text-xl font-semibold text-gray-800 mb-3", "Average Calculations" }
                 // Additional inputs
-                div { class: "grid grid-cols-12 gap-4 items-center mb-4",
-                    div { class: "col-span-3",
-                        Input {
-                            label: "Check Date",
-                            r#type: "date",
-                            name: "check_date",
-                            value: "{check_date}",
-                            oninput: move |evt: Event<FormData>| check_date.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "# YTD Months",
-                            r#type: "number",
-                            name: "ytd_months_calc",
-                            value: "{ytd_months_calc}",
-                            oninput: move |evt: Event<FormData>| ytd_months_calc.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "Days in Month",
-                            r#type: "number",
-                            name: "days_in_month",
-                            value: "{days_in_month}",
-                            oninput: move |evt: Event<FormData>| days_in_month.set(evt.value()),
-                        }
-                    }
-                }
 
                 // YTD Average
                 div { class: "grid grid-cols-12 gap-4 items-center",

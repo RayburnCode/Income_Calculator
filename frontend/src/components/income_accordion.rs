@@ -63,11 +63,11 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                     rsx! {
                         div {
                             key: "{item_id}",
-                            class: "bg-white rounded-lg shadow overflow-hidden",
+                            class: "bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden",
                             div { class: "border-b border-gray-200",
                                 button {
                                     r#type: "button",
-                                    class: "flex items-center justify-between w-full p-5 font-medium text-left text-gray-700 hover:bg-gray-50 transition",
+                                    class: "flex items-center justify-between w-full p-6 font-semibold text-left text-gray-900 hover:bg-blue-50 transition-all duration-200",
                                     onclick: move |_| {
                                         let mut current_open = open_items();
                                         if current_open.contains(&idx) {
@@ -80,7 +80,7 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                     div { class: "flex items-center gap-4",
                                         input {
                                             r#type: "checkbox",
-                                            class: "w-4 h-4 border border-gray-300 rounded",
+                                            class: "w-5 h-5 text-blue-600 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer",
                                             checked: is_included,
                                             onclick: move |evt: Event<MouseData>| {
                                                 evt.stop_propagation();
@@ -96,10 +96,10 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                                 include_states.set(states);
                                             },
                                         }
-                                        span { class: "text-lg font-semibold", "{item_title}" }
+                                        span { class: "text-lg font-bold text-gray-900", "{item_title}" }
                                     }
                                     svg {
-                                        class: "w-5 h-5 transition-transform",
+                                        class: "w-6 h-6 transition-transform text-gray-700",
                                         class: if is_open { "rotate-180" } else { "" },
                                         xmlns: "http://www.w3.org/2000/svg",
                                         fill: "none",
@@ -116,7 +116,7 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                             }
                             if is_open {
                                 div {
-                                    class: "p-6 border-t border-gray-200",
+                                    class: "p-8 border-t border-gray-200 bg-gray-50",
                                     {item.content.clone()}
                                 }
                             }

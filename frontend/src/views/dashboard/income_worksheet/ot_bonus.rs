@@ -98,7 +98,7 @@ pub fn OTBonus() -> Element {
     fn format_money(amount: f64) -> String {
         format!("${:.2}", amount)
     }
-    
+     
     rsx! {
         div { class: "space-y-8",
             // Income Inputs Section

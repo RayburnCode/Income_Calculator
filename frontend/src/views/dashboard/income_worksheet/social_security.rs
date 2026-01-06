@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use crate::components::Input;
 
-#[component]
+#[component] 
 pub fn SocialSecurity() -> Element {
     // State management - With Documentation
     let mut annual_benefit = use_signal(|| String::new());

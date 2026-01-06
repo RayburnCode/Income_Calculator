@@ -14,3 +14,4 @@ pub fn Information() -> Element {
         Input { placeholder: "Loan Number", label: "Loan Number", value: "" }
     }
 }
+ 

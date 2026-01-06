@@ -108,12 +108,11 @@ pub fn Hourly() -> Element {
     fn format_money(amount: f64) -> String {
         format!("${:.2}", amount)
     }
-
+ 
     rsx! {
         div { class: "space-y-6 p-6 bg-white rounded-lg shadow",
             h2 { class: "text-2xl font-bold text-gray-800 mb-4", "Hourly Income Calculator" }
             // Input Section
-
             div { class: "grid grid-cols-12 gap-4 items-center mb-4",
                 div { class: "col-span-3",
                     Input {
@@ -147,7 +146,6 @@ pub fn Hourly() -> Element {
                     }
                 }
             }
-
 
             div { class: "space-y-4",
                 // Per Hour Input

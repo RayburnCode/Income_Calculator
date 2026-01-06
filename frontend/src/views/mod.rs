@@ -1,4 +1,5 @@
-pub mod worksheet;
+pub mod dashboard;
+pub use dashboard::MainDashboard;
 
 mod home;
 pub use home::Home;

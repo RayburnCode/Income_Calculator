@@ -2,6 +2,9 @@
 use dioxus::prelude::*;
 
 use crate::views::{ Home, Help};
+use crate::views::dashboard::MainDashboard;
+use crate::views::dashboard::income_worksheet::Worksheet;
+use crate::views::dashboard::options_template::OptionsTemplate;
 use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -12,7 +15,13 @@ pub enum Route {
     #[layout(AppLayout)]
         #[route("/")]
         Home {},
-    #[route("/help")]
+        #[route("/dashboard")]
+        MainDashboard {},
+        #[route("/income-worksheet")]
+        Worksheet {},
+        #[route("/options-template")]
+        OptionsTemplate {},
+        #[route("/help")]
         Help {},
 
 }

@@ -13,4 +13,4 @@ pub fn Pension() -> Element {
 // 	Annual Benefit			
 // 	Taxable Portion	x 100%	 $ -   	
 //  $ -   	Non-Taxable	x 125%	 $ -   	
-// 	# months	Total Income	 $ -   	
+// 	# months	Total Income	 $ -   	 

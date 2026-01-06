@@ -48,19 +48,18 @@ pub fn Navbar() -> Element {
                     ul { class: "font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary",
 
                         li {
-                            Link { to: Route::Help {}, "Help" }
+                            Link { to: Route::MainDashboard {}, "Dashboard" }
                         }
                         li {
-                            // Reset: increment the reset signal so child components can clear their local state, then navigate home
-                            Link {
-                                to: Route::Home {},
-                                onclick: move |_| {
-                                    reset.with_mut(|r| *r += 1usize);
-                                    toast.set(Some("Reset complete".to_string()));
-                                },
-                                "Reset"
-                            }
+                            Link { to: Route::Worksheet {}, "Income Worksheet" }
                         }
+                        li {
+                            Link { to: Route::OptionsTemplate {}, "Options Template" }
+                        }
+                        li {
+                            Link { to: Route::Help {}, "Help" }
+                        }
+                    
                     }
                 }
             }

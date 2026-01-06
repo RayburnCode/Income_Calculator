@@ -5,4 +5,4 @@ pub fn OtherIncome() -> Element {
     rsx! {
         p { "Other Income" }
     }
-}
+} 

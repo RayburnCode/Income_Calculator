@@ -15,3 +15,6 @@ pub use accordion::Accordion;
 
 pub mod income_accordion;
 pub use income_accordion::{IncomeAccordion, IncomeAccordionItem};
+
+pub mod table;
+pub use table::Table;

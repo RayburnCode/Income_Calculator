@@ -1,5 +1,5 @@
 // client/src/lib.rs
-use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, ActiveModelTrait, Set};
+use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, ActiveModelTrait, Set, NotSet};
 use shared::models::*;
 use database::entities::*;
 use std::sync::Arc;
@@ -64,7 +64,7 @@ impl Client {
     pub async fn save_borrower(&self, borrower: Borrower) -> Result<(), Box<dyn std::error::Error>> {
         let db = self.db.lock().await;
         let active_model = borrower::ActiveModel {
-            id: Set(borrower.id),
+            id: sea_orm::ActiveValue::NotSet,
             name: Set(borrower.name),
             employer_name: Set(borrower.employer_name),
             income_type: Set(borrower.income_type),
@@ -76,7 +76,7 @@ impl Client {
         Ok(())
     }
 
-    pub async fn get_borrower(&self, id: Uuid) -> Result<Option<Borrower>, Box<dyn std::error::Error>> {
+    pub async fn get_borrower(&self, id: i32) -> Result<Option<Borrower>, Box<dyn std::error::Error>> {
         let db = self.db.lock().await;
         let entity = borrower::Entity::find_by_id(id).one(&*db).await?;
         match entity {

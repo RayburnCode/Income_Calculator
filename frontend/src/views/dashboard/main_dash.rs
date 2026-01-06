@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 #[derive(Clone, PartialEq)]
 pub struct Client {
-    pub id: u32,
+    pub id: i32,
     pub name: String,
     pub email: String,
     pub income: f64,
@@ -42,7 +42,7 @@ pub fn MainDashboard() -> Element {
                         // Convert borrowers to clients for display
                         let client_list: Vec<Client> = borrowers.into_iter().enumerate().map(|(i, b)| {
                             Client {
-                                id: (i + 1) as u32,
+                                id: (i as i32 + 1),
                                 name: b.name,
                                 email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
                                 income: 0.0, // We don't have income in borrower table yet
@@ -137,7 +137,6 @@ pub fn MainDashboard() -> Element {
                                 spawn(async move {
                                     if let Some(Some(db_client)) = client_resource.read().as_ref() {
                                         let new_borrower = Borrower {
-                                            id: Uuid::new_v4(),
                                             name: "New Borrower".to_string(),
                                             employer_name: Some("Unknown".to_string()),
                                             income_type: None,
@@ -153,7 +152,7 @@ pub fn MainDashboard() -> Element {
                                                             .enumerate()
                                                             .map(|(i, b)| {
                                                                 Client {
-                                                                    id: (i + 1) as u32,
+                                                                    id: (i as i32 + 1),
                                                                     name: b.name,
                                                                     email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
                                                                     income: 0.0,

@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 pub fn BenefitToBorrowerSection() -> Element {
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
-            h4 { class: "text-lg font-semibold mb-4", "Benefit to the Borrower" }
+            h4 { class: "text-lg font-semibold mb-4 text-black", "Benefit to the Borrower" }
             div { class: "overflow-x-auto",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {

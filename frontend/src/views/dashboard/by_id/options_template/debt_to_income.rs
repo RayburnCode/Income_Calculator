@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 pub fn DebtToIncomeSection() -> Element {
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
-            h4 { class: "text-lg font-semibold mb-4", "Income" }
+            h4 { class: "text-lg font-semibold mb-4 text-black", "Income" }
             div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
                 div {
                     label {
@@ -35,7 +35,7 @@ pub fn DebtToIncomeSection() -> Element {
             }
 
             div { class: "mt-6",
-                h4 { class: "text-lg font-semibold mb-4", "DTI" }
+                h4 { class: "text-lg font-semibold mb-4 text-black", "DTI" }
                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
                     div {
                         label {

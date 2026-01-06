@@ -9,7 +9,7 @@ use super::financial_models::{BenefitToBorrower, OtherFees, PricingOption, Incom
 // Borrower Information Model
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Borrower {
-    pub id: Uuid,
+    pub id: i32,
     pub name: String,
     pub employer_name: Option<String>,
     pub income_type: Option<String>,
@@ -22,7 +22,7 @@ impl Default for Borrower {
     fn default() -> Self {
         let now = Utc::now();
         Self {
-            id: Uuid::new_v4(),
+            id: 0, // Will be set by database
             name: String::new(),
             employer_name: None,
             income_type: None,
@@ -37,7 +37,7 @@ impl Default for Borrower {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct MortgageRefinanceOptions {
     pub id: Uuid,
-    pub borrower_id: Uuid, // Reference to borrower/client
+    pub borrower_id: i32, // Reference to borrower/client
 
     // Core information
     pub loan_information: LoanInformation,
@@ -70,7 +70,7 @@ impl Default for MortgageRefinanceOptions {
         let now = Utc::now();
         Self {
             id: Uuid::new_v4(),
-            borrower_id: Uuid::nil(), // Should be set when creating
+            borrower_id: 0, // Should be set when creating
             loan_information: LoanInformation::default(),
             new_loan_details: NewLoanDetails::default(),
             existing_loans: vec![ExistingLoan::default()],

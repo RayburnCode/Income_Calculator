@@ -23,7 +23,7 @@ pub fn ConsumerDebtSection() -> Element {
 
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
-            h4 { class: "text-lg font-semibold mb-4", "Consumer Debt" }
+            h4 { class: "text-lg font-semibold mb-4 text-black", "Consumer Debt" }
             div { class: "overflow-x-auto",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {

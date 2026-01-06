@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "borrowers")]
 pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: Uuid,
+    #[sea_orm(primary_key, auto_increment = true)]
+    pub id: i32,
     pub name: String,
     pub employer_name: Option<String>,
     pub income_type: Option<String>,

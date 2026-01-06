@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 pub fn NewLoanSection() -> Element {
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
-            h4 { class: "text-lg font-semibold mb-4", "New Loan" }
+            h4 { class: "text-lg font-semibold mb-4 text-black", "New Loan" }
             div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
                 div {
                     table { class: "w-full border-collapse border border-gray-300",

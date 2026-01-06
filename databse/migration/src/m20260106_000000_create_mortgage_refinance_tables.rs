@@ -14,8 +14,9 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(
                         ColumnDef::new(Alias::new("id"))
-                            .uuid()
+                            .integer()
                             .not_null()
+                            .auto_increment()
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Alias::new("name")).string().not_null())
@@ -280,7 +281,7 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(MortgageRefinanceOptions::BorrowerId).uuid().not_null())
+                    .col(ColumnDef::new(MortgageRefinanceOptions::BorrowerId).integer().not_null())
                     .col(ColumnDef::new(MortgageRefinanceOptions::LoanInformationId).uuid().not_null())
                     .col(ColumnDef::new(MortgageRefinanceOptions::NewLoanDetailsId).uuid().not_null())
                     .col(ColumnDef::new(MortgageRefinanceOptions::BenefitToBorrowerId).uuid().not_null())

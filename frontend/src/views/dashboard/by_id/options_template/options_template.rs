@@ -4,7 +4,7 @@ use crate::views::dashboard::by_id::options_template::*;
 #[component]
 pub fn OptionsTemplate() -> Element {
     rsx! {
-        div { class: "max-w-7xl mx-auto p-6",
+        div { class: "max-w-7xl mx-auto p-6 text-black",
             h1 { class: "text-3xl font-bold text-gray-900 mb-8", "Mortgage Options Template" }
 
             form { action: "/workbook/submit", method: "post",

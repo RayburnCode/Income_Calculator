@@ -1,12 +1,10 @@
 // client/src/lib.rs
-use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, ActiveModelTrait, Set, NotSet};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set};
 use shared::models::*;
 use database::entities::*;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use rust_decimal::Decimal;
 
 mod income;
 

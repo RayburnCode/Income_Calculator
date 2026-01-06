@@ -1,11 +1,8 @@
-use sea_orm::{DatabaseConnection, EntityTrait, QueryFilter, ColumnTrait, ActiveModelTrait, Set};
+use sea_orm::{EntityTrait, ActiveModelTrait, Set};
 use shared::models::*;
 use database::entities::*;
-use std::sync::Arc;
-use tokio::sync::Mutex;
-use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use rust_decimal::Decimal;
+use rust_decimal::{Decimal, prelude::ToPrimitive};
 
 use crate::Client;
 
@@ -15,10 +12,10 @@ impl Client {
         let db = self.db.lock().await;
         let active_model = income_information::ActiveModel {
             id: Set(income.id),
-            borrower_monthly_income: Set(Decimal::from_f64_retain(income.borrower_monthly_income)),
-            coborrower_monthly_income: Set(Decimal::from_f64_retain(income.coborrower_monthly_income)),
-            front_end_ratio: Set(Decimal::from_f64_retain(income.front_end_ratio)),
-            back_end_ratio: Set(Decimal::from_f64_retain(income.back_end_ratio)),
+            borrower_monthly_income: Set(Decimal::from_f64_retain(income.borrower_monthly_income).unwrap()),
+            coborrower_monthly_income: Set(Decimal::from_f64_retain(income.coborrower_monthly_income).unwrap()),
+            front_end_ratio: Set(Decimal::from_f64_retain(income.front_end_ratio).unwrap()),
+            back_end_ratio: Set(Decimal::from_f64_retain(income.back_end_ratio).unwrap()),
             created_at: Set(income.created_at),
             updated_at: Set(income.updated_at),
         };
@@ -65,10 +62,10 @@ impl Client {
         let db = self.db.lock().await;
         let active_model = income_information::ActiveModel {
             id: Set(income.id),
-            borrower_monthly_income: Set(Decimal::from_f64_retain(income.borrower_monthly_income)),
-            coborrower_monthly_income: Set(Decimal::from_f64_retain(income.coborrower_monthly_income)),
-            front_end_ratio: Set(Decimal::from_f64_retain(income.front_end_ratio)),
-            back_end_ratio: Set(Decimal::from_f64_retain(income.back_end_ratio)),
+            borrower_monthly_income: Set(Decimal::from_f64_retain(income.borrower_monthly_income).unwrap()),
+            coborrower_monthly_income: Set(Decimal::from_f64_retain(income.coborrower_monthly_income).unwrap()),
+            front_end_ratio: Set(Decimal::from_f64_retain(income.front_end_ratio).unwrap()),
+            back_end_ratio: Set(Decimal::from_f64_retain(income.back_end_ratio).unwrap()),
             created_at: Set(income.created_at),
             updated_at: Set(income.updated_at),
         };

@@ -6,6 +6,7 @@ members = [
 	"databse",
 	"shared",
 	"frontend",
+	"client",
 ]
 
 [profile]

@@ -32,7 +32,7 @@ impl Default for DSCRCalculator {
         let now = Utc::now();
 
         Self {
-            id: Uuid::now_v7(),
+            id: Uuid::new_v4(),
             purchase_price: 0.0,
             down_payment: 0.0,
             rate: 0.0,

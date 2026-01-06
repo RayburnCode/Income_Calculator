@@ -1,44 +1,23 @@
 use dioxus::prelude::*;
-
-#[derive(Clone, PartialEq)]
-pub struct DebtRow {
-    pub debtor_name: String,
-    pub credit_type: String,
-    pub balance: String,
-    pub monthly_payment: String,
-    pub term: String,
-    pub rate: String,
-    pub omit: bool,
-    pub pay: bool,
-}
+use shared::models::ConsumerDebt;
 
 #[component]
 pub fn ConsumerDebtSection() -> Element {
-    let mut debt_rows = use_signal(|| vec![
-        DebtRow {
-            debtor_name: String::new(),
-            credit_type: String::new(),
-            balance: String::new(),
-            monthly_payment: String::new(),
-            term: String::new(),
-            rate: String::new(),
-            omit: false,
-            pay: false,
-        }
+    let mut consumer_debts = use_signal(|| vec![
+        ConsumerDebt::default()
     ]);
 
-    let add_row = move |_| {
-        debt_rows.with_mut(|rows| {
-            rows.push(DebtRow {
-                debtor_name: String::new(),
-                credit_type: String::new(),
-                balance: String::new(),
-                monthly_payment: String::new(),
-                term: String::new(),
-                rate: String::new(),
-                omit: false,
-                pay: false,
-            });
+    let add_debt = move |_| {
+        consumer_debts.with_mut(|debts| {
+            debts.push(ConsumerDebt::default());
+        });
+    };
+
+    let mut remove_debt = move |index: usize| {
+        consumer_debts.with_mut(|debts| {
+            if debts.len() > 1 {
+                debts.remove(index);
+            }
         });
     };
 
@@ -79,13 +58,13 @@ pub fn ConsumerDebtSection() -> Element {
                         }
                     }
                     tbody {
-                        for (index , row) in debt_rows().iter().enumerate() {
+                        for (index , debt) in consumer_debts().iter().enumerate() {
                             tr {
                                 td { class: "border border-gray-300 px-4 py-2",
                                     input {
                                         r#type: "text",
                                         name: "debtorName",
-                                        value: "{row.debtor_name}",
+                                        value: "{debt.debtor_name}",
                                         class: "w-full px-2 py-1 border rounded",
                                     }
                                 }
@@ -104,7 +83,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "number",
                                         name: "balanceTotal",
-                                        value: "{row.balance}",
+                                        value: "{debt.balance}",
                                         class: "w-full px-2 py-1 border rounded",
                                     }
                                 }
@@ -112,7 +91,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "number",
                                         name: "monthlyDebtPayment",
-                                        value: "{row.monthly_payment}",
+                                        value: "{debt.monthly_payment}",
                                         class: "w-full px-2 py-1 border rounded",
                                     }
                                 }
@@ -120,7 +99,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "number",
                                         name: "termDebt",
-                                        value: "{row.term}",
+                                        value: "{debt.term_months.unwrap_or(0)}",
                                         class: "w-full px-2 py-1 border rounded",
                                     }
                                 }
@@ -128,7 +107,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "number",
                                         name: "rateDebt",
-                                        value: "{row.rate}",
+                                        value: "{debt.interest_rate.unwrap_or(0.0)}",
                                         class: "w-full px-2 py-1 border rounded",
                                     }
                                 }
@@ -136,7 +115,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "checkbox",
                                         name: "omitDebt",
-                                        checked: row.omit,
+                                        checked: debt.omit_from_dti,
                                         class: "w-4 h-4",
                                     }
                                 }
@@ -144,7 +123,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     input {
                                         r#type: "checkbox",
                                         name: "paydebt",
-                                        checked: row.pay,
+                                        checked: debt.pay_off_at_closing,
                                         class: "w-4 h-4",
                                     }
                                 }
@@ -152,7 +131,7 @@ pub fn ConsumerDebtSection() -> Element {
                                     button {
                                         r#type: "button",
                                         class: "bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm",
-                                        name: "delete",
+                                        onclick: move |_| remove_debt(index),
                                         "Delete"
                                     }
                                 }
@@ -165,7 +144,7 @@ pub fn ConsumerDebtSection() -> Element {
                 button {
                     r#type: "button",
                     class: "bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded",
-                    onclick: add_row,
+                    onclick: add_debt,
                     "Add Row"
                 }
             }

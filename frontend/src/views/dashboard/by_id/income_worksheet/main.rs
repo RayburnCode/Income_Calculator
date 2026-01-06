@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use crate::components::{IncomeAccordion, IncomeAccordionItem};
-use crate::views::dashboard::income_worksheet::{Information, Hourly, Salary, OTBonus, Commission, OtherW2, SocialSecurity, Pension, IRA, OtherIncome};
+use crate::views::dashboard::by_id::income_worksheet::{Information, Hourly, Salary, OTBonus, Commission, OtherW2, SocialSecurity, Pension, IRA, OtherIncome};
 
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]

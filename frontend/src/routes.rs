@@ -3,8 +3,8 @@ use dioxus::prelude::*;
 
 use crate::views::{ Home, Help};
 use crate::views::dashboard::MainDashboard;
-use crate::views::dashboard::income_worksheet::Worksheet;
-use crate::views::dashboard::options_template::OptionsTemplate;
+use crate::views::dashboard::by_id::income_worksheet::Worksheet;
+use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]

@@ -1,19 +1,16 @@
 [package]
-name = "database"
+name = "client"
 version = "0.1.0"
 edition = "2021"
 
-# This is a library crate
 [lib]
 path = "src/lib.rs"
 
 [dependencies]
-# Your database-related dependencies go here
+shared = { path = "../shared" }
+database = { path = "../databse" }
 sea-orm = { version = "1.1.14", features = [ "sqlx-sqlite", "runtime-tokio-rustls", "with-chrono", "with-uuid" ] }
-sea-orm-migration = { version = "1.1.14", features = ["sqlx-sqlite", "runtime-tokio-rustls"] }
 tokio = { version = "1.47.1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
-
-
-migration = { path = "migration" }
-shared = { path = "../shared" }
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }

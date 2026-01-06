@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::options_template::*;
+use crate::views::dashboard::by_id::options_template::*;
 
 #[component]
 pub fn OptionsTemplate() -> Element {

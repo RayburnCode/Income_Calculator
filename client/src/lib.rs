@@ -6,6 +6,9 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
+use rust_decimal::Decimal;
+
+mod income;
 
 #[derive(Clone)]
 pub struct Client {
@@ -110,6 +113,8 @@ impl Client {
         }).collect();
         Ok(borrowers)
     }
+
+    // Add more functions for other models as needed
 }
 
 fn parse_property_type(s: &str) -> PropertyType {

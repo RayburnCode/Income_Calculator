@@ -18,6 +18,8 @@ fn App() -> Element {
         client::Client::new().await.unwrap()
     });
 
+    provide_context(client.clone());
+
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }

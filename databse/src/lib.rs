@@ -6,13 +6,13 @@ pub mod entities;
 pub use migration::Migrator;
  
 pub async fn establish_connection() -> Result<DatabaseConnection, DbErr> {
-    // Use in-memory SQLite for embedded database
-    let conn = Database::connect("sqlite::memory:").await?;
+    // Use file-based SQLite database
+    let conn = Database::connect("sqlite://../income_calculator.db?mode=rwc").await?;
     Migrator::up(&conn, None).await?;
     Ok(conn)
 }
 
-/// Get the database URL - for SQLite, we use in-memory
+/// Get the database URL - for SQLite, we use file-based
 pub fn get_database_url() -> String {
-    "sqlite::memory:".to_string()
+    "sqlite://../income_calculator.db?mode=rwc".to_string()
 }

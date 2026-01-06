@@ -1,8 +1,6 @@
 use dioxus::prelude::*;
-use crate::components::Table;
-use shared::models::*;
-
-use uuid::Uuid;
+use dioxus_router::Link;
+use crate::views::dashboard::add_client_modal::AddClientModal;
 
 #[derive(Clone, PartialEq)]
 pub struct Client {
@@ -28,47 +26,54 @@ pub fn MainDashboard() -> Element {
     });
 
     // State for clients - will be loaded from database
-    let mut clients = use_signal(|| Vec::<Client>::new());
-    let mut is_loading = use_signal(|| true);
-    let mut error_message = use_signal(|| None::<String>);
+    let clients = use_signal(|| Vec::<Client>::new());
+    let is_loading = use_signal(|| true);
+    let error_message = use_signal(|| None::<String>);
 
     // Load clients on mount
-    use_effect(move || {
-        spawn(async move {
-            if let Some(Some(db_client)) = client_resource.read().as_ref() {
-                // Load borrowers from database
-                match db_client.get_all_borrowers().await {
-                    Ok(borrowers) => {
-                        // Convert borrowers to clients for display
-                        let client_list: Vec<Client> = borrowers.into_iter().enumerate().map(|(i, b)| {
-                            Client {
-                                id: (i as i32 + 1),
-                                name: b.name,
-                                email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
-                                income: 0.0, // We don't have income in borrower table yet
-                                status: "Active".to_string(),
-                            }
-                        }).collect();
-                        clients.set(client_list);
-                        is_loading.set(false);
+    let reload_clients = {
+        let client_resource = client_resource.clone();
+        let mut clients = clients.clone();
+        let mut error_message = error_message.clone();
+        let mut is_loading = is_loading.clone();
+        move || {
+            spawn(async move {
+                if let Some(Some(db_client)) = client_resource.read().as_ref() {
+                    // Load borrowers from database
+                    match db_client.get_all_borrowers().await {
+                        Ok(borrowers) => {
+                            // Convert borrowers to clients for display
+                            let client_list: Vec<Client> = borrowers.into_iter().enumerate().map(|(i, b)| {
+                                Client {
+                                    id: (i as i32 + 1),
+                                    name: b.name,
+                                    email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
+                                    income: 0.0, // We don't have income in borrower table yet
+                                    status: "Active".to_string(),
+                                }
+                            }).collect();
+                            clients.set(client_list);
+                            is_loading.set(false);
+                        }
+                        Err(e) => {
+                            error_message.set(Some(format!("Error loading borrowers: {}", e)));
+                            is_loading.set(false);
+                        }
                     }
-                    Err(e) => {
-                        error_message.set(Some(format!("Error loading borrowers: {}", e)));
-                        is_loading.set(false);
-                    }
+                } else {
+                    // Failed to connect to database
+                    error_message.set(Some("Failed to connect to database. Please check the database setup.".to_string()));
+                    is_loading.set(false);
                 }
-            }
-        });
+            });
+        }
+    };
+
+    use_effect(move || {
+        reload_clients();
     });
 
     let headers = vec!["ID".to_string(), "Name".to_string(), "Email".to_string(), "Income".to_string(), "Status".to_string()];
-    let rows: Vec<Vec<String>> = clients().iter().map(|client| vec![
-        client.id.to_string(),
-        client.name.clone(),
-        client.email.clone(),
-        format!("${:.2}", client.income),
-        client.status.clone(),
-    ]).collect();
 
     let total_clients = clients().len();
     let active_clients = clients().iter().filter(|c| c.status == "Active").count();
@@ -131,58 +136,60 @@ pub fn MainDashboard() -> Element {
                 div { class: "bg-white p-6 rounded-lg shadow-md",
                     div { class: "flex justify-between items-center mb-4",
                         h2 { class: "text-xl font-semibold text-gray-800", "Clients" }
-                        button {
-                            class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-                            onclick: move |_| {
-                                spawn(async move {
-                                    if let Some(Some(db_client)) = client_resource.read().as_ref() {
-                                        let new_borrower = Borrower {
-                                            name: "New Borrower".to_string(),
-                                            employer_name: Some("Unknown".to_string()),
-                                            income_type: None,
-                                            loan_number: None,
-                                            ..Default::default()
-                                        };
-                                        match db_client.save_borrower(new_borrower.clone()).await {
-                                            Ok(_) => {
-                                                match db_client.get_all_borrowers().await {
-                                                    Ok(borrowers) => {
-                                                        let client_list: Vec<Client> = borrowers
-                                                            .into_iter()
-                                                            .enumerate()
-                                                            .map(|(i, b)| {
-                                                                Client {
-                                                                    id: (i as i32 + 1),
-                                                                    name: b.name,
-                                                                    email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
-                                                                    income: 0.0,
-                                                                    status: "Active".to_string(),
-                                                                }
-                                                            })
-                                                            .collect();
-                                                        clients.set(client_list);
-                                                        error_message.set(None);
-                                                    }
-                                                    Err(e) => {
-                                                        error_message
-                                                            .set(Some(format!("Error reloading borrowers: {}", e)));
-                                                    }
-                                                }
-                                            }
-                                            Err(e) => {
-                                                error_message.set(Some(format!("Error saving borrower: {}", e)));
-                                            }
-                                        }
-                                    }
-                                });
-                            },
-                            "Add New Borrower"
+                        if client_resource.read().as_ref().is_some() {
+                            AddClientModal { on_client_added: move |_| reload_clients() }
+                        } else {
+                            button { class: "bg-gray-500 text-white font-bold py-2 px-4 rounded",
+                                "Loading..."
+                            }
                         }
                     }
                     if is_loading() {
                         div { class: "text-center py-8", "Loading clients..." }
                     } else {
-                        Table { headers, rows }
+                        div { class: "overflow-x-auto bg-white shadow-md rounded-lg",
+                            table { class: "min-w-full table-auto",
+                                thead { class: "bg-gray-50",
+                                    tr {
+                                        for header in &headers {
+                                            th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                                "{header}"
+                                            }
+                                        }
+                                        th { class: "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                            "Actions"
+                                        }
+                                    }
+                                }
+                                tbody { class: "bg-white divide-y divide-gray-200",
+                                    for client in clients() {
+                                        tr { class: "hover:bg-gray-50",
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                "{client.id}"
+                                            }
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                "{client.name}"
+                                            }
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                "{client.email}"
+                                            }
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                "$"
+                                                {format!("{:.2}", client.income)}
+                                            }
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                "{client.status}"
+                                            }
+                                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-900",
+                                                Link { to: format!("/dashboard/client/{}", client.id),
+                                                    "View"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

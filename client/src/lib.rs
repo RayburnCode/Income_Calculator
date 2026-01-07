@@ -7,6 +7,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 mod income;
+mod options_template;
 
 #[derive(Clone)]
 pub struct Client {
@@ -222,7 +223,9 @@ impl Client {
                 appraisal_fee: f.appraisal_fee.to_string().parse().unwrap_or(0.0),
                 investor_fee: f.investor_fee.to_string().parse().unwrap_or(0.0),
                 padded_taxes: f.padded_taxes.to_string().parse().unwrap_or(0.0),
+                padded_taxes_months: f.padded_taxes_months.to_string().parse().unwrap_or(0),
                 padded_insurance: f.padded_insurance.to_string().parse().unwrap_or(0.0),
+                padded_insurance_months: f.padded_insurance_months.to_string().parse().unwrap_or(0),
                 lender_credit: f.lender_credit.to_string().parse().unwrap_or(0.0),
                 admin_fees: f.admin_fees.to_string().parse().unwrap_or(0.0),
                 tax_service: f.tax_service.to_string().parse().unwrap_or(0.0),

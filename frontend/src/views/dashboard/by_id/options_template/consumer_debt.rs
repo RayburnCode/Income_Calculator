@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use shared::models::ConsumerDebt;
-use crate::views::dashboard::by_id::options_template::options_template::ConsumerDebtData;
+use shared::models::ConsumerDebtData;
 
 #[component]
 pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<ConsumerDebtData>) -> Element {

@@ -186,7 +186,9 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(OtherFees::AppraisalFee).decimal().not_null())
                     .col(ColumnDef::new(OtherFees::InvestorFee).decimal().not_null())
                     .col(ColumnDef::new(OtherFees::PaddedTaxes).decimal().not_null())
+                    .col(ColumnDef::new(OtherFees::PaddedTaxesMonths).integer().not_null().default(0))
                     .col(ColumnDef::new(OtherFees::PaddedInsurance).decimal().not_null())
+                    .col(ColumnDef::new(OtherFees::PaddedInsuranceMonths).integer().not_null().default(0))
                     .col(ColumnDef::new(OtherFees::LenderCredit).decimal().not_null())
                     .col(ColumnDef::new(OtherFees::AdminFees).decimal().not_null())
                     .col(ColumnDef::new(OtherFees::TaxService).decimal().not_null())
@@ -542,7 +544,9 @@ enum OtherFees {
     AppraisalFee,
     InvestorFee,
     PaddedTaxes,
+    PaddedTaxesMonths,
     PaddedInsurance,
+    PaddedInsuranceMonths,
     LenderCredit,
     AdminFees,
     TaxService,

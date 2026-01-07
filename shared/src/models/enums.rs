@@ -85,3 +85,40 @@ pub enum CreditType {
     Revolving,
     Lease,
 }
+
+// Parsing functions for converting strings to enums
+pub fn parse_property_type(s: &str) -> PropertyType {
+    match s {
+        "Manufactured" => PropertyType::Manufactured,
+        "MultiUnit" => PropertyType::MultiUnit,
+        "Condo" => PropertyType::Condo,
+        "PUD" => PropertyType::PUD,
+        _ => PropertyType::SFR,
+    }
+}
+
+pub fn parse_occupancy_type(s: &str) -> OccupancyType {
+    match s {
+        "Secondary" => OccupancyType::Secondary,
+        "Investment" => OccupancyType::Investment,
+        _ => OccupancyType::Primary,
+    }
+}
+
+pub fn parse_loan_type(s: &str) -> LoanType {
+    match s {
+        "FHA" => LoanType::FHA,
+        "VA" => LoanType::VA,
+        "NonQM" => LoanType::NonQM,
+        _ => LoanType::CNV,
+    }
+}
+
+pub fn parse_loan_purpose(s: &str) -> LoanPurpose {
+    match s {
+        "CashOut" => LoanPurpose::CashOut,
+        "Refinance" => LoanPurpose::Refinance,
+        "IRRRLStreamline" => LoanPurpose::IRRRLStreamline,
+        _ => LoanPurpose::Purchase,
+    }
+}

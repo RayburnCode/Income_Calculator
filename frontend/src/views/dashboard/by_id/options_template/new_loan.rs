@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::NewLoanData;
+use shared::models::NewLoanData;
 
 #[component]
 pub fn NewLoanSection(data: NewLoanData, on_change: EventHandler<NewLoanData>) -> Element {
@@ -34,7 +34,7 @@ pub fn NewLoanSection(data: NewLoanData, on_change: EventHandler<NewLoanData>) -
                                 placeholder: "Enter market value",
                                 oninput: move |e| {
                                     let mut updated = local_data();
-                                    updated.market_value = e.value();
+                                    updated.market_value = e.value().parse().unwrap_or(0.0);
                                     local_data.set(updated.clone());
                                     on_change.call(updated);
                                 },
@@ -57,7 +57,7 @@ pub fn NewLoanSection(data: NewLoanData, on_change: EventHandler<NewLoanData>) -
                                 placeholder: "Enter sales price",
                                 oninput: move |e| {
                                     let mut updated = local_data();
-                                    updated.sales_price = e.value();
+                                    updated.sales_price = e.value().parse().unwrap_or(0.0);
                                     local_data.set(updated.clone());
                                     on_change.call(updated);
                                 },

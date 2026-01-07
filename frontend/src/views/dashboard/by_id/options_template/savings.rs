@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::SavingsData;
+use shared::models::SavingsData;
 
 #[component]
 pub fn SavingsSection(data: SavingsData, on_change: EventHandler<SavingsData>) -> Element {
@@ -14,11 +14,11 @@ pub fn SavingsSection(data: SavingsData, on_change: EventHandler<SavingsData>) -
     let mut update_data = move |field: &str, value: String| {
         let mut new_data = local_data();
         match field {
-            "monthly_savings" => new_data.monthly_savings = value,
-            "annual_savings" => new_data.annual_savings = value,
-            "debt_paid" => new_data.debt_paid = value,
-            "payment_reduction" => new_data.payment_reduction = value,
-            "recoup_period" => new_data.recoup_period = value,
+            "monthly_savings" => new_data.monthly_savings = value.parse().unwrap_or(0.0),
+            "annual_savings" => new_data.annual_savings = value.parse().unwrap_or(0.0),
+            "debt_paid" => new_data.debt_paid = value.parse().unwrap_or(0.0),
+            "payment_reduction" => new_data.payment_reduction = value.parse().unwrap_or(0.0),
+            "recoup_period_months" => new_data.recoup_period_months = value.parse().unwrap_or(0.0),
             _ => {}
         }
         local_data.set(new_data.clone());
@@ -86,9 +86,9 @@ pub fn SavingsSection(data: SavingsData, on_change: EventHandler<SavingsData>) -
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    value: "{local_data().recoup_period}",
+                                    value: "{local_data().recoup_period_months}",
                                     class: "w-full px-2 py-1 border rounded",
-                                    oninput: move |evt: Event<FormData>| update_data("recoup_period", evt.value()),
+                                    oninput: move |evt: Event<FormData>| update_data("recoup_period_months", evt.value()),
                                 }
                             }
                         }

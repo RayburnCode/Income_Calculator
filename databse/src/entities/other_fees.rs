@@ -14,8 +14,10 @@ pub struct Model {
     pub investor_fee: Decimal,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
     pub padded_taxes: Decimal,
+    pub padded_taxes_months: i32,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
     pub padded_insurance: Decimal,
+    pub padded_insurance_months: i32,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]
     pub lender_credit: Decimal,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]

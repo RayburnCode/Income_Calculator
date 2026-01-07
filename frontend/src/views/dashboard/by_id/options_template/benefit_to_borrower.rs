@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::BenefitToBorrowerData;
+use shared::models::BenefitToBorrowerData;
 
 #[component]
-pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHandler<BenefitToBorrowerData>) -> Element {
+pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, loan_purpose: String, on_change: EventHandler<BenefitToBorrowerData>) -> Element {
     let mut local_data = use_signal(|| data.clone());
 
     // Update local data when prop changes
@@ -19,8 +19,10 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 ""
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
-                                "Existing Loan"
+                            if loan_purpose != "purchase" {
+                                th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                                    "Existing Loan"
+                                }
                             }
                             th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Proposed Loan"
@@ -35,14 +37,16 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "PI:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "text",
-                                    id: "existingPI",
-                                    name: "existingPI",
-                                    value: "From Cust tab",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "text",
+                                        id: "existingPI",
+                                        name: "existingPI",
+                                        value: "From Cust tab",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -59,13 +63,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "Taxes:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingTaxes",
-                                    name: "existingTaxes",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingTaxes",
+                                        name: "existingTaxes",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -89,13 +95,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "Insurance:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingInsurance",
-                                    name: "existingInsurance",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingInsurance",
+                                        name: "existingInsurance",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -119,13 +127,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "Flood Insurance:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingFloodInsurance",
-                                    name: "existingFloodInsurance",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingFloodInsurance",
+                                        name: "existingFloodInsurance",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -149,13 +159,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "PMI:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingPMI",
-                                    name: "existingPMI",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingPMI",
+                                        name: "existingPMI",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -180,13 +192,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "HOA:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingHOA",
-                                    name: "existingHOA",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingHOA",
+                                        name: "existingHOA",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -203,13 +217,15 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "Mortgage Payment:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingmortgagePayment",
-                                    name: "existingmortgagePayment",
-                                    readonly: true,
-                                    class: "w-full px-2 py-1 border rounded bg-gray-50",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingmortgagePayment",
+                                        name: "existingmortgagePayment",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
@@ -257,12 +273,14 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHan
                             td { class: "border border-gray-300 px-4 py-2 font-semibold",
                                 "Total Obligations:"
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
-                                input {
-                                    r#type: "number",
-                                    id: "existingObligation",
-                                    name: "existingObligation",
-                                    class: "w-full px-2 py-1 border rounded",
+                            if loan_purpose != "purchase" {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        id: "existingObligation",
+                                        name: "existingObligation",
+                                        class: "w-full px-2 py-1 border rounded",
+                                    }
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",

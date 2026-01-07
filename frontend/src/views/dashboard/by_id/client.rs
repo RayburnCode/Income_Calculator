@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use crate::components::tab::{Tab, TabItem};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
+use crate::views::dashboard::by_id::income_worksheet::W2Jobs;
 
 #[component]
 pub fn ClientDetails(id: i32) -> Element {
@@ -97,7 +98,7 @@ pub fn ClientDetails(id: i32) -> Element {
                 // Content based on active tab
                 match *active_tab.read() {
                     0 => {
-                        rsx! {
+                        let content: Element = rsx! {
                             // Error message
                             if let Some(error) = error_message() {
                                 div { class: "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6",
@@ -157,26 +158,32 @@ pub fn ClientDetails(id: i32) -> Element {
             
                             div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Income Information" }
-                                p { class: "text-gray-600", "Income details will be displayed here." }
+                                W2Jobs {}
                             }
             
                             div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Loan Information" }
                                 p { class: "text-gray-600", "Loan details will be displayed here." }
                             }
-                        }
+                        };
+                        content
                     }
                     1 => {
-                        rsx! {
+                        let content: Element = rsx! {
                             Worksheet { id }
-                        }
+                        };
+                        content
                     }
                     2 => {
-                        rsx! {
+                        let content: Element = rsx! {
                             OptionsTemplate { id }
-                        }
+                        };
+                        content
                     }
-                    _ => rsx! { "Invalid tab" },
+                    _ => {
+                        let content: Element = rsx! { "Invalid tab" };
+                        content
+                    }
                 }
             }
         }

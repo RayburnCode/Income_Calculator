@@ -28,6 +28,9 @@ pub use debt_to_income::DebtToIncomeSection;
 pub mod title_fees;
 pub use title_fees::TitleFeesSection;
 
+pub mod income_information;
+pub use income_information::IncomeInformationSection;
+
 pub mod options_template;
 pub use options_template::OptionsTemplate;
 

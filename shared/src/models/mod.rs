@@ -13,5 +13,8 @@ pub use loan_models::*;
 pub mod financial_models;
 pub use financial_models::*;
 
+pub mod frontend_models;
+pub use frontend_models::*;
+
 pub mod main;
 pub use main::*;

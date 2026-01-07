@@ -102,8 +102,12 @@ pub struct OtherFees {
     pub investor_fee: f64,
     #[validate(range(min = 0.0))]
     pub padded_taxes: f64,
+    #[validate(range(min = 0))]
+    pub padded_taxes_months: u32,
     #[validate(range(min = 0.0))]
     pub padded_insurance: f64,
+    #[validate(range(min = 0))]
+    pub padded_insurance_months: u32,
     #[validate(range(min = 0.0))]
     pub lender_credit: f64,
     #[validate(range(min = 0.0))]
@@ -129,7 +133,9 @@ impl Default for OtherFees {
             appraisal_fee: 0.0,
             investor_fee: 0.0,
             padded_taxes: 0.0,
+            padded_taxes_months: 0,
             padded_insurance: 0.0,
+            padded_insurance_months: 0,
             lender_credit: 0.0,
             admin_fees: 895.0,
             tax_service: 88.0,

@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::LoanInformationData;
+use shared::models::LoanInformationData;
 
 #[component]
 pub fn LoanInformationSection(data: LoanInformationData, on_change: EventHandler<LoanInformationData>) -> Element {
@@ -17,9 +17,9 @@ pub fn LoanInformationSection(data: LoanInformationData, on_change: EventHandler
             "property_type" => new_data.property_type = value,
             "occupancy" => new_data.occupancy = value,
             "loan_type" => new_data.loan_type = value,
-            "term_months" => new_data.term_months = value,
+            "term_months" => new_data.term_months = value.parse().unwrap_or(360),
             "purpose" => new_data.purpose = value,
-            "appraisal_waiver" => new_data.appraisal_waiver = value,
+            "appraisal_waiver" => new_data.appraisal_waiver = value == "true",
             _ => {}
         }
         local_data.set(new_data.clone());
@@ -110,7 +110,7 @@ pub fn LoanInformationSection(data: LoanInformationData, on_change: EventHandler
                             td { class: "border border-gray-300 px-4 py-2 text-center",
                                 input {
                                     r#type: "checkbox",
-                                    checked: local_data().appraisal_waiver == "true",
+                                    checked: local_data().appraisal_waiver,
                                     class: "w-4 h-4",
                                     onchange: move |evt: Event<FormData>| {
                                         let value = if evt.checked() { "true" } else { "false" };

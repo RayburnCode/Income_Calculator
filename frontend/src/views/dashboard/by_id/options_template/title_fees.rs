@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::TitleFeesData;
+use shared::models::TitleFeesData;
 
 #[component]
 pub fn TitleFeesSection(data: TitleFeesData, on_change: EventHandler<TitleFeesData>) -> Element {

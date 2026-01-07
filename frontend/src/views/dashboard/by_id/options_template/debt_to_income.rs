@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::DebtToIncomeData;
+use shared::models::DebtToIncomeData;
 
 #[component]
 pub fn DebtToIncomeSection(data: DebtToIncomeData, on_change: EventHandler<DebtToIncomeData>) -> Element {

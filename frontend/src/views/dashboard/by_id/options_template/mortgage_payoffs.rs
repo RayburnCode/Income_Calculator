@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::MortgagePayoffsData;
+use shared::models::MortgagePayoffsData;
 
 #[component]
 pub fn MortgagePayoffsSection(data: MortgagePayoffsData, on_change: EventHandler<MortgagePayoffsData>) -> Element {

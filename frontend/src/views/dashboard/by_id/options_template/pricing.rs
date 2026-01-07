@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::options_template::options_template::PricingData;
+use shared::models::PricingData;
 
 #[component]
 pub fn PricingSection(data: PricingData, on_change: EventHandler<PricingData>) -> Element {

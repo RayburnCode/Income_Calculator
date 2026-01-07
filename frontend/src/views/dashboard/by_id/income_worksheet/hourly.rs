@@ -1,33 +1,20 @@
 use dioxus::prelude::*;
-use crate::components::{Input, Checkbox};
-use chrono::DateTime;
+use crate::components::Input;
 
 #[component]
 pub fn Hourly() -> Element {
     // State management
     let mut per_hour = use_signal(|| String::new());
-    let mut hours_worked = use_signal(|| String::from("0"));
+    let mut hours_worked = use_signal(|| String::from("40"));
     let mut ytd_earnings = use_signal(|| String::new());
-    let mut ytd_months = use_signal(|| String::from("0"));
+    let mut ytd_months = use_signal(|| String::from("12"));
     let mut w2_year1 = use_signal(|| String::new());
-    let mut w2_year1_months = use_signal(|| String::from("0"));
+    let mut w2_year1_months = use_signal(|| String::from("12"));
     let mut w2_year2 = use_signal(|| String::new());
-    let mut w2_year2_months = use_signal(|| String::from("0"));
-    let mut check_date = use_signal(||DateTime::default());
-    let mut check_date_month = check_date.clone();
-    let mut ytd_months_calc = use_signal(|| String::from("0"));
-    let mut days_in_month = use_signal(|| String::from("31"));
+    let mut w2_year2_months = use_signal(|| String::from("12"));
+    let mut selected_calculation = use_signal(|| String::from("none"));
     
-    // Checkbox states for income selection
-    let mut use_per_hour = use_signal(|| false);
-    let mut use_ytd = use_signal(|| false);
-    let mut use_w2_year1 = use_signal(|| false);
-    let mut use_w2_year2 = use_signal(|| false);
-    let mut use_ytd_avg = use_signal(|| false);
-    let mut use_ytd_plus_1w2 = use_signal(|| false);
-    let mut use_ytd_plus_2w2 = use_signal(|| false);
-
-    // Calculate per hour income
+    // Calculate per hour income (hourly rate × hours × 52 weeks / 12 months)
     let per_hour_income = use_memo(move || {
         if let Ok(rate) = per_hour().parse::<f64>() {
             if let Ok(hours) = hours_worked().parse::<f64>() {
@@ -40,7 +27,7 @@ pub fn Hourly() -> Element {
         }
     });
 
-    // Calculate YTD income
+    // Calculate YTD income (YTD earnings / months × 12)
     let ytd_income = use_memo(move || {
         if let Ok(ytd) = ytd_earnings().parse::<f64>() {
             if let Ok(months) = ytd_months().parse::<f64>() {
@@ -104,273 +91,324 @@ pub fn Hourly() -> Element {
         (ytd_income() + w2_year1_income() + w2_year2_income()) / 3.0
     });
 
+    // Find lowest calculation
+    let lowest_calculation = use_memo(move || {
+        let mut values = vec![ytd_avg(), ytd_plus_1w2_avg(), ytd_plus_2w2_avg()];
+        values.retain(|&x| x > 0.0);
+        values.iter().fold(f64::INFINITY, |a, &b| a.min(b))
+    });
+
+    // Determine final income based on selection
+    let final_income = use_memo(move || {
+        match selected_calculation().as_str() {
+            "current" => per_hour_income(),
+            "ytd" => ytd_avg(),
+            "ytd_1w2" => ytd_plus_1w2_avg(),
+            "ytd_2w2" => ytd_plus_2w2_avg(),
+            "lowest" => if lowest_calculation().is_finite() { lowest_calculation() } else { 0.0 },
+            _ => 0.0,
+        }
+    });
+
     // Helper to format money
     fn format_money(amount: f64) -> String {
         format!("${:.2}", amount)
     }
- 
     rsx! {
-        div { class: "space-y-6 p-6 bg-white rounded-lg shadow",
-            h2 { class: "text-2xl font-bold text-gray-800 mb-4", "Hourly Income Calculator" }
-            // Input Section
-            div { class: "grid grid-cols-12 gap-4 items-center mb-4",
-                div { class: "col-span-3",
-                    Input {
-                        label: "Check Date",
-                        r#type: "date",
-                        name: "check_date",
-                        value: "{check_date}",
-                        oninput: move |evt: Event<FormData>| {
-                            if let Ok(dt) = evt.value().parse::<DateTime<chrono::Utc>>() {
-                                check_date.set(dt);
+        div { class: "space-y-8",
+            // Current Hourly Rate Section
+            div { class: "bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl shadow-md border-2 border-blue-200",
+                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    span { class: "text-blue-600", "⏰" }
+                    "Current Hourly Rate"
+                }
+                div { class: "space-y-4",
+                    div { class: "grid grid-cols-12 gap-4 items-end",
+                        div { class: "col-span-4",
+                            Input {
+                                label: "Hourly Rate",
+                                r#type: "number",
+                                name: "per_hour",
+                                value: "{per_hour}",
+                                placeholder: "0.00",
+                                oninput: move |evt: Event<FormData>| per_hour.set(evt.value()),
                             }
-                        },
-                    }
-                }
-                div { class: "col-span-2",
-                    Input {
-                        label: "# YTD Months",
-                        r#type: "number",
-                        name: "ytd_months_calc",
-                        value: "{ytd_months_calc}",
-                        oninput: move |evt: Event<FormData>| ytd_months_calc.set(evt.value()),
-                    }
-                }
-                div { class: "col-span-2",
-                    Input {
-                        label: "Days in Month",
-                        r#type: "number",
-                        name: "days_in_month",
-                        value: "{days_in_month}",
-                        oninput: move |evt: Event<FormData>| days_in_month.set(evt.value()),
-                    }
-                }
-            }
-
-            div { class: "space-y-4",
-                // Per Hour Input
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        Input {
-                            label: "Per Hour",
-                            r#type: "number",
-                            name: "per_hour",
-                            value: "{per_hour}",
-                            placeholder: "0.00",
-                            oninput: move |evt: Event<FormData>| per_hour.set(evt.value()),
+                        }
+                        div { class: "col-span-4",
+                            Input {
+                                label: "Hours per Week",
+                                r#type: "number",
+                                name: "hours_worked",
+                                value: "{hours_worked}",
+                                placeholder: "40",
+                                oninput: move |evt: Event<FormData>| hours_worked.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-4 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Monthly Income"
+                            }
+                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(per_hour_income())}"
+                            }
                         }
                     }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "# of Hours",
-                            r#type: "number",
-                            name: "hours",
-                            value: "{hours_worked}",
-                            placeholder: "0",
-                            oninput: move |evt: Event<FormData>| hours_worked.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2 flex items-end pb-2",
-                        span { class: "text-sm text-gray-600", "X 52/12" }
-                    }
-                    div { class: "col-span-3 flex items-end pb-2",
-                        span { class: "text-lg font-semibold text-green-600",
-                            "{format_money(per_hour_income())}"
-                        }
-                    }
-                    div { class: "col-span-2 flex items-end pb-2",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_per_hour(),
-                            onchange: move |_| use_per_hour.set(!use_per_hour()),
-                        }
-                    }
-                }
-
-                // YTD Earnings Input
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        Input {
-                            label: "YTD Earnings",
-                            r#type: "number",
-                            name: "ytd_earnings",
-                            value: "{ytd_earnings}",
-                            placeholder: "0.00",
-                            oninput: move |evt: Event<FormData>| ytd_earnings.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "# Months",
-                            r#type: "number",
-                            name: "ytd_months",
-                            value: "{ytd_months}",
-                            placeholder: "0",
-                            oninput: move |evt: Event<FormData>| ytd_months.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2" }
-                    div { class: "col-span-3 flex items-end pb-2",
-                        span { class: "text-lg font-semibold text-green-600",
-                            "{format_money(ytd_income())}"
-                        }
-                    }
-                    div { class: "col-span-2 flex items-end pb-2",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_ytd(),
-                            onchange: move |_| use_ytd.set(!use_ytd()),
-                        }
-                    }
-                }
-
-                // W2 Year 1 Input
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        Input {
-                            label: "W2 Tax Year 1",
-                            r#type: "number",
-                            name: "w2_year1",
-                            value: "{w2_year1}",
-                            placeholder: "0.00",
-                            oninput: move |evt: Event<FormData>| w2_year1.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "# Months",
-                            r#type: "number",
-                            name: "w2_year1_months",
-                            value: "{w2_year1_months}",
-                            placeholder: "0",
-                            oninput: move |evt: Event<FormData>| w2_year1_months.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2" }
-                    div { class: "col-span-3 flex items-end pb-2",
-                        span { class: "text-lg font-semibold text-green-600",
-                            "{format_money(w2_year1_income())}"
-                        }
-                    }
-                    div { class: "col-span-2 flex items-end pb-2",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_w2_year1(),
-                            onchange: move |_| use_w2_year1.set(!use_w2_year1()),
-                        }
-                    }
-                }
-
-                // W2 Year 2 Input
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        Input {
-                            label: "W2 Tax Year 2",
-                            r#type: "number",
-                            name: "w2_year2",
-                            value: "{w2_year2}",
-                            placeholder: "0.00",
-                            oninput: move |evt: Event<FormData>| w2_year2.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2",
-                        Input {
-                            label: "# Months",
-                            r#type: "number",
-                            name: "w2_year2_months",
-                            value: "{w2_year2_months}",
-                            placeholder: "0",
-                            oninput: move |evt: Event<FormData>| w2_year2_months.set(evt.value()),
-                        }
-                    }
-                    div { class: "col-span-2" }
-                    div { class: "col-span-3 flex items-end pb-2",
-                        span { class: "text-lg font-semibold text-green-600",
-                            "{format_money(w2_year2_income())}"
-                        }
-                    }
-                    div { class: "col-span-2 flex items-end pb-2",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_w2_year2(),
-                            onchange: move |_| use_w2_year2.set(!use_w2_year2()),
+                    // Calculation note
+                    div { class: "mt-4 p-3 bg-blue-50 border-2 border-blue-300 rounded-lg",
+                        p { class: "text-sm text-gray-900 font-medium",
+                            span { class: "font-bold text-blue-700", "Formula: " }
+                            "Hourly Rate × Hours per Week × 52 weeks ÷ 12 months"
                         }
                     }
                 }
             }
 
-            // Separator
-            div { class: "border-t border-gray-300 my-6" }
-
-            // Average Calculations Section
-            div { class: "space-y-4",
-                h3 { class: "text-xl font-semibold text-gray-800 mb-3", "Average Calculations" }
-                // Additional inputs
-
-                // YTD Average
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        span { class: "text-sm font-medium text-gray-700", "YTD Avg" }
-                    }
-                    div { class: "col-span-6 flex items-center",
-                        span { class: "text-lg font-semibold text-blue-600", "{format_money(ytd_avg())}" }
-                    }
-                    div { class: "col-span-3",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_ytd_avg(),
-                            onchange: move |_| use_ytd_avg.set(!use_ytd_avg()),
-                        }
-                    }
+            // Historical Income Section
+            div { class: "bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl shadow-md border-2 border-purple-200",
+                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    span { class: "text-purple-600", "📊" }
+                    "Historical Income"
                 }
+                div { class: "space-y-4",
+                    // YTD Earnings
+                    div { class: "grid grid-cols-12 gap-4 items-end",
+                        div { class: "col-span-4",
+                            Input {
+                                label: "YTD Earnings (Paystub)",
+                                r#type: "number",
+                                name: "ytd_earnings",
+                                value: "{ytd_earnings}",
+                                placeholder: "0.00",
+                                oninput: move |evt: Event<FormData>| ytd_earnings.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-3",
+                            Input {
+                                label: "# Months",
+                                r#type: "number",
+                                name: "ytd_months",
+                                value: "{ytd_months}",
+                                oninput: move |evt: Event<FormData>| ytd_months.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-5 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Annual Income"
+                            }
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(ytd_income())}"
+                            }
+                        }
+                    }
 
-                // YTD + 1 W2 Average
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        span { class: "text-sm font-medium text-gray-700", "YTD + 1 W2 Avg" }
-                    }
-                    div { class: "col-span-6 flex items-center",
-                        span { class: "text-lg font-semibold text-blue-600",
-                            "{format_money(ytd_plus_1w2_avg())}"
+                    // W2 Year 1
+                    div { class: "grid grid-cols-12 gap-4 items-end",
+                        div { class: "col-span-4",
+                            Input {
+                                label: "W2 Income (Year 1)",
+                                r#type: "number",
+                                name: "w2_year1",
+                                value: "{w2_year1}",
+                                placeholder: "0.00",
+                                oninput: move |evt: Event<FormData>| w2_year1.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-3",
+                            Input {
+                                label: "# Months",
+                                r#type: "number",
+                                name: "w2_year1_months",
+                                value: "{w2_year1_months}",
+                                oninput: move |evt: Event<FormData>| w2_year1_months.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-5 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Annual Income"
+                            }
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(w2_year1_income())}"
+                            }
                         }
                     }
-                    div { class: "col-span-3",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_ytd_plus_1w2(),
-                            onchange: move |_| use_ytd_plus_1w2.set(!use_ytd_plus_1w2()),
-                        }
-                    }
-                }
 
-                // YTD + 2 Yr W2 Average
-                div { class: "grid grid-cols-12 gap-4 items-center",
-                    div { class: "col-span-3",
-                        span { class: "text-sm font-medium text-gray-700", "YTD + 2 Yr W2 Avg" }
-                    }
-                    div { class: "col-span-6 flex items-center",
-                        span { class: "text-lg font-semibold text-blue-600",
-                            "{format_money(ytd_plus_2w2_avg())}"
+                    // W2 Year 2
+                    div { class: "grid grid-cols-12 gap-4 items-end",
+                        div { class: "col-span-4",
+                            Input {
+                                label: "W2 Income (Year 2)",
+                                r#type: "number",
+                                name: "w2_year2",
+                                value: "{w2_year2}",
+                                placeholder: "0.00",
+                                oninput: move |evt: Event<FormData>| w2_year2.set(evt.value()),
+                            }
                         }
-                    }
-                    div { class: "col-span-3",
-                        Checkbox {
-                            label: "Use",
-                            checked: use_ytd_plus_2w2(),
-                            onchange: move |_| use_ytd_plus_2w2.set(!use_ytd_plus_2w2()),
+                        div { class: "col-span-3",
+                            Input {
+                                label: "# Months",
+                                r#type: "number",
+                                name: "w2_year2_months",
+                                value: "{w2_year2_months}",
+                                oninput: move |evt: Event<FormData>| w2_year2_months.set(evt.value()),
+                            }
+                        }
+                        div { class: "col-span-5 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Annual Income"
+                            }
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(w2_year2_income())}"
+                            }
                         }
                     }
                 }
             }
 
-            // Separator
-            div { class: "border-t border-gray-300 my-6" }
+            // Calculation Methods Section
+            div { class: "bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl shadow-md border-2 border-orange-200",
+                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    span { class: "text-orange-600", "🧮" }
+                    "Calculation Methods"
+                }
+                div { class: "space-y-4",
+                    // Current Hourly
+                    div { class: "grid grid-cols-12 gap-4 items-center",
+                        div { class: "col-span-6 flex items-center gap-3",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                                "Current Hourly Rate"
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(per_hour_income())}"
+                            }
+                        }
+                    }
 
-            // Final Selection
-            div { class: "bg-gray-50 p-4 rounded-lg",
-                div { class: "flex justify-between items-center",
-                    span { class: "text-lg font-semibold text-gray-700", "Use Lowest Income" }
-                    span { class: "text-sm text-gray-600", "or check the income you wish to use above" }
+                    // YTD Average
+                    div { class: "grid grid-cols-12 gap-4 items-center",
+                        div { class: "col-span-6 flex items-center gap-3",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                                "YTD Average"
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(ytd_avg())}"
+                            }
+                        }
+                    }
+
+                    // YTD + 1 W2 Average
+                    div { class: "grid grid-cols-12 gap-4 items-center",
+                        div { class: "col-span-6 flex items-center gap-3",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                                "YTD + 1 W2 Average"
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(ytd_plus_1w2_avg())}"
+                            }
+                        }
+                    }
+
+                    // YTD + 2 W2 Average
+                    div { class: "grid grid-cols-12 gap-4 items-center",
+                        div { class: "col-span-6 flex items-center gap-3",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                                "YTD + 2 W2 Average"
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                "{format_money(ytd_plus_2w2_avg())}"
+                            }
+                        }
+                    }
+
+                    // Lowest Calculation
+                    div { class: "grid grid-cols-12 gap-4 items-center pt-4 border-t-2 border-orange-300",
+                        div { class: "col-span-6 flex items-center gap-3",
+                            div { class: "px-4 py-2 bg-red-200 border-2 border-red-400 rounded-lg text-gray-900 font-bold text-center min-w-[200px]",
+                                "Lowest of Calculations"
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            {
+                                let lowest_val = if lowest_calculation().is_finite() {
+                                    lowest_calculation()
+                                } else {
+                                    0.0
+                                };
+                                rsx! {
+                                    div { class: "px-4 py-3 bg-red-100 border-2 border-red-300 rounded-lg text-gray-900 font-bold text-right text-lg",
+                                        "{format_money(lowest_val)}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Final Selection Section
+            div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
+                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    span { class: "text-green-600", "✓" }
+                    "Income to Use for Qualifying"
+                }
+                div { class: "space-y-4",
+                    div { class: "grid grid-cols-12 gap-4 items-end",
+                        div { class: "col-span-6 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Select Calculation Method"
+                            }
+                            select {
+                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                value: "{selected_calculation}",
+                                onchange: move |evt: Event<FormData>| selected_calculation.set(evt.value()),
+                                option { value: "none", "-- Select Method --" }
+                                option { value: "current",
+                                    "Current Hourly ({format_money(per_hour_income())})"
+                                }
+                                option { value: "ytd", "YTD Average ({format_money(ytd_avg())})" }
+                                option { value: "ytd_1w2",
+                                    "YTD + 1 W2 Avg ({format_money(ytd_plus_1w2_avg())})"
+                                }
+                                option { value: "ytd_2w2",
+                                    "YTD + 2 W2 Avg ({format_money(ytd_plus_2w2_avg())})"
+                                }
+                                {
+                                    let lowest_val = if lowest_calculation().is_finite() {
+                                        lowest_calculation()
+                                    } else {
+                                        0.0
+                                    };
+                                    rsx! {
+                                        option { value: "lowest", "Use Lowest ({format_money(lowest_val)})" }
+                                    }
+                                }
+                            }
+                        }
+                        div { class: "col-span-6 flex flex-col",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                                "Qualifying Income"
+                            }
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-xl",
+                                "{format_money(final_income())}"
+                            }
+                        }
+                    }
+
+                    // Note about requirements
+                    div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
+                        p { class: "text-sm text-gray-900 font-medium",
+                            span { class: "font-bold text-yellow-700", "⚠️ Note: " }
+                            "If YTD or past year is lower, confirm why. Otherwise, lower of YTD and W2 required."
+                        }
+                    }
                 }
             }
         }

@@ -2012,6 +2012,7 @@ dependencies = [
  "chrono",
  "client",
  "dioxus",
+ "serde",
  "shared",
  "tokio",
  "uuid",

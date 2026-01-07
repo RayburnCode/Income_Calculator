@@ -1,7 +1,31 @@
 use dioxus::prelude::*;
+use crate::views::dashboard::by_id::options_template::options_template::LoanInformationData;
 
 #[component]
-pub fn LoanInformationSection() -> Element {
+pub fn LoanInformationSection(data: LoanInformationData, on_change: EventHandler<LoanInformationData>) -> Element {
+    let mut local_data = use_signal(|| data.clone());
+
+    // Update local data when prop changes
+    use_effect(move || {
+        local_data.set(data.clone());
+    });
+
+    // Helper function to update data and trigger on_change
+    let mut update_data = move |field: &str, value: String| {
+        let mut new_data = local_data();
+        match field {
+            "property_type" => new_data.property_type = value,
+            "occupancy" => new_data.occupancy = value,
+            "loan_type" => new_data.loan_type = value,
+            "term_months" => new_data.term_months = value,
+            "purpose" => new_data.purpose = value,
+            "appraisal_waiver" => new_data.appraisal_waiver = value,
+            _ => {}
+        }
+        local_data.set(new_data.clone());
+        on_change.call(new_data);
+    };
+
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Loan Information" }
@@ -33,9 +57,9 @@ pub fn LoanInformationSection() -> Element {
                         tr {
                             td { class: "border border-gray-300 px-4 py-2",
                                 select {
-                                    name: "PropertyType",
-                                    id: "PropertyType",
+                                    value: "{local_data().property_type}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    onchange: move |evt: Event<FormData>| update_data("property_type", evt.value()),
                                     option { value: "sfr", "SFR" }
                                     option { value: "manufactured", "Manufactured" }
                                     option { value: "multiUnit", "Multi Unit" }
@@ -45,9 +69,9 @@ pub fn LoanInformationSection() -> Element {
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 select {
-                                    name: "occupancy",
-                                    id: "occupancy",
+                                    value: "{local_data().occupancy}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    onchange: move |evt: Event<FormData>| update_data("occupancy", evt.value()),
                                     option { value: "primary", "Primary" }
                                     option { value: "secondary", "Secondary" }
                                     option { value: "investment", "Investment" }
@@ -55,9 +79,9 @@ pub fn LoanInformationSection() -> Element {
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 select {
-                                    name: "loanType",
-                                    id: "loanType",
+                                    value: "{local_data().loan_type}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    onchange: move |evt: Event<FormData>| update_data("loan_type", evt.value()),
                                     option { value: "cnv", "CNV" }
                                     option { value: "fha", "FHA" }
                                     option { value: "va", "VA" }
@@ -67,16 +91,16 @@ pub fn LoanInformationSection() -> Element {
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "newTerm",
-                                    id: "newTerm",
+                                    value: "{local_data().term_months}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("term_months", evt.value()),
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 select {
-                                    name: "loanPurpose",
-                                    id: "loanPurpose",
+                                    value: "{local_data().purpose}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    onchange: move |evt: Event<FormData>| update_data("purpose", evt.value()),
                                     option { value: "purchase", "Purchase" }
                                     option { value: "cashOut", "Cash Out" }
                                     option { value: "refinance", "Refinance" }
@@ -86,9 +110,12 @@ pub fn LoanInformationSection() -> Element {
                             td { class: "border border-gray-300 px-4 py-2 text-center",
                                 input {
                                     r#type: "checkbox",
-                                    name: "appraisalWaiver",
-                                    id: "appraisalWaiver",
+                                    checked: local_data().appraisal_waiver == "true",
                                     class: "w-4 h-4",
+                                    onchange: move |evt: Event<FormData>| {
+                                        let value = if evt.checked() { "true" } else { "false" };
+                                        update_data("appraisal_waiver", value.to_string());
+                                    },
                                 }
                             }
                         }

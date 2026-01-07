@@ -1,7 +1,14 @@
 use dioxus::prelude::*;
+use crate::views::dashboard::by_id::options_template::options_template::BenefitToBorrowerData;
 
 #[component]
-pub fn BenefitToBorrowerSection() -> Element {
+pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, on_change: EventHandler<BenefitToBorrowerData>) -> Element {
+    let mut local_data = use_signal(|| data.clone());
+
+    // Update local data when prop changes
+    use_effect(move || {
+        local_data.set(data.clone());
+    });
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Benefit to the Borrower" }

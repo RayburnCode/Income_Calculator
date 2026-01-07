@@ -7,6 +7,50 @@ use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 pub fn ClientDetails(id: i32) -> Element {
     let mut active_tab = use_signal(|| 0);
 
+    // Get the database client from context or create it
+    let client_resource = use_resource(|| async {
+        client::Client::new().await
+    });
+
+    // State for borrower data
+    let borrower = use_signal(|| None::<shared::models::Borrower>);
+    let error_message = use_signal(|| None::<String>);
+
+    // Load borrower when the resource is ready
+    use_effect(move || {
+        let resource_value = client_resource.read().clone();
+        let mut borrower = borrower.clone();
+        let mut error_message = error_message.clone();
+        let client_id = id;
+        
+        spawn(async move {
+            match resource_value.as_ref() {
+                Some(Ok(db_client)) => {
+                    // Load borrower from database
+                    match db_client.get_borrower(client_id).await {
+                        Ok(Some(borrower_data)) => {
+                            borrower.set(Some(borrower_data));
+                            error_message.set(None);
+                        }
+                        Ok(None) => {
+                            error_message.set(Some(format!("Borrower with ID {} not found", client_id)));
+                        }
+                        Err(e) => {
+                            error_message.set(Some(format!("Error loading borrower: {}", e)));
+                        }
+                    }
+                }
+                Some(Err(e)) => {
+                    // Database connection failed
+                    error_message.set(Some(e.clone()));
+                }
+                None => {
+                    // Still loading
+                }
+            }
+        });
+    });
+
     let tabs = vec![
         TabItem {
             label: "Overview".to_string(),
@@ -54,30 +98,59 @@ pub fn ClientDetails(id: i32) -> Element {
                 match *active_tab.read() {
                     0 => {
                         rsx! {
+                            // Error message
+                            if let Some(error) = error_message() {
+                                div { class: "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6",
+                                    "{error}"
+                                }
+                            }
+
                             // Client Info Card
+
+            
+
                             div { class: "bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Client Information" }
                                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-4",
                                     div {
-
-                            // Additional sections can be added here
-
-            
-
                                         label { class: "block text-sm font-medium text-gray-700", "Name" }
-                                        p { class: "mt-1 text-sm text-gray-900", "John Doe" } // Placeholder
+                                        p { class: "mt-1 text-sm text-gray-900",
+                                            if let Some(borrower_data) = borrower() {
+                                                "{borrower_data.name}"
+                                            } else {
+                                                "Loading..."
+                                            }
+                                        }
                                     }
                                     div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Email" }
-                                        p { class: "mt-1 text-sm text-gray-900", "john@example.com" } // Placeholder
+                                        label { class: "block text-sm font-medium text-gray-700", "Employer" }
+                                        p { class: "mt-1 text-sm text-gray-900",
+                                            if let Some(borrower_data) = borrower() {
+                                                "{borrower_data.employer_name.as_deref().unwrap_or(\"N/A\")}"
+                                            } else {
+                                                "Loading..."
+                                            }
+                                        }
                                     }
                                     div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Income" }
-                                        p { class: "mt-1 text-sm text-gray-900", "$50,000.00" } // Placeholder
+                                        label { class: "block text-sm font-medium text-gray-700", "Income Type" }
+                                        p { class: "mt-1 text-sm text-gray-900",
+                                            if let Some(borrower_data) = borrower() {
+                                                "{borrower_data.income_type.as_deref().unwrap_or(\"N/A\")}"
+                                            } else {
+                                                "Loading..."
+                                            }
+                                        }
                                     }
                                     div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Status" }
-                                        p { class: "mt-1 text-sm text-gray-900", "Active" } // Placeholder
+                                        label { class: "block text-sm font-medium text-gray-700", "Loan Number" }
+                                        p { class: "mt-1 text-sm text-gray-900",
+                                            if let Some(borrower_data) = borrower() {
+                                                "{borrower_data.loan_number.as_deref().unwrap_or(\"N/A\")}"
+                                            } else {
+                                                "Loading..."
+                                            }
+                                        }
                                     }
                                 }
                             }

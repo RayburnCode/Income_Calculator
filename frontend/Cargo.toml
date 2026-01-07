@@ -9,6 +9,7 @@ edition = "2024"
 [dependencies]
 dioxus = { version = "0.7.2", features = ["router"] }
 tokio = { version = "1.48.0", features = ["full"] }
+serde = { version = "1.0.228", features = ["derive"] }
 
 shared = { path = "../shared" }
 client = { path = "../client" }

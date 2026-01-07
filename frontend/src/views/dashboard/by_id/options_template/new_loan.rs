@@ -1,7 +1,14 @@
 use dioxus::prelude::*;
+use crate::views::dashboard::by_id::options_template::options_template::NewLoanData;
 
 #[component]
-pub fn NewLoanSection() -> Element {
+pub fn NewLoanSection(data: NewLoanData, on_change: EventHandler<NewLoanData>) -> Element {
+    let mut local_data = use_signal(|| data.clone());
+
+    // Update local data when prop changes
+    use_effect(move || {
+        local_data.set(data.clone());
+    });
     rsx! {
         div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "New Loan" }
@@ -22,8 +29,15 @@ pub fn NewLoanSection() -> Element {
                                 r#type: "number",
                                 name: "marketValue",
                                 id: "marketValue",
+                                value: "{local_data().market_value}",
                                 class: "sm:col-span-2 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
                                 placeholder: "Enter market value",
+                                oninput: move |e| {
+                                    let mut updated = local_data();
+                                    updated.market_value = e.value();
+                                    local_data.set(updated.clone());
+                                    on_change.call(updated);
+                                },
                             }
                         }
 
@@ -38,8 +52,15 @@ pub fn NewLoanSection() -> Element {
                                 r#type: "number",
                                 name: "salesPrice",
                                 id: "salesPrice",
+                                value: "{local_data().sales_price}",
                                 class: "sm:col-span-2 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
                                 placeholder: "Enter sales price",
+                                oninput: move |e| {
+                                    let mut updated = local_data();
+                                    updated.sales_price = e.value();
+                                    local_data.set(updated.clone());
+                                    on_change.call(updated);
+                                },
                             }
                         }
 

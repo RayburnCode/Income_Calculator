@@ -1,7 +1,30 @@
 use dioxus::prelude::*;
+use crate::views::dashboard::by_id::options_template::options_template::SavingsData;
 
 #[component]
-pub fn SavingsSection() -> Element {
+pub fn SavingsSection(data: SavingsData, on_change: EventHandler<SavingsData>) -> Element {
+    let mut local_data = use_signal(|| data.clone());
+
+    // Update local data when prop changes
+    use_effect(move || {
+        local_data.set(data.clone());
+    });
+
+    // Helper function to update data and trigger on_change
+    let mut update_data = move |field: &str, value: String| {
+        let mut new_data = local_data();
+        match field {
+            "monthly_savings" => new_data.monthly_savings = value,
+            "annual_savings" => new_data.annual_savings = value,
+            "debt_paid" => new_data.debt_paid = value,
+            "payment_reduction" => new_data.payment_reduction = value,
+            "recoup_period" => new_data.recoup_period = value,
+            _ => {}
+        }
+        local_data.set(new_data.clone());
+        on_change.call(new_data);
+    };
+
     rsx! {
         div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Savings" }
@@ -31,46 +54,41 @@ pub fn SavingsSection() -> Element {
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "monthlySavings",
-                                    id: "monthlySavings",
-                                    readonly: true,
+                                    value: "{local_data().monthly_savings}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("monthly_savings", evt.value()),
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "annualSavings",
-                                    id: "annualSavings",
-                                    readonly: true,
+                                    value: "{local_data().annual_savings}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("annual_savings", evt.value()),
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "debtPaid",
-                                    id: "debtPaid",
-                                    readonly: true,
+                                    value: "{local_data().debt_paid}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("debt_paid", evt.value()),
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "paymentReduction",
-                                    id: "paymentReduction",
-                                    readonly: true,
+                                    value: "{local_data().payment_reduction}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("payment_reduction", evt.value()),
                                 }
                             }
                             td { class: "border border-gray-300 px-4 py-2",
                                 input {
                                     r#type: "number",
-                                    name: "recoup",
-                                    id: "recoup",
-                                    readonly: true,
+                                    value: "{local_data().recoup_period}",
                                     class: "w-full px-2 py-1 border rounded",
+                                    oninput: move |evt: Event<FormData>| update_data("recoup_period", evt.value()),
                                 }
                             }
                         }

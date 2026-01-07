@@ -1,8 +1,15 @@
 use dioxus::prelude::*;
 use shared::models::ConsumerDebt;
+use crate::views::dashboard::by_id::options_template::options_template::ConsumerDebtData;
 
 #[component]
-pub fn ConsumerDebtSection() -> Element {
+pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<ConsumerDebtData>) -> Element {
+    let mut local_data = use_signal(|| data.clone());
+
+    // Update local data when prop changes
+    use_effect(move || {
+        local_data.set(data.clone());
+    });
     let mut consumer_debts = use_signal(|| vec![
         ConsumerDebt::default()
     ]);

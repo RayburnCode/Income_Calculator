@@ -4,7 +4,7 @@ use shared::models::Borrower;
 
 #[component]
 pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
-    let client_resource = use_context::<dioxus::prelude::Resource<client::Client>>();
+    let client = use_context::<client::Client>();
     let mut is_open = use_signal(|| false);
     let mut first_name = use_signal(|| String::new());
     let mut last_name = use_signal(|| String::new());
@@ -39,25 +39,23 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
             updated_at: Utc::now(),
         };
 
-        let client_res = client_resource.clone();
+        let client_clone = client.clone();
         let on_added = on_client_added.clone();
         spawn(async move {
-            if let Some(c) = client_res.read().as_ref() {
-                let result: Result<(), Box<dyn std::error::Error>> = c.clone().save_borrower(borrower).await;
-                match result {
-                    Ok(_) => {
-                        on_added.call(());
-                        is_open.set(false);
-                        // Reset form
-                        first_name.set(String::new());
-                        last_name.set(String::new());
-                        email.set(String::new());
-                        phone.set(String::new());
-                    }
-                    Err(e) => {
-                        // Handle error, maybe show a message
-                        eprintln!("Failed to save borrower: {:?}", e);
-                    }
+            let result: Result<(), Box<dyn std::error::Error>> = client_clone.save_borrower(borrower).await;
+            match result {
+                Ok(_) => {
+                    on_added.call(());
+                    is_open.set(false);
+                    // Reset form
+                    first_name.set(String::new());
+                    last_name.set(String::new());
+                    email.set(String::new());
+                    phone.set(String::new());
+                }
+                Err(e) => {
+                    // Handle error, maybe show a message
+                    eprintln!("Failed to save borrower: {:?}", e);
                 }
             }
         });
@@ -66,16 +64,16 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
     rsx! {
         // Button to open modal
         button {
-            class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+            class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base w-full sm:w-auto min-h-[44px]",
             onclick: open_modal,
             "Add Client"
         }
 
         // Modal overlay
         if is_open() {
-            div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
-                div { class: "bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4",
-                    h2 { class: "text-xl font-bold mb-4", "Add New Client" }
+            div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4",
+                div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto",
+                    h2 { class: "text-lg sm:text-xl font-bold mb-4", "Add New Client" }
                     form { onsubmit: submit,
                         div { class: "mb-4",
                             label { class: "block text-gray-700 text-sm font-bold mb-2",
@@ -125,14 +123,14 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
                                 required: true,
                             }
                         }
-                        div { class: "flex items-center justify-between",
+                        div { class: "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3",
                             button {
-                                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline",
+                                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-h-[44px]",
                                 r#type: "submit",
                                 "Add Client"
                             }
                             button {
-                                class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4",
+                                class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-h-[44px]",
                                 onclick: close_modal,
                                 "Cancel"
                             }

@@ -14,6 +14,9 @@ pub struct Borrower {
     pub employer_name: Option<String>,
     pub income_type: Option<String>,
     pub loan_number: Option<String>,
+    pub status: Option<String>,
+    pub email: Option<String>,
+    pub phone_number: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -27,6 +30,9 @@ impl Default for Borrower {
             employer_name: None,
             income_type: None,
             loan_number: None,
+            status: None,
+            email: None,
+            phone_number: None,
             created_at: now,
             updated_at: now,
         }

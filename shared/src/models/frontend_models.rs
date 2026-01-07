@@ -104,12 +104,24 @@ pub struct OtherFeesData {
     pub cash_out_amount: f64,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PricingData {
     pub pricing_options: Vec<PricingOptionData>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
+impl Default for PricingData {
+    fn default() -> Self {
+        Self {
+            pricing_options: vec![
+                PricingOptionData::default(),
+                PricingOptionData::default(),
+                PricingOptionData::default(),
+            ],
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PricingOptionData {
     pub description: String,
     pub note_rate: f64,
@@ -118,6 +130,20 @@ pub struct PricingOptionData {
     pub bd_percentage: f64,
     pub bd_dollar: f64,
     pub is_selected: bool,
+}
+
+impl Default for PricingOptionData {
+    fn default() -> Self {
+        Self {
+            description: "Rate Option".to_string(),
+            note_rate: 0.0,
+            ysp_percentage: 0.0,
+            ysp_dollar: 0.0,
+            bd_percentage: 0.0,
+            bd_dollar: 0.0,
+            is_selected: false,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
@@ -153,12 +179,70 @@ pub struct TitleFeesData {
     pub title_other_fees: f64,
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct IncomeSource {
+    pub id: String,
+    pub name: String,
+    pub monthly_amount: f64,
+    pub category: String,
+    pub included_in_dti: bool,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
 pub struct IncomeInformationData {
     pub borrower_monthly_income: f64,
     pub coborrower_monthly_income: f64,
     pub front_end_ratio: f64,
     pub back_end_ratio: f64,
+    pub w2_jobs_data: Option<W2JobsData>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct W2JobsData {
+    pub jobs: Vec<W2Job>,
+    pub is_verified: bool,
+    pub verified_at: Option<String>,
+}
+
+impl Default for W2JobsData {
+    fn default() -> Self {
+        Self {
+            jobs: vec![W2Job::default()],
+            is_verified: false,
+            verified_at: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct W2Job {
+    pub employer_name: String,
+    pub job_title: String,
+    pub years_employed: String,
+    pub months_employed: String,
+    pub annual_salary: String,
+    pub hourly_rate: String,
+    pub hours_per_week: String,
+    pub commission_monthly: String,
+    pub bonus_monthly: String,
+    pub overtime_monthly: String,
+}
+
+impl Default for W2Job {
+    fn default() -> Self {
+        Self {
+            employer_name: String::new(),
+            job_title: String::new(),
+            years_employed: String::new(),
+            months_employed: String::new(),
+            annual_salary: String::new(),
+            hourly_rate: String::new(),
+            hours_per_week: String::new(),
+            commission_monthly: String::new(),
+            bonus_monthly: String::new(),
+            overtime_monthly: String::new(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]

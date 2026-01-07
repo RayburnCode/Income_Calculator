@@ -42,276 +42,92 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                         }
                     }
                     tbody {
-                        // Rate option 1
-                        {
-                            let i = 0;
-                            let option = &pricing_options[i];
-                            rsx! {
-                                tr {
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "text",
-                                            value: "{option.description}",
-                                            oninput: move |e| {
-                                                local_data.write().pricing_options[i].description = e.value();
+                        // Render pricing options dynamically
+                        {pricing_options.iter().enumerate().map(|(i, option)| rsx! {
+                            tr {
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "text",
+                                        value: "{option.description}",
+                                        oninput: move |e| {
+                                            local_data.write().pricing_options[i].description = e.value();
+                                            on_change(local_data());
+                                        },
+                                        class: "w-full px-2 py-1 border rounded",
+                                    }
+                                }
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        value: "{option.note_rate}",
+                                        oninput: move |e| {
+                                            if let Ok(val) = e.value().parse::<f64>() {
+                                                local_data.write().pricing_options[i].note_rate = val;
                                                 on_change(local_data());
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
+                                            }
+                                        },
+                                        class: "w-full px-2 py-1 border rounded",
                                     }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.note_rate}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].note_rate = val;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].ysp_percentage = val;
-                                                    local_data.write().pricing_options[i].ysp_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].bd_percentage = val;
-                                                    local_data.write().pricing_options[i].bd_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2 text-center",
-                                        input {
-                                            r#type: "checkbox",
-                                            checked: "{option.is_selected}",
-                                            onchange: move |e| {
-                                                local_data.write().pricing_options[i].is_selected = e.checked();
+                                }
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        value: "{option.ysp_percentage}",
+                                        oninput: move |e| {
+                                            if let Ok(val) = e.value().parse::<f64>() {
+                                                local_data.write().pricing_options[i].ysp_percentage = val;
+                                                local_data.write().pricing_options[i].ysp_dollar = val * total_loan_amount
+                                                    / 100.0;
                                                 on_change(local_data());
-                                            },
-                                            class: "w-4 h-4",
-                                        }
+                                            }
+                                        },
+                                        class: "w-full px-2 py-1 border rounded",
+                                    }
+                                }
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        value: "{option.ysp_percentage * total_loan_amount / 100.0:.2}",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
+                                }
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        value: "{option.bd_percentage}",
+                                        oninput: move |e| {
+                                            if let Ok(val) = e.value().parse::<f64>() {
+                                                local_data.write().pricing_options[i].bd_percentage = val;
+                                                local_data.write().pricing_options[i].bd_dollar = val * total_loan_amount
+                                                    / 100.0;
+                                                on_change(local_data());
+                                            }
+                                        },
+                                        class: "w-full px-2 py-1 border rounded",
+                                    }
+                                }
+                                td { class: "border border-gray-300 px-4 py-2",
+                                    input {
+                                        r#type: "number",
+                                        value: "{option.bd_percentage * total_loan_amount / 100.0:.2}",
+                                        readonly: true,
+                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                    }
+                                }
+                                td { class: "border border-gray-300 px-4 py-2 text-center",
+                                    input {
+                                        r#type: "checkbox",
+                                        checked: "{option.is_selected}",
+                                        onchange: move |e| {
+                                            local_data.write().pricing_options[i].is_selected = e.checked();
+                                            on_change(local_data());
+                                        },
+                                        class: "w-4 h-4",
                                     }
                                 }
                             }
-                        }
-                        // Rate option 2
-                        {
-                            let i = 1;
-                            let option = &pricing_options[i];
-                            rsx! {
-                                tr {
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "text",
-                                            value: "{option.description}",
-                                            oninput: move |e| {
-                                                local_data.write().pricing_options[i].description = e.value();
-                                                on_change(local_data());
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.note_rate}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].note_rate = val;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].ysp_percentage = val;
-                                                    local_data.write().pricing_options[i].ysp_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].bd_percentage = val;
-                                                    local_data.write().pricing_options[i].bd_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2 text-center",
-                                        input {
-                                            r#type: "checkbox",
-                                            checked: "{option.is_selected}",
-                                            onchange: move |e| {
-                                                local_data.write().pricing_options[i].is_selected = e.checked();
-                                                on_change(local_data());
-                                            },
-                                            class: "w-4 h-4",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        // Rate option 3
-                        {
-                            let i = 2;
-                            let option = &pricing_options[i];
-                            rsx! {
-                                tr {
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "text",
-                                            value: "{option.description}",
-                                            oninput: move |e| {
-                                                local_data.write().pricing_options[i].description = e.value();
-                                                on_change(local_data());
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.note_rate}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].note_rate = val;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].ysp_percentage = val;
-                                                    local_data.write().pricing_options[i].ysp_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.ysp_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage}",
-                                            oninput: move |e| {
-                                                if let Ok(val) = e.value().parse::<f64>() {
-                                                    local_data.write().pricing_options[i].bd_percentage = val;
-                                                    local_data.write().pricing_options[i].bd_dollar = val * total_loan_amount
-                                                        / 100.0;
-                                                    on_change(local_data());
-                                                }
-                                            },
-                                            class: "w-full px-2 py-1 border rounded",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2",
-                                        input {
-                                            r#type: "number",
-                                            value: "{option.bd_percentage * total_loan_amount / 100.0:.2}",
-                                            readonly: true,
-                                            class: "w-full px-2 py-1 border rounded bg-gray-50",
-                                        }
-                                    }
-                                    td { class: "border border-gray-300 px-4 py-2 text-center",
-                                        input {
-                                            r#type: "checkbox",
-                                            checked: "{option.is_selected}",
-                                            onchange: move |e| {
-                                                local_data.write().pricing_options[i].is_selected = e.checked();
-                                                on_change(local_data());
-                                            },
-                                            class: "w-4 h-4",
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        })}
                     }
                 }
             }

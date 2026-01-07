@@ -36,13 +36,39 @@ pub fn OptionsTemplate(id: i32) -> Element {
     use_effect(move || {
         let client_clone = client.clone();
         spawn(async move {
+            // Load options template data
             match client_clone.get_options_template(id).await {
-                Ok(Some(data)) => {
+                Ok(Some(mut data)) => {
+                    // Try to load W2 jobs data from income worksheet
+                    match client_clone.get_w2_jobs_data(id).await {
+                        Ok(Some(w2_data)) => {
+                            data.income_information.w2_jobs_data = Some(w2_data);
+                        }
+                        Ok(None) => {
+                            // No W2 data available, leave as None
+                        }
+                        Err(e) => {
+                            println!("Failed to load W2 jobs data: {:?}", e);
+                        }
+                    }
                     template_data.set(data);
                 }
                 Ok(None) => {
-                    // No existing template, use defaults
-                    println!("No existing options template found for borrower {}", id);
+                    // No existing template, try to load W2 data for new template
+                    match client_clone.get_w2_jobs_data(id).await {
+                        Ok(Some(w2_data)) => {
+                            let mut data = OptionsTemplateData::default();
+                            data.income_information.w2_jobs_data = Some(w2_data);
+                            template_data.set(data);
+                        }
+                        Ok(None) => {
+                            // No existing template or W2 data, use defaults
+                            println!("No existing options template or W2 data found for borrower {}", id);
+                        }
+                        Err(e) => {
+                            println!("Failed to load W2 jobs data: {:?}", e);
+                        }
+                    }
                 }
                 Err(e) => {
                     println!("Failed to load options template: {:?}", e);

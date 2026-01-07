@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use crate::components::Input;
+use chrono::Utc;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct W2Job {
@@ -32,20 +33,37 @@ impl Default for W2Job {
     }
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct W2JobsData {
+    pub jobs: Vec<W2Job>,
+    pub is_verified: bool,
+    pub verified_at: Option<String>,
+}
+
+impl Default for W2JobsData {
+    fn default() -> Self {
+        Self {
+            jobs: vec![W2Job::default()],
+            is_verified: false,
+            verified_at: None,
+        }
+    }
+}
+
 #[component]
 pub fn W2Jobs() -> Element {
-    let mut w2_jobs = use_signal(|| vec![W2Job::default()]);
+    let mut w2_data = use_signal(|| W2JobsData::default());
     let mut expanded_job = use_signal(|| None);
 
     // Calculate totals
     let total_annual_salary = use_memo(move || {
-        w2_jobs().iter()
+        w2_data().jobs.iter()
             .map(|job| job.annual_salary.parse::<f64>().unwrap_or(0.0))
             .sum::<f64>()
     });
 
     let total_monthly_income = use_memo(move || {
-        w2_jobs().iter()
+        w2_data().jobs.iter()
             .map(|job| {
                 let salary = job.annual_salary.parse::<f64>().unwrap_or(0.0) / 12.0;
                 let commission = job.commission_monthly.parse::<f64>().unwrap_or(0.0);
@@ -57,22 +75,22 @@ pub fn W2Jobs() -> Element {
     });
 
     let add_job = move |_| {
-        let mut jobs = w2_jobs();
-        jobs.push(W2Job::default());
-        let new_index = jobs.len() - 1;
-        w2_jobs.set(jobs);
+        let mut data = w2_data();
+        data.jobs.push(W2Job::default());
+        let new_index = data.jobs.len() - 1;
+        w2_data.set(data);
         expanded_job.set(Some(new_index));
     };
 
     let mut remove_job = move |index: usize| {
-        let mut jobs = w2_jobs();
-        if jobs.len() > 1 {
-            jobs.remove(index);
-            let new_len = jobs.len();
+        let mut data = w2_data();
+        if data.jobs.len() > 1 {
+            data.jobs.remove(index);
+            let new_len = data.jobs.len();
             let should_reset_expanded = expanded_job() == Some(index) ||
                 (expanded_job().is_some() && expanded_job().unwrap() > index);
 
-            w2_jobs.set(jobs);
+            w2_data.set(data);
 
             if should_reset_expanded {
                 expanded_job.set(if new_len == 0 { None } else { Some(0) });
@@ -85,8 +103,8 @@ pub fn W2Jobs() -> Element {
     };
 
     let mut update_job = move |index: usize, field: &str, value: String| {
-        let mut jobs = w2_jobs();
-        if let Some(job) = jobs.get_mut(index) {
+        let mut data = w2_data();
+        if let Some(job) = data.jobs.get_mut(index) {
             match field {
                 "employer_name" => job.employer_name = value,
                 "job_title" => job.job_title = value,
@@ -101,7 +119,18 @@ pub fn W2Jobs() -> Element {
                 _ => {}
             }
         }
-        w2_jobs.set(jobs);
+        w2_data.set(data);
+    };
+
+    let toggle_verified = move |_| {
+        let mut data = w2_data();
+        data.is_verified = !data.is_verified;
+        if data.is_verified {
+            data.verified_at = Some(chrono::Utc::now().format("%Y-%m-%d %H:%M:%S").to_string());
+        } else {
+            data.verified_at = None;
+        }
+        w2_data.set(data);
     };
 
     let mut toggle_expanded = move |index: usize| {
@@ -115,18 +144,39 @@ pub fn W2Jobs() -> Element {
                 div { class: "flex items-center justify-between",
                     h3 { class: "text-lg font-bold text-gray-900 flex items-center gap-2",
                         span { class: "text-green-600", "🏢" }
-                        "W-2 Jobs ({w2_jobs().len()})"
+                        "W-2 Jobs ({w2_data().jobs.len()})"
+                        if w2_data().is_verified {
+                            span { class: "text-green-600 text-sm ml-2", "✓ Verified" }
+                        }
                     }
-                    div { class: "text-right",
-                        div { class: "text-sm text-gray-600", "Total Annual: ${total_annual_salary():.0}" }
-                        div { class: "text-sm font-semibold text-green-700", "Monthly: ${total_monthly_income():.0}" }
+                    div { class: "flex items-center gap-4",
+                        div { class: "text-right",
+                            div { class: "text-sm text-gray-600",
+                                "Total Annual: ${total_annual_salary():.0}"
+                            }
+                            div { class: "text-sm font-semibold text-green-700",
+                                "Monthly: ${total_monthly_income():.0}"
+                            }
+                        }
+                        button {
+                            class: if w2_data().is_verified { "bg-green-500 hover:bg-green-600" } else { "bg-gray-500 hover:bg-gray-600" },
+                            class: "text-white text-sm py-1 px-3 rounded transition-colors flex items-center gap-1",
+                            onclick: toggle_verified,
+                            if w2_data().is_verified {
+                                span { "✓" }
+                                "Verified"
+                            } else {
+                                span { "○" }
+                                "Mark Verified"
+                            }
+                        }
                     }
                 }
             }
 
             // Job entries - more compact
             div { class: "space-y-2",
-                for (index , job) in w2_jobs().iter().enumerate() {
+                for (index , job) in w2_data().jobs.iter().enumerate() {
                     div { class: "bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden",
                         // Compact job header
                         div {
@@ -261,7 +311,7 @@ pub fn W2Jobs() -> Element {
 
                                     // Job actions - compact
                                     div { class: "flex justify-between items-center pt-3 border-t border-gray-200",
-                                        if w2_jobs().len() > 1 {
+                                        if w2_data().jobs.len() > 1 {
                                             button {
                                                 class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded transition-colors",
                                                 onclick: move |_| remove_job(index),
@@ -270,9 +320,7 @@ pub fn W2Jobs() -> Element {
                                         } else {
                                             div {}
                                         }
-                                        div { class: "text-xs text-gray-500",
-                                            "Job {index + 1}"
-                                        }
+                                        div { class: "text-xs text-gray-500", "Job {index + 1}" }
                                     }
                                 }
                             }

@@ -33,7 +33,13 @@ impl Client {
         }
     }
 
-    // Example function for loan information
+    // Placeholder for W2 jobs data - to be implemented
+    pub async fn get_w2_jobs_data(&self, _borrower_id: i32) -> Result<Option<W2JobsData>, Box<dyn std::error::Error>> {
+        // TODO: Implement W2 jobs data persistence
+        // For now, return None to indicate no data available
+        Ok(None)
+    }
+
     pub async fn save_loan_information(&self, info: LoanInformation) -> Result<(), Box<dyn std::error::Error>> {
         let db = self.db.lock().await;
         let active_model = loan_information::ActiveModel {
@@ -82,10 +88,31 @@ impl Client {
             employer_name: Set(borrower.employer_name),
             income_type: Set(borrower.income_type),
             loan_number: Set(borrower.loan_number),
+            status: Set(borrower.status),
+            email: Set(borrower.email),
+            phone_number: Set(borrower.phone_number),
             created_at: Set(borrower.created_at),
             updated_at: Set(borrower.updated_at),
         };
         active_model.insert(&*db).await?;
+        Ok(())
+    }
+
+    pub async fn update_borrower(&self, borrower: Borrower) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let active_model = borrower::ActiveModel {
+            id: sea_orm::ActiveValue::Set(borrower.id),
+            name: sea_orm::ActiveValue::Set(borrower.name),
+            employer_name: sea_orm::ActiveValue::Set(borrower.employer_name),
+            income_type: sea_orm::ActiveValue::Set(borrower.income_type),
+            loan_number: sea_orm::ActiveValue::Set(borrower.loan_number),
+            status: sea_orm::ActiveValue::Set(borrower.status),
+            email: sea_orm::ActiveValue::Set(borrower.email),
+            phone_number: sea_orm::ActiveValue::Set(borrower.phone_number),
+            created_at: sea_orm::ActiveValue::Set(borrower.created_at),
+            updated_at: sea_orm::ActiveValue::Set(borrower.updated_at),
+        };
+        active_model.update(&*db).await?;
         Ok(())
     }
 
@@ -100,6 +127,9 @@ impl Client {
                     employer_name: model.employer_name,
                     income_type: model.income_type,
                     loan_number: model.loan_number,
+                    status: model.status,
+                    email: model.email,
+                    phone_number: model.phone_number,
                     created_at: model.created_at,
                     updated_at: model.updated_at,
                 };
@@ -118,6 +148,9 @@ impl Client {
             employer_name: model.employer_name,
             income_type: model.income_type,
             loan_number: model.loan_number,
+            status: model.status,
+            email: model.email,
+            phone_number: model.phone_number,
             created_at: model.created_at,
             updated_at: model.updated_at,
         }).collect();

@@ -10,6 +10,9 @@ pub struct Model {
     pub employer_name: Option<String>,
     pub income_type: Option<String>,
     pub loan_number: Option<String>,
+    pub status: Option<String>,
+    pub email: Option<String>,
+    pub phone_number: Option<String>,
     pub created_at: DateTimeUtc,
     pub updated_at: DateTimeUtc,
 }

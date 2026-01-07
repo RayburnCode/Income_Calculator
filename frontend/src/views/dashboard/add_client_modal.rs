@@ -47,9 +47,12 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
         let borrower = Borrower {
             id: 0, // Will be set by DB
             name: full_name,
-            employer_name: Some(email_val),
+            employer_name: None,
             income_type: Some("employed".to_string()),
-            loan_number: Some(phone_val),
+            loan_number: None,
+            status: Some("active".to_string()),
+            email: Some(email_val),
+            phone_number: Some(phone_val),
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };

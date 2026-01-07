@@ -7,7 +7,6 @@ pub struct Client {
     pub id: i32,
     pub name: String,
     pub email: String,
-    pub income: f64,
     pub status: String,
 }
 
@@ -47,7 +46,6 @@ pub fn MainDashboard() -> Element {
                                     id: (i as i32 + 1),
                                     name: b.name,
                                     email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
-                                    income: 0.0, // We don't have income in borrower table yet
                                     status: "Active".to_string(),
                                 }
                             }).collect();
@@ -85,7 +83,6 @@ pub fn MainDashboard() -> Element {
                                     id: (i as i32 + 1),
                                     name: b.name,
                                     email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
-                                    income: 0.0,
                                     status: "Active".to_string(),
                                 }
                             }).collect();
@@ -101,16 +98,10 @@ pub fn MainDashboard() -> Element {
         }
     };
 
-    let headers = vec!["ID".to_string(), "Name".to_string(), "Email".to_string(), "Income".to_string(), "Status".to_string()];
+    let headers = vec!["ID".to_string(), "Name".to_string(), "Email".to_string(), "Status".to_string()];
 
     let total_clients = clients().len();
     let active_clients = clients().iter().filter(|c| c.status == "Active").count();
-    let average_income = if total_clients > 0 {
-        clients().iter().map(|c| c.income).sum::<f64>() / total_clients as f64
-    } else {
-        0.0
-    };
-    let average_income_str = format!("${:.2}", average_income);
 
     rsx! {
         div { class: "min-h-screen bg-gray-100 p-3 sm:p-6",
@@ -131,7 +122,7 @@ pub fn MainDashboard() -> Element {
                 }
 
                 // Stats Cards
-                div { class: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-4 sm:mb-8",
+                div { class: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-8",
                     AnalyticsCard {
                         title: "Total Clients".to_string(),
                         value: total_clients.to_string(),
@@ -148,15 +139,6 @@ pub fn MainDashboard() -> Element {
                         icon: Some("✅".to_string()),
                         color: "green".to_string(),
                         trend: Some("+5%".to_string()),
-                        trend_positive: true,
-                    }
-                    AnalyticsCard {
-                        title: "Average Income".to_string(),
-                        value: average_income_str,
-                        subtitle: Some("Per client".to_string()),
-                        icon: Some("💰".to_string()),
-                        color: "purple".to_string(),
-                        trend: Some("+8%".to_string()),
                         trend_positive: true,
                     }
                 }
@@ -202,10 +184,6 @@ pub fn MainDashboard() -> Element {
                                         }
                                         td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
                                             "{client.email}"
-                                        }
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
-                                            "$"
-                                            {format!("{:.2}", client.income)}
                                         }
                                         td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
                                             "{client.status}"

@@ -291,6 +291,7 @@ impl Client {
                 coborrower_monthly_income: model.coborrower_monthly_income.to_f64().unwrap_or(0.0),
                 front_end_ratio: model.front_end_ratio.to_f64().unwrap_or(0.0),
                 back_end_ratio: model.back_end_ratio.to_f64().unwrap_or(0.0),
+                w2_jobs_data: None,
             }
         } else {
             IncomeInformationData::default()

@@ -3,6 +3,7 @@ use crate::components::tab::{Tab, TabItem};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::views::dashboard::by_id::income_worksheet::W2Jobs;
+use chrono::{DateTime, Utc};
 
 #[component]
 pub fn ClientDetails(id: i32) -> Element {
@@ -16,12 +17,21 @@ pub fn ClientDetails(id: i32) -> Element {
     // State for borrower data
     let borrower = use_signal(|| None::<shared::models::Borrower>);
     let error_message = use_signal(|| None::<String>);
+    let mut is_editing = use_signal(|| false);
+    let mut edit_name = use_signal(|| String::new());
+    let mut edit_status = use_signal(|| String::new());
+    let mut edit_email = use_signal(|| String::new());
+    let mut edit_phone = use_signal(|| String::new());
 
     // Load borrower when the resource is ready
     use_effect(move || {
         let resource_value = client_resource.read().clone();
         let mut borrower = borrower.clone();
         let mut error_message = error_message.clone();
+        let mut edit_name = edit_name.clone();
+        let mut edit_status = edit_status.clone();
+        let mut edit_email = edit_email.clone();
+        let mut edit_phone = edit_phone.clone();
         let client_id = id;
         
         spawn(async move {
@@ -30,7 +40,12 @@ pub fn ClientDetails(id: i32) -> Element {
                     // Load borrower from database
                     match db_client.get_borrower(client_id).await {
                         Ok(Some(borrower_data)) => {
-                            borrower.set(Some(borrower_data));
+                            borrower.set(Some(borrower_data.clone()));
+                            // Populate edit fields
+                            edit_name.set(borrower_data.name.clone());
+                            edit_status.set(borrower_data.status.unwrap_or_default());
+                            edit_email.set(borrower_data.email.unwrap_or_default());
+                            edit_phone.set(borrower_data.phone_number.unwrap_or_default());
                             error_message.set(None);
                         }
                         Ok(None) => {
@@ -51,6 +66,66 @@ pub fn ClientDetails(id: i32) -> Element {
             }
         });
     });
+
+    // Save borrower changes
+    let save_changes = {
+        let client_resource = client_resource.clone();
+        let borrower = borrower.clone();
+        let mut error_message = error_message.clone();
+        let mut is_editing = is_editing.clone();
+        let edit_name = edit_name.clone();
+        let edit_status = edit_status.clone();
+        let edit_email = edit_email.clone();
+        let edit_phone = edit_phone.clone();
+        
+        move || {
+            let mut borrower_clone = borrower.clone();
+            spawn(async move {
+                if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                    if let Some(mut borrower_data) = borrower_clone() {
+                        // Update the borrower data
+                        borrower_data.name = edit_name();
+                        borrower_data.status = if edit_status().is_empty() { None } else { Some(edit_status()) };
+                        borrower_data.email = if edit_email().is_empty() { None } else { Some(edit_email()) };
+                        borrower_data.phone_number = if edit_phone().is_empty() { None } else { Some(edit_phone()) };
+                        borrower_data.updated_at = Utc::now();
+                        
+                        match db_client.update_borrower(borrower_data.clone()).await {
+                            Ok(_) => {
+                                borrower_clone.set(Some(borrower_data));
+                                error_message.set(None);
+                                is_editing.set(false);
+                            }
+                            Err(e) => {
+                                error_message.set(Some(format!("Error updating borrower: {}", e)));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    // Cancel editing
+    let mut cancel_edit = {
+        let mut is_editing = is_editing.clone();
+        let borrower = borrower.clone();
+        let mut edit_name = edit_name.clone();
+        let mut edit_status = edit_status.clone();
+        let mut edit_email = edit_email.clone();
+        let mut edit_phone = edit_phone.clone();
+        
+        move || {
+            // Reset edit fields to current borrower data
+            if let Some(borrower_data) = borrower() {
+                edit_name.set(borrower_data.name.clone());
+                edit_status.set(borrower_data.status.unwrap_or_default());
+                edit_email.set(borrower_data.email.unwrap_or_default());
+                edit_phone.set(borrower_data.phone_number.unwrap_or_default());
+            }
+            is_editing.set(false);
+        }
+    };
 
     let tabs = vec![
         TabItem {
@@ -109,47 +184,107 @@ pub fn ClientDetails(id: i32) -> Element {
                             // Client Info Card
 
             
+                            // Edit mode
+                            // Display mode
 
                             div { class: "bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Client Information" }
+                                div { class: "mb-4 flex justify-end",
+                                    if *is_editing.read() {
+                                        div { class: "space-x-2",
+                                            button {
+                                                class: "bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded",
+                                                onclick: move |_| save_changes(),
+                                                "Save"
+                                            }
+                                            button {
+                                                class: "bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded",
+                                                onclick: move |_| cancel_edit(),
+                                                "Cancel"
+                                            }
+                                        }
+                                    } else {
+                                        button {
+                                            class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+                                            onclick: move |_| is_editing.set(true),
+                                            "Edit"
+                                        }
+                                    }
+                                }
                                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-4",
-                                    div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Name" }
-                                        p { class: "mt-1 text-sm text-gray-900",
-                                            if let Some(borrower_data) = borrower() {
-                                                "{borrower_data.name}"
-                                            } else {
-                                                "Loading..."
+                                    if *is_editing.read() {
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Full Name" }
+                                            input {
+                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                value: "{edit_name()}",
+                                                oninput: move |evt| edit_name.set(evt.value()),
                                             }
                                         }
-                                    }
-                                    div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Employer" }
-                                        p { class: "mt-1 text-sm text-gray-900",
-                                            if let Some(borrower_data) = borrower() {
-                                                "{borrower_data.employer_name.as_deref().unwrap_or(\"N/A\")}"
-                                            } else {
-                                                "Loading..."
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Status" }
+                                            input {
+                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                value: "{edit_status()}",
+                                                oninput: move |evt| edit_status.set(evt.value()),
                                             }
                                         }
-                                    }
-                                    div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Income Type" }
-                                        p { class: "mt-1 text-sm text-gray-900",
-                                            if let Some(borrower_data) = borrower() {
-                                                "{borrower_data.income_type.as_deref().unwrap_or(\"N/A\")}"
-                                            } else {
-                                                "Loading..."
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Email" }
+                                            input {
+                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                value: "{edit_email()}",
+                                                oninput: move |evt| edit_email.set(evt.value()),
                                             }
                                         }
-                                    }
-                                    div {
-                                        label { class: "block text-sm font-medium text-gray-700", "Loan Number" }
-                                        p { class: "mt-1 text-sm text-gray-900",
-                                            if let Some(borrower_data) = borrower() {
-                                                "{borrower_data.loan_number.as_deref().unwrap_or(\"N/A\")}"
-                                            } else {
-                                                "Loading..."
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Phone Number" }
+                                            input {
+                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                value: "{edit_phone()}",
+                                                oninput: move |evt| edit_phone.set(evt.value()),
+                                            }
+                                        }
+                                    } else {
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Full Name" }
+                                            p { class: "mt-1 text-sm text-gray-900",
+                                                if let Some(borrower_data) = borrower() {
+                                                    "{borrower_data.name}"
+                                                } else {
+                                                    "Loading..."
+                                                }
+                                            }
+                                        }
+            
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Status" }
+                                            p { class: "mt-1 text-sm text-gray-900",
+                                                if let Some(borrower_data) = borrower() {
+                                                    "{borrower_data.status.as_deref().unwrap_or(\"N/A\")}"
+                                                } else {
+                                                    "Loading..."
+                                                }
+                                            }
+                                        }
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Email" }
+                                            p { class: "mt-1 text-sm text-gray-900",
+                                                if let Some(borrower_data) = borrower() {
+                                                    "{borrower_data.email.as_deref().unwrap_or(\"N/A\")}"
+                                                } else {
+                                                    "Loading..."
+                                                }
+                                            }
+                                        }
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700", "Phone Number" }
+                                            p { class: "mt-1 text-sm text-gray-900",
+                                                if let Some(borrower_data) = borrower() {
+                                                    "{borrower_data.phone_number.as_deref().unwrap_or(\"N/A\")}"
+                                                } else {
+                                                    "Loading..."
+                                                }
                                             }
                                         }
                                     }

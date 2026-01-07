@@ -23,6 +23,9 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Alias::new("employer_name")).string().null())
                     .col(ColumnDef::new(Alias::new("income_type")).string().null())
                     .col(ColumnDef::new(Alias::new("loan_number")).string().null())
+                    .col(ColumnDef::new(Alias::new("status")).string().null())
+                    .col(ColumnDef::new(Alias::new("email")).string().null())
+                    .col(ColumnDef::new(Alias::new("phone_number")).string().null())
                     .col(ColumnDef::new(Alias::new("created_at")).timestamp_with_time_zone().not_null())
                     .col(ColumnDef::new(Alias::new("updated_at")).timestamp_with_time_zone().not_null())
                     .to_owned(),

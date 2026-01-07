@@ -18,3 +18,6 @@ pub use income_accordion::{IncomeAccordion, IncomeAccordionItem};
 
 pub mod table;
 pub use table::Table;
+
+pub mod analytics_card;
+pub use analytics_card::AnalyticsCard;

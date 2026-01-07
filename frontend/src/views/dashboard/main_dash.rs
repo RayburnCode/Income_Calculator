@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use crate::views::dashboard::add_client_modal::AddClientModal;
+use crate::components::AnalyticsCard;
 
 #[derive(Clone, PartialEq)]
 pub struct Client {
@@ -113,11 +114,13 @@ pub fn MainDashboard() -> Element {
 
     rsx! {
         div { class: "min-h-screen bg-gray-100 p-3 sm:p-6",
-            div { class: "max-w-7xl mx-auto",
+            div { class: "mx-auto",
                 // Header
                 div { class: "mb-4 sm:mb-8",
                     h1 { class: "text-2xl sm:text-3xl font-bold text-gray-900", "Dashboard" }
-                    p { class: "text-sm sm:text-base text-gray-600 mt-2", "Welcome to your Income Calculator Dashboard" }
+                    p { class: "text-sm sm:text-base text-gray-600 mt-2",
+                        "Welcome to your Income Calculator Dashboard"
+                    }
                 }
 
                 // Error message
@@ -129,24 +132,41 @@ pub fn MainDashboard() -> Element {
 
                 // Stats Cards
                 div { class: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-4 sm:mb-8",
-                    div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md",
-                        h3 { class: "text-sm sm:text-lg font-semibold text-gray-700", "Total Clients" }
-                        p { class: "text-2xl sm:text-3xl font-bold text-blue-600 mt-2", "{total_clients}" }
+                    AnalyticsCard {
+                        title: "Total Clients".to_string(),
+                        value: total_clients.to_string(),
+                        subtitle: Some("All registered clients".to_string()),
+                        icon: Some("👥".to_string()),
+                        color: "blue".to_string(),
+                        trend: Some("+12%".to_string()),
+                        trend_positive: true,
                     }
-                    div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md",
-                        h3 { class: "text-sm sm:text-lg font-semibold text-gray-700", "Active Clients" }
-                        p { class: "text-2xl sm:text-3xl font-bold text-green-600 mt-2", "{active_clients}" }
+                    AnalyticsCard {
+                        title: "Active Clients".to_string(),
+                        value: active_clients.to_string(),
+                        subtitle: Some("Currently active".to_string()),
+                        icon: Some("✅".to_string()),
+                        color: "green".to_string(),
+                        trend: Some("+5%".to_string()),
+                        trend_positive: true,
                     }
-                    div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md",
-                        h3 { class: "text-sm sm:text-lg font-semibold text-gray-700", "Average Income" }
-                        p { class: "text-2xl sm:text-3xl font-bold text-purple-600 mt-2", "{average_income_str}" }
+                    AnalyticsCard {
+                        title: "Average Income".to_string(),
+                        value: average_income_str,
+                        subtitle: Some("Per client".to_string()),
+                        icon: Some("💰".to_string()),
+                        color: "purple".to_string(),
+                        trend: Some("+8%".to_string()),
+                        trend_positive: true,
                     }
                 }
 
                 // Clients Table
                 div { class: "bg-white p-3 sm:p-6 rounded-lg shadow-md",
                     div { class: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3",
-                        h2 { class: "text-lg sm:text-xl font-semibold text-gray-800", "Clients" }
+                        h2 { class: "text-lg sm:text-xl font-semibold text-gray-800",
+                            "Clients"
+                        }
                         if let Some(Ok(_)) = client_resource.read().as_ref() {
                             AddClientModal { on_client_added: move |_| reload_clients() }
                         } else {
@@ -192,7 +212,7 @@ pub fn MainDashboard() -> Element {
                                         }
                                         td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
                                             Link {
-                                                to: format!("/dashboard/client/{}", client.id),
+                                                to: format!("/{}/client", client.id),
                                                 class: "text-blue-600 hover:text-blue-800 font-medium",
                                                 "View"
                                             }

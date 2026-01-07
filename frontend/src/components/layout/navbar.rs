@@ -5,9 +5,6 @@ const LOGO: Asset = asset!("/assets/percent.svg");
  
 #[component]
 pub fn Navbar() -> Element {
-    let mut reset = use_context::<Signal<usize>>();
-    // optional toast context
-    let mut toast = use_context::<Signal<Option<String>>>();
 
     rsx! {
         nav { class: "text-gray-900 fixed w-full z-20 top-0 start-0 border-b border-default bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-sm",
@@ -15,7 +12,7 @@ pub fn Navbar() -> Element {
                 a { class: "flex items-center space-x-3 rtl:space-x-reverse",
                     img { alt: "Debt to Income Logo", class: "h-7", src: LOGO }
                     Link {
-                        to: Route::Home {},
+                        to: Route::MainDashboard {},
                         class: "self-center text-xl text-heading font-semibold whitespace-nowrap",
                         "Income Calculator"
                     }
@@ -48,13 +45,13 @@ pub fn Navbar() -> Element {
                     ul { class: "font-medium flex flex-col p-4 md:p-0 mt-4 border border-default rounded-base bg-neutral-secondary-soft md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-neutral-primary",
 
                         li {
-                            Link { to: Route::MainDashboard {}, "Dashboard" }
+                            Link { to: Route::Analytics {}, "Analytics" }
                         }
                         li {
-                            Link { to: Route::Worksheet {}, "Income Worksheet" }
+                            Link { to: Route::Reports {}, "Reports" }
                         }
                         li {
-                            Link { to: Route::OptionsTemplate {}, "Options Template" }
+                            Link { to: Route::Settings {}, "Settings" }
                         }
                         li {
                             Link { to: Route::Help {}, "Help" }

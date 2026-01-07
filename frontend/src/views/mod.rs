@@ -1,8 +1,8 @@
 pub mod dashboard;
-pub use dashboard::MainDashboard;
+pub use dashboard::{MainDashboard, Analytics, Reports, Settings};
 
-mod home;
-pub use home::Home;
+mod welcome;
+pub use welcome::Welcome;
 
 mod help;
 pub use help::Help;

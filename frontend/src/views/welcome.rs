@@ -3,7 +3,7 @@ use crate::Route;
 
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
-pub fn Home() -> Element {
+pub fn Welcome() -> Element {
     rsx! {
         div { class: "min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100",
             // Hero Section

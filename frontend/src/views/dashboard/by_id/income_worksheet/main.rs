@@ -4,7 +4,7 @@ use crate::views::dashboard::by_id::income_worksheet::{Information, Hourly, Sala
 
 /// The Home page component that will be rendered when the current route is `[Route::Home]`
 #[component]
-pub fn Worksheet() -> Element {
+pub fn Worksheet(id: i32) -> Element {
     // Track which sections are included
     let mut included_sections = use_signal(|| Vec::<String>::new());
 

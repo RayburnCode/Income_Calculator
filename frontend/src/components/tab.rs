@@ -36,16 +36,18 @@ pub fn Tab(props: TabProps) -> Element {
         class,
     } = props;
 
-    let active_classes = "inline-block px-4 py-3 text-white bg-brand-600 rounded-lg font-medium transition-colors";
-    let inactive_classes = "inline-block px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg font-medium transition-colors";
-    let disabled_classes = "inline-block px-4 py-3 text-gray-400 cursor-not-allowed rounded-lg";
+    let active_classes = "inline-block p-4 text-blue-600 bg-neutral-secondary-soft rounded-t-base active";
+    let inactive_classes = "inline-block p-4 text-gray-700 rounded-t-base hover:text-gray-900 hover:bg-neutral-secondary-soft";
+    let disabled_classes = "inline-block p-4 text-gray-400 rounded-t-base cursor-not-allowed";
 
     rsx! {
         ul {
-            class: "flex flex-wrap gap-2 text-sm font-medium text-center {class}",
+            class: "flex flex-wrap text-sm font-medium text-center border-b border-default {class}",
             aria_label: "Tabs",
             for (index , tab) in tabs.iter().enumerate() {
-                li { key: "{index}", class: "flex-shrink-0",
+                li {
+                    key: "{index}",
+                    class: if index < tabs.len() - 1 { "me-2" } else { "" },
                     if tab.disabled {
                         a {
                             class: "{disabled_classes}",

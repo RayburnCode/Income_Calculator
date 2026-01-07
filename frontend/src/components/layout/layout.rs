@@ -55,7 +55,7 @@ pub fn AppLayout() -> Element {
             // Header
             Navbar {}
             // Main Content Area
-            div { class: "pt-20 px-4 sm:px-6 lg:px-12 py-8",
+            div { class: "pt-20 px-4 sm:px-6 py-8",
                 div { class: "", Outlet::<Route> {} }
             }
             // Toast overlay (bottom-right)

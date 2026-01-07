@@ -1,10 +1,11 @@
 // client/src/lib.rs
-use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait};
 use shared::models::*;
 use database::entities::*;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
+use rust_decimal::prelude::ToPrimitive;
 
 mod income;
 mod options_template;
@@ -121,6 +122,31 @@ impl Client {
             updated_at: model.updated_at,
         }).collect();
         Ok(borrowers)
+    }
+
+    // Analytics helper methods
+    pub async fn get_total_clients_count(&self) -> Result<i64, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let count = borrower::Entity::find().count(&*db).await?;
+        Ok(count as i64)
+    }
+
+    pub async fn get_total_income_sum(&self) -> Result<f64, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let incomes = income_information::Entity::find().all(&*db).await?;
+        let total: f64 = incomes.iter()
+            .map(|income| {
+                income.borrower_monthly_income.to_f64().unwrap_or(0.0) +
+                income.coborrower_monthly_income.to_f64().unwrap_or(0.0)
+            })
+            .sum();
+        Ok(total)
+    }
+
+    pub async fn get_total_loans_count(&self) -> Result<i64, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let count = loan_information::Entity::find().count(&*db).await?;
+        Ok(count as i64)
     }
 
     pub async fn get_all_loan_information(&self) -> Result<Vec<LoanInformation>, Box<dyn std::error::Error>> {
@@ -281,6 +307,63 @@ impl Client {
         Ok(options)
     }
 
+    // Settings methods
+    pub async fn get_settings(&self) -> Result<AppSettings, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let settings = database::entities::settings::Entity::find()
+            .one(&*db)
+            .await?;
+
+        match settings {
+            Some(model) => Ok(AppSettings {
+                id: model.id,
+                theme: model.theme,
+                currency: model.currency,
+                default_loan_term: model.default_loan_term,
+                dti_threshold: model.dti_threshold,
+                auto_backup: model.auto_backup,
+            }),
+            None => {
+                // Create default settings if none exist
+                let default_settings = AppSettings::default();
+                self.save_settings(default_settings.clone()).await?;
+                Ok(default_settings)
+            }
+        }
+    }
+
+    pub async fn save_settings(&self, settings: AppSettings) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+
+        let active_model = database::entities::settings::ActiveModel {
+            id: Set(settings.id),
+            theme: Set(settings.theme.clone()),
+            currency: Set(settings.currency.clone()),
+            default_loan_term: Set(settings.default_loan_term),
+            dti_threshold: Set(settings.dti_threshold),
+            auto_backup: Set(settings.auto_backup),
+            ..Default::default() // Let SeaORM handle timestamps
+        };
+
+        // Try to update first, if it fails (no record exists), insert
+        match active_model.update(&*db).await {
+            Ok(_) => Ok(()),
+            Err(_) => {
+                let insert_model = database::entities::settings::ActiveModel {
+                    id: Set(settings.id),
+                    theme: Set(settings.theme),
+                    currency: Set(settings.currency),
+                    default_loan_term: Set(settings.default_loan_term),
+                    dti_threshold: Set(settings.dti_threshold),
+                    auto_backup: Set(settings.auto_backup),
+                    ..Default::default()
+                };
+                let _ = insert_model.insert(&*db).await?;
+                Ok(())
+            }
+        }
+    }
+
     // Add more functions for other models as needed
 }
 
@@ -321,5 +404,15 @@ fn parse_loan_purpose(s: &str) -> LoanPurpose {
         "Refinance" => LoanPurpose::Refinance,
         "IRRRLStreamline" => LoanPurpose::IRRRLStreamline,
         _ => LoanPurpose::Refinance,
+    }
+}
+
+fn parse_credit_type(s: &str) -> CreditType {
+    match s {
+        "Installment" => CreditType::Installment,
+        "Mortgage" => CreditType::Mortgage,
+        "Revolving" => CreditType::Revolving,
+        "Lease" => CreditType::Lease,
+        _ => CreditType::Installment,
     }
 }

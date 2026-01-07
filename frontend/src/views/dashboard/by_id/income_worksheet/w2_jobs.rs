@@ -35,7 +35,7 @@ impl Default for W2Job {
 #[component]
 pub fn W2Jobs() -> Element {
     let mut w2_jobs = use_signal(|| vec![W2Job::default()]);
-    let mut expanded_job = use_signal(|| Some(0));
+    let mut expanded_job = use_signal(|| None);
 
     // Calculate totals
     let total_annual_salary = use_memo(move || {
@@ -109,49 +109,39 @@ pub fn W2Jobs() -> Element {
     };
 
     rsx! {
-        div { class: "space-y-6",
-            // Header with totals
-            div { class: "bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3",
-                    span { class: "text-green-600", "🏢" }
-                    "W-2 Employment Information"
-                }
-                div { class: "grid grid-cols-1 md:grid-cols-3 gap-6",
-                    div { class: "bg-white p-4 rounded-lg border-2 border-green-300",
-                        h4 { class: "text-sm font-semibold text-gray-700 mb-2", "Total Annual Salary" }
-                        p { class: "text-2xl font-bold text-green-700", "${total_annual_salary():.2}" }
+        div { class: "space-y-4",
+            // Compact Header with totals
+            div { class: "bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg shadow-sm border border-green-200",
+                div { class: "flex items-center justify-between",
+                    h3 { class: "text-lg font-bold text-gray-900 flex items-center gap-2",
+                        span { class: "text-green-600", "🏢" }
+                        "W-2 Jobs ({w2_jobs().len()})"
                     }
-                    div { class: "bg-white p-4 rounded-lg border-2 border-green-300",
-                        h4 { class: "text-sm font-semibold text-gray-700 mb-2", "Monthly Income" }
-                        p { class: "text-2xl font-bold text-green-700",
-                            "${total_monthly_income():.2}"
-                        }
-                    }
-                    div { class: "bg-white p-4 rounded-lg border-2 border-green-300",
-                        h4 { class: "text-sm font-semibold text-gray-700 mb-2", "Number of Jobs" }
-                        p { class: "text-2xl font-bold text-green-700", "{w2_jobs().len()}" }
+                    div { class: "text-right",
+                        div { class: "text-sm text-gray-600", "Total Annual: ${total_annual_salary():.0}" }
+                        div { class: "text-sm font-semibold text-green-700", "Monthly: ${total_monthly_income():.0}" }
                     }
                 }
             }
 
-            // Job entries
-            div { class: "space-y-4",
+            // Job entries - more compact
+            div { class: "space-y-2",
                 for (index , job) in w2_jobs().iter().enumerate() {
-                    div { class: "bg-white border-2 border-gray-200 rounded-xl shadow-md overflow-hidden",
-                        // Job header
+                    div { class: "bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden",
+                        // Compact job header
                         div {
-                            class: "bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 cursor-pointer hover:bg-blue-100 transition-colors",
+                            class: "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors",
                             onclick: move |_| toggle_expanded(index),
                             div { class: "flex items-center justify-between",
-                                div { class: "flex items-center gap-3",
-                                    span { class: "text-blue-600 text-xl",
+                                div { class: "flex items-center gap-2 flex-1",
+                                    span { class: "text-blue-600",
                                         if expanded_job() == Some(index) {
                                             "📂"
                                         } else {
                                             "📁"
                                         }
                                     }
-                                    h4 { class: "text-lg font-semibold text-gray-900",
+                                    span { class: "font-medium text-gray-900",
                                         if job.employer_name.is_empty() {
                                             "Job #{index + 1}"
                                         } else {
@@ -159,16 +149,16 @@ pub fn W2Jobs() -> Element {
                                         }
                                     }
                                     if !job.job_title.is_empty() {
-                                        span { class: "text-gray-600 text-sm", " - {job.job_title}" }
+                                        span { class: "text-gray-500 text-sm", "• {job.job_title}" }
                                     }
                                 }
-                                div { class: "flex items-center gap-3",
+                                div { class: "flex items-center gap-3 text-sm",
                                     if !job.annual_salary.is_empty() {
                                         span { class: "text-green-700 font-semibold",
-                                            "${job.annual_salary}/year"
+                                            "${job.annual_salary}"
                                         }
                                     }
-                                    span { class: "text-gray-500 text-sm",
+                                    span { class: "text-gray-400",
                                         if expanded_job() == Some(index) {
                                             "▼"
                                         } else {
@@ -179,124 +169,109 @@ pub fn W2Jobs() -> Element {
                             }
                         }
 
-                        // Job details (expandable)
+                        // Compact job details (expandable)
                         if expanded_job() == Some(index) {
-                            div { class: "p-6 border-t border-gray-200",
-                                div { class: "space-y-6",
-                                    // Employer Information
-                                    div { class: "bg-gray-50 p-4 rounded-lg",
-                                        h5 { class: "text-md font-semibold text-gray-900 mb-4",
-                                            "Employer Information"
+                            div { class: "px-4 py-3 border-t border-gray-200 bg-gray-50",
+                                div { class: "space-y-3",
+                                    // Employer Information - compact
+                                    div { class: "grid grid-cols-1 md:grid-cols-2 gap-3",
+                                        Input {
+                                            label: "Employer",
+                                            placeholder: "Company Name",
+                                            value: "{job.employer_name}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "employer_name", evt.value()),
                                         }
-                                        div { class: "grid grid-cols-1 md:grid-cols-2 gap-4",
-                                            Input {
-                                                label: "Employer Name",
-                                                placeholder: "Company Name",
-                                                value: "{job.employer_name}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "employer_name", evt.value()),
-                                            }
-                                            Input {
-                                                label: "Job Title",
-                                                placeholder: "Position/Title",
-                                                value: "{job.job_title}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "job_title", evt.value()),
-                                            }
+                                        Input {
+                                            label: "Job Title",
+                                            placeholder: "Position",
+                                            value: "{job.job_title}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "job_title", evt.value()),
                                         }
-                                        div { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mt-4",
+                                    }
+                                    div { class: "grid grid-cols-2 gap-3",
+                                        Input {
+                                            label: "Years",
+                                            placeholder: "2",
+                                            r#type: "number",
+                                            value: "{job.years_employed}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "years_employed", evt.value()),
+                                        }
+                                        Input {
+                                            label: "Months",
+                                            placeholder: "6",
+                                            r#type: "number",
+                                            value: "{job.months_employed}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "months_employed", evt.value()),
+                                        }
+                                    }
+
+                                    // Salary Information - compact
+                                    div { class: "grid grid-cols-1 md:grid-cols-2 gap-3",
+                                        Input {
+                                            label: "Annual Salary",
+                                            placeholder: "75000",
+                                            r#type: "number",
+                                            value: "{job.annual_salary}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "annual_salary", evt.value()),
+                                        }
+                                        Input {
+                                            label: "Hourly Rate",
+                                            placeholder: "25.00",
+                                            r#type: "number",
+                                            value: "{job.hourly_rate}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "hourly_rate", evt.value()),
+                                        }
+                                    }
+                                    if !job.hourly_rate.is_empty() {
+                                        div { class: "md:col-span-2",
                                             Input {
-                                                label: "Years Employed",
-                                                placeholder: "2",
+                                                label: "Hours/Week",
+                                                placeholder: "40",
                                                 r#type: "number",
-                                                value: "{job.years_employed}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "years_employed", evt.value()),
-                                            }
-                                            Input {
-                                                label: "Months Employed",
-                                                placeholder: "6",
-                                                r#type: "number",
-                                                value: "{job.months_employed}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "months_employed", evt.value()),
+                                                value: "{job.hours_per_week}",
+                                                oninput: move |evt: Event<FormData>| update_job(index, "hours_per_week", evt.value()),
                                             }
                                         }
                                     }
 
-                                    // Salary Information
-                                    div { class: "bg-green-50 p-4 rounded-lg",
-                                        h5 { class: "text-md font-semibold text-gray-900 mb-4",
-                                            "Salary Information"
+                                    // Additional Compensation - compact
+                                    div { class: "grid grid-cols-3 gap-3",
+                                        Input {
+                                            label: "Monthly Commission",
+                                            placeholder: "500",
+                                            r#type: "number",
+                                            value: "{job.commission_monthly}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "commission_monthly", evt.value()),
                                         }
-                                        div { class: "grid grid-cols-1 md:grid-cols-2 gap-4",
-                                            Input {
-                                                label: "Annual Base Salary",
-                                                placeholder: "75000",
-                                                r#type: "number",
-                                                value: "{job.annual_salary}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "annual_salary", evt.value()),
-                                            }
-                                            Input {
-                                                label: "Hourly Rate (if applicable)",
-                                                placeholder: "25.00",
-                                                r#type: "number",
-                                                value: "{job.hourly_rate}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "hourly_rate", evt.value()),
-                                            }
+                                        Input {
+                                            label: "Monthly Bonus",
+                                            placeholder: "200",
+                                            r#type: "number",
+                                            value: "{job.bonus_monthly}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "bonus_monthly", evt.value()),
                                         }
-                                        if !job.hourly_rate.is_empty() {
-                                            div { class: "mt-4",
-                                                Input {
-                                                    label: "Hours per Week",
-                                                    placeholder: "40",
-                                                    r#type: "number",
-                                                    value: "{job.hours_per_week}",
-                                                    oninput: move |evt: Event<FormData>| update_job(index, "hours_per_week", evt.value()),
-                                                }
-                                            }
+                                        Input {
+                                            label: "Monthly Overtime",
+                                            placeholder: "150",
+                                            r#type: "number",
+                                            value: "{job.overtime_monthly}",
+                                            oninput: move |evt: Event<FormData>| update_job(index, "overtime_monthly", evt.value()),
                                         }
                                     }
 
-                                    // Additional Compensation
-                                    div { class: "bg-yellow-50 p-4 rounded-lg",
-                                        h5 { class: "text-md font-semibold text-gray-900 mb-4",
-                                            "Additional Compensation"
-                                        }
-                                        div { class: "grid grid-cols-1 md:grid-cols-3 gap-4",
-                                            Input {
-                                                label: "Monthly Commission",
-                                                placeholder: "500.00",
-                                                r#type: "number",
-                                                value: "{job.commission_monthly}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "commission_monthly", evt.value()),
-                                            }
-                                            Input {
-                                                label: "Monthly Bonus",
-                                                placeholder: "200.00",
-                                                r#type: "number",
-                                                value: "{job.bonus_monthly}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "bonus_monthly", evt.value()),
-                                            }
-                                            Input {
-                                                label: "Monthly Overtime",
-                                                placeholder: "150.00",
-                                                r#type: "number",
-                                                value: "{job.overtime_monthly}",
-                                                oninput: move |evt: Event<FormData>| update_job(index, "overtime_monthly", evt.value()),
-                                            }
-                                        }
-                                    }
-
-                                    // Job actions
-                                    div { class: "flex justify-between items-center pt-4 border-t border-gray-200",
+                                    // Job actions - compact
+                                    div { class: "flex justify-between items-center pt-3 border-t border-gray-200",
                                         if w2_jobs().len() > 1 {
                                             button {
-                                                class: "bg-red-500 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors",
+                                                class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded transition-colors",
                                                 onclick: move |_| remove_job(index),
-                                                "Remove Job"
+                                                "Remove"
                                             }
                                         } else {
                                             div {}
                                         }
-                                        div { class: "text-sm text-gray-600",
-                                            "Job #{index + 1} of {w2_jobs().len()}"
+                                        div { class: "text-xs text-gray-500",
+                                            "Job {index + 1}"
                                         }
                                     }
                                 }
@@ -306,36 +281,21 @@ pub fn W2Jobs() -> Element {
                 }
             }
 
-            // Add job button
-            div { class: "text-center",
+            // Compact Add job button
+            div { class: "text-center py-2",
                 button {
-                    class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2 mx-auto",
+                    class: "bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-4 rounded-lg shadow-sm transition-colors flex items-center gap-2 mx-auto",
                     onclick: add_job,
                     span { "➕" }
-                    "Add Another W-2 Job"
+                    "Add Job"
                 }
             }
 
-            // Summary section
-            div { class: "bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl shadow-md border-2 border-indigo-200 mt-8",
-                h4 { class: "text-xl font-bold text-gray-900 mb-4", "Income Summary" }
-                div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
-                    div { class: "bg-white p-4 rounded-lg",
-                        h5 { class: "font-semibold text-gray-900 mb-2",
-                            "Total Monthly Qualifying Income"
-                        }
-                        p { class: "text-3xl font-bold text-green-700",
-                            "${total_monthly_income():.2}"
-                        }
-                        p { class: "text-sm text-gray-600 mt-1",
-                            "Based on Fannie Mae/Freddie Mac guidelines"
-                        }
-                    }
-                    div { class: "bg-white p-4 rounded-lg",
-                        h5 { class: "font-semibold text-gray-900 mb-2", "Annual Income" }
-                        p { class: "text-3xl font-bold text-blue-700", "${total_annual_salary():.2}" }
-                        p { class: "text-sm text-gray-600 mt-1", "Base salary only" }
-                    }
+            // Compact Summary section
+            div { class: "bg-gray-50 p-3 rounded-lg border border-gray-200",
+                div { class: "text-center",
+                    div { class: "text-sm text-gray-600 mb-1", "Total Monthly Qualifying Income" }
+                    div { class: "text-xl font-bold text-green-700", "${total_monthly_income():.0}" }
                 }
             }
         }

@@ -1,9 +1,15 @@
 use sea_orm::{EntityTrait, ActiveModelTrait, Set, QueryFilter, ColumnTrait};
 use shared::models::*;
-use database::entities::*;
+use database::entities::{
+    loan_information, new_loan_details, benefit_to_borrower, other_fees, 
+    income_information, savings_calculations, existing_loans, pricing_options,
+    consumer_debt,
+};
 use uuid::Uuid;
 use rust_decimal::{Decimal, prelude::ToPrimitive};
 use chrono::Utc;
+
+use crate::{parse_credit_type};
 
 use crate::Client;
 
@@ -144,22 +150,24 @@ impl Client {
             existing_loan_active.insert(&*db).await?;
         }
 
-        // Save pricing options
-        for option in &template.pricing.pricing_options {
-            let pricing_option = self.convert_to_pricing_option(option, borrower_id);
-            let pricing_option_active = pricing_options::ActiveModel {
-                id: Set(pricing_option.id),
-                description: Set(pricing_option.description),
-                note_rate: Set(Decimal::from_f64_retain(pricing_option.note_rate).unwrap()),
-                ysp_percentage: Set(Decimal::from_f64_retain(pricing_option.ysp_percentage).unwrap()),
-                ysp_dollar: Set(Decimal::from_f64_retain(pricing_option.ysp_dollar).unwrap()),
-                bd_percentage: Set(Decimal::from_f64_retain(pricing_option.bd_percentage).unwrap()),
-                bd_dollar: Set(Decimal::from_f64_retain(pricing_option.bd_dollar).unwrap()),
-                is_selected: Set(pricing_option.is_selected),
-                created_at: Set(pricing_option.created_at),
-                updated_at: Set(pricing_option.updated_at),
+        // Save consumer debts
+        for debt_item in &template.consumer_debt.consumer_debts {
+            let consumer_debt = self.convert_to_consumer_debt(debt_item, borrower_id);
+            let consumer_debt_active = consumer_debt::ActiveModel {
+                id: Set(consumer_debt.id),
+                borrower_id: Set(borrower_id),
+                debtor_name: Set(consumer_debt.debtor_name),
+                credit_type: Set(consumer_debt.credit_type.to_string()),
+                balance: Set(Decimal::from_f64_retain(consumer_debt.balance).unwrap()),
+                monthly_payment: Set(Decimal::from_f64_retain(consumer_debt.monthly_payment).unwrap()),
+                term_months: Set(consumer_debt.term_months.map(|t| t as i32)),
+                interest_rate: Set(consumer_debt.interest_rate.map(|r| Decimal::from_f64_retain(r).unwrap())),
+                omit_from_dti: Set(consumer_debt.omit_from_dti),
+                pay_off_at_closing: Set(consumer_debt.pay_off_at_closing),
+                created_at: Set(consumer_debt.created_at),
+                updated_at: Set(consumer_debt.updated_at),
             };
-            pricing_option_active.insert(&*db).await?;
+            consumer_debt_active.insert(&*db).await?;
         }
 
         Ok(())
@@ -349,8 +357,30 @@ impl Client {
             pricing_options,
         };
 
-        // For now, return defaults for consumer debt, debt to income, and title fees
-        let consumer_debt = ConsumerDebtData::default();
+        // Get consumer debts
+        let consumer_debt_entities = consumer_debt::Entity::find()
+            .filter(consumer_debt::Column::BorrowerId.eq(borrower_id))
+            .all(&*db)
+            .await?;
+
+        let consumer_debts = consumer_debt_entities.into_iter().map(|model| {
+            ConsumerDebtItemData {
+                debtor_name: model.debtor_name,
+                credit_type: model.credit_type,
+                balance: model.balance.to_f64().unwrap_or(0.0),
+                monthly_payment: model.monthly_payment.to_f64().unwrap_or(0.0),
+                term_months: model.term_months.map(|t| t as u32),
+                interest_rate: model.interest_rate.map(|r| r.to_f64().unwrap_or(0.0)),
+                omit_from_dti: model.omit_from_dti,
+                pay_off_at_closing: model.pay_off_at_closing,
+            }
+        }).collect();
+
+        let consumer_debt = ConsumerDebtData {
+            consumer_debts,
+        };
+
+        // For now, return defaults for debt to income, and title fees
         let debt_to_income = DebtToIncomeData::default();
         let title_fees = TitleFeesData::default();
 
@@ -421,6 +451,11 @@ impl Client {
 
         pricing_options::Entity::delete_many()
             .filter(pricing_options::Column::Id.starts_with(&borrower_prefix))
+            .exec(&*db)
+            .await?;
+
+        consumer_debt::Entity::delete_many()
+            .filter(consumer_debt::Column::BorrowerId.eq(borrower_id))
             .exec(&*db)
             .await?;
 
@@ -566,6 +601,22 @@ impl Client {
             bd_percentage: data.bd_percentage,
             bd_dollar: data.bd_dollar,
             is_selected: data.is_selected,
+            created_at: Utc::now(),
+            updated_at: Utc::now(),
+        }
+    }
+
+    fn convert_to_consumer_debt(&self, data: &ConsumerDebtItemData, borrower_id: i32) -> ConsumerDebt {
+        ConsumerDebt {
+            id: Uuid::new_v4(),
+            debtor_name: data.debtor_name.clone(),
+            credit_type: parse_credit_type(&data.credit_type),
+            balance: data.balance,
+            monthly_payment: data.monthly_payment,
+            term_months: data.term_months,
+            interest_rate: data.interest_rate,
+            omit_from_dti: data.omit_from_dti,
+            pay_off_at_closing: data.pay_off_at_closing,
             created_at: Utc::now(),
             updated_at: Utc::now(),
         }

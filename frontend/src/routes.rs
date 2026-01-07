@@ -2,7 +2,7 @@
 use dioxus::prelude::*;
 
 use crate::views::{ Welcome, Help};
-use crate::views::dashboard::{MainDashboard, Analytics, Reports, Settings};
+use crate::views::dashboard::{MainDashboard, Analytics, Settings};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::views::dashboard::by_id::client::ClientDetails;
@@ -20,8 +20,6 @@ pub enum Route {
         Welcome {},
         #[route("/dashboard/analytics")]
         Analytics {},
-        #[route("/dashboard/reports")]
-        Reports {},
         #[route("/dashboard/settings")]
         Settings {},
         #[route("/:id/client")]

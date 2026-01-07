@@ -48,9 +48,6 @@ pub fn Navbar() -> Element {
                             Link { to: Route::Analytics {}, "Analytics" }
                         }
                         li {
-                            Link { to: Route::Reports {}, "Reports" }
-                        }
-                        li {
                             Link { to: Route::Settings {}, "Settings" }
                         }
                         li {

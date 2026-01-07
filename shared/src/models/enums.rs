@@ -86,6 +86,17 @@ pub enum CreditType {
     Lease,
 }
 
+impl std::fmt::Display for CreditType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CreditType::Installment => write!(f, "Installment"),
+            CreditType::Mortgage => write!(f, "Mortgage"),
+            CreditType::Revolving => write!(f, "Revolving"),
+            CreditType::Lease => write!(f, "Lease"),
+        }
+    }
+}
+
 // Parsing functions for converting strings to enums
 pub fn parse_property_type(s: &str) -> PropertyType {
     match s {

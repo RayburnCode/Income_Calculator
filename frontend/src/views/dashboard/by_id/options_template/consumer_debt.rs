@@ -1,6 +1,5 @@
 use dioxus::prelude::*;
-use shared::models::ConsumerDebt;
-use shared::models::ConsumerDebtData;
+use shared::models::{ConsumerDebt, ConsumerDebtData, ConsumerDebtItemData};
 
 #[component]
 pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<ConsumerDebtData>) -> Element {
@@ -10,21 +9,39 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
     use_effect(move || {
         local_data.set(data.clone());
     });
-    let mut consumer_debts = use_signal(|| vec![
-        ConsumerDebt::default()
-    ]);
 
     let add_debt = move |_| {
-        consumer_debts.with_mut(|debts| {
-            debts.push(ConsumerDebt::default());
+        local_data.with_mut(|data| {
+            data.consumer_debts.push(ConsumerDebtItemData::default());
+            on_change.call(data.clone());
         });
     };
 
     let mut remove_debt = move |index: usize| {
-        consumer_debts.with_mut(|debts| {
-            if debts.len() > 1 {
-                debts.remove(index);
+        local_data.with_mut(|data| {
+            if data.consumer_debts.len() > 1 {
+                data.consumer_debts.remove(index);
             }
+            on_change.call(data.clone());
+        });
+    };
+
+    let mut update_debt = move |index: usize, field: String, value: String| {
+        local_data.with_mut(|data| {
+            if let Some(debt) = data.consumer_debts.get_mut(index) {
+                match field.as_str() {
+                    "debtor_name" => debt.debtor_name = value,
+                    "credit_type" => debt.credit_type = value,
+                    "balance" => debt.balance = value.parse().unwrap_or(0.0),
+                    "monthly_payment" => debt.monthly_payment = value.parse().unwrap_or(0.0),
+                    "term_months" => debt.term_months = value.parse().ok(),
+                    "interest_rate" => debt.interest_rate = value.parse().ok(),
+                    "omit_from_dti" => debt.omit_from_dti = value == "true",
+                    "pay_off_at_closing" => debt.pay_off_at_closing = value == "true",
+                    _ => {}
+                }
+            }
+            on_change.call(data.clone());
         });
     };
 
@@ -65,7 +82,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                         }
                     }
                     tbody {
-                        for (index , debt) in consumer_debts().iter().enumerate() {
+                        for (index , debt) in local_data().consumer_debts.iter().enumerate() {
                             tr {
                                 td { class: "border border-gray-300 px-4 py-2",
                                     input {
@@ -73,12 +90,15 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "debtorName",
                                         value: "{debt.debtor_name}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        oninput: move |e| update_debt(index, "debtor_name".to_string(), e.value()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2",
                                     select {
                                         name: "creditType",
+                                        value: "{debt.credit_type}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        onchange: move |e| update_debt(index, "credit_type".to_string(), e.value()),
                                         option { value: "", "" }
                                         option { value: "Installment", "Installment" }
                                         option { value: "Mortgage", "Mortgage" }
@@ -92,6 +112,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "balanceTotal",
                                         value: "{debt.balance}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        oninput: move |e| update_debt(index, "balance".to_string(), e.value()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2",
@@ -100,6 +121,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "monthlyDebtPayment",
                                         value: "{debt.monthly_payment}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        oninput: move |e| update_debt(index, "monthly_payment".to_string(), e.value()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2",
@@ -108,6 +130,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "termDebt",
                                         value: "{debt.term_months.unwrap_or(0)}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        oninput: move |e| update_debt(index, "term_months".to_string(), e.value()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2",
@@ -116,6 +139,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "rateDebt",
                                         value: "{debt.interest_rate.unwrap_or(0.0)}",
                                         class: "w-full px-2 py-1 border rounded",
+                                        oninput: move |e| update_debt(index, "interest_rate".to_string(), e.value()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2 text-center",
@@ -124,6 +148,7 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "omitDebt",
                                         checked: debt.omit_from_dti,
                                         class: "w-4 h-4",
+                                        onchange: move |e| update_debt(index, "omit_from_dti".to_string(), e.checked().to_string()),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2 text-center",
@@ -132,6 +157,11 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         name: "paydebt",
                                         checked: debt.pay_off_at_closing,
                                         class: "w-4 h-4",
+                                        onchange: move |e| update_debt(
+                                            index,
+                                            "pay_off_at_closing".to_string(),
+                                            e.checked().to_string(),
+                                        ),
                                     }
                                 }
                                 td { class: "border border-gray-300 px-4 py-2 text-center",

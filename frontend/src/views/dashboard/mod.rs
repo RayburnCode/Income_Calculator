@@ -3,9 +3,6 @@ pub mod by_id;
 pub mod analytics;
 pub use analytics::Analytics;
 
-pub mod reports;
-pub use reports::Reports;
-
 pub mod settings;
 pub use settings::Settings;
 

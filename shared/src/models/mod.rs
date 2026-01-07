@@ -16,5 +16,8 @@ pub use financial_models::*;
 pub mod frontend_models;
 pub use frontend_models::*;
 
+pub mod settings;
+pub use settings::*;
+
 pub mod main;
 pub use main::*;

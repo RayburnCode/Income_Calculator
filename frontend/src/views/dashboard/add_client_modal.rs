@@ -11,6 +11,19 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
     let mut email = use_signal(|| String::new());
     let mut phone = use_signal(|| String::new());
 
+    // Function to format phone number as (111)111-1111
+    let format_phone_number = |input: &str| -> String {
+        let digits: String = input.chars().filter(|c| c.is_ascii_digit()).collect();
+        let len = digits.len();
+
+        match len {
+            0 => String::new(),
+            1..=3 => format!("({}", digits),
+            4..=6 => format!("({}){}", &digits[0..3], &digits[3..]),
+            _ => format!("({}){}-{}", &digits[0..3], &digits[3..6], &digits[6..len.min(10)]),
+        }
+    };
+
     let open_modal = move |_| is_open.set(true);
     let close_modal = move |_| {
         is_open.set(false);
@@ -27,7 +40,9 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
         let last = last_name().clone();
         let full_name = format!("{} {}", first, last);
         let email_val = email().clone();
-        let phone_val = phone().clone();
+        // Get raw digits for storage (remove formatting)
+        let phone_digits: String = phone().chars().filter(|c| c.is_ascii_digit()).collect();
+        let phone_val = phone_digits;
 
         let borrower = Borrower {
             id: 0, // Will be set by DB
@@ -73,7 +88,7 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
         if is_open() {
             div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4",
                 div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto",
-                    h2 { class: "text-lg sm:text-xl font-bold mb-4", "Add New Client" }
+                    h2 { class: "text-lg text-black sm:text-xl font-bold mb-4", "Add New Client" }
                     form { onsubmit: submit,
                         div { class: "mb-4",
                             label { class: "block text-gray-700 text-sm font-bold mb-2",
@@ -119,20 +134,25 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
                                 class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline",
                                 r#type: "tel",
                                 value: phone(),
-                                oninput: move |e| phone.set(e.value().clone()),
+                                oninput: move |e| {
+                                    let formatted = format_phone_number(&e.value());
+                                    phone.set(formatted);
+                                },
+                                placeholder: "(123)456-7890",
                                 required: true,
                             }
                         }
                         div { class: "flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3",
-                            button {
-                                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-h-[44px]",
-                                r#type: "submit",
-                                "Add Client"
-                            }
+
                             button {
                                 class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-h-[44px]",
                                 onclick: close_modal,
                                 "Cancel"
+                            }
+                            button {
+                                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline min-h-[44px]",
+                                r#type: "submit",
+                                "Add Client"
                             }
                         }
                     }

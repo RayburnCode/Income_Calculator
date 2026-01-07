@@ -5,6 +5,7 @@ mod m20260106_000000_create_mortgage_refinance_tables;
 mod m20260106_000001_create_client_info_tables;
 mod m20260106_000002_create_income_worksheet_tables;
 mod m20260106_000003_create_options_template_tables;
+mod m20260106_000004_create_settings_table;
 
 pub struct Migrator;
 
@@ -16,6 +17,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260106_000001_create_client_info_tables::Migration),
             Box::new(m20260106_000002_create_income_worksheet_tables::Migration),
             Box::new(m20260106_000003_create_options_template_tables::Migration),
+            Box::new(m20260106_000004_create_settings_table::Migration),
         ]
     }
 } 

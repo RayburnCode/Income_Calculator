@@ -17,9 +17,11 @@ pub fn OptionsTemplate(id: i32) -> Element {
     let save_timeout = use_signal(|| None::<i32>);
 
     // Function to trigger auto-save
+    let client_for_save = client.clone();
+    let save_timeout_for_save = save_timeout.clone();
     let save_data = move |data: OptionsTemplateData| {
         // Cancel any existing timeout
-        if let Some(_timeout_id) = save_timeout() {
+        if let Some(_timeout_id) = save_timeout_for_save() {
             // In a real implementation, you'd cancel the timeout
             // For now, we'll just update the signal
         }
@@ -27,24 +29,35 @@ pub fn OptionsTemplate(id: i32) -> Element {
         // Set new timeout for auto-save (e.g., save after 2 seconds of inactivity)
         // In a real implementation, you'd use a proper timeout mechanism
         // For now, we'll save immediately for demonstration
-        save_to_backend(client.clone(), data, id);
+        save_to_backend(client_for_save.clone(), data, id);
     };
+
+    // Load data on component mount
+    use_effect(move || {
+        let client_clone = client.clone();
+        spawn(async move {
+            match client_clone.get_options_template(id).await {
+                Ok(Some(data)) => {
+                    template_data.set(data);
+                }
+                Ok(None) => {
+                    // No existing template, use defaults
+                    println!("No existing options template found for borrower {}", id);
+                }
+                Err(e) => {
+                    println!("Failed to load options template: {:?}", e);
+                }
+            }
+        });
+    });
 
     // Function to save data to backend
     fn save_to_backend(client: Client, data: OptionsTemplateData, borrower_id: i32) {
         spawn(async move {
-            // Convert frontend data to shared models
-            let loan_info = convert_to_loan_information(&data.loan_information);
-            let _new_loan = convert_to_new_loan_details(&data.new_loan);
-            let _savings = convert_to_savings_calculation(&data.savings);
-            let _other_fees = convert_to_other_fees(&data.other_fees);
-            let _income_info = convert_to_income_information(&data.income_information);
-
-            // For now, just save the loan information as an example
-            // TODO: Save the full options template
-            match client.save_loan_information(loan_info).await {
-                Ok(_) => println!("Successfully saved loan information for borrower {}", borrower_id),
-                Err(e) => println!("Failed to save loan information: {:?}", e),
+            // Save the full options template
+            match client.save_options_template(data, borrower_id).await {
+                Ok(_) => println!("Successfully saved options template for borrower {}", borrower_id),
+                Err(e) => println!("Failed to save options template: {:?}", e),
             }
         });
     }
@@ -138,6 +151,7 @@ pub fn OptionsTemplate(id: i32) -> Element {
 
             PricingSection {
                 data: template_data().pricing.clone(),
+                total_loan_amount: template_data().new_loan.total_loan_amount,
                 on_change: {
                     let save_data_clone = save_data.clone();
                     move |new_data: PricingData| {

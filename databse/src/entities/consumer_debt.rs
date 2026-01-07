@@ -13,6 +13,7 @@ pub use shared::models::{
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: Uuid,
+    pub borrower_id: i32,
     pub debtor_name: String,
     pub credit_type: String,
     #[sea_orm(column_type = "Decimal(Some((10, 2)))")]

@@ -13,3 +13,4 @@ pub mod benefit_to_borrower;
 pub mod other_fees;
 pub mod pricing_options;
 pub mod savings_calculations;
+pub mod settings;

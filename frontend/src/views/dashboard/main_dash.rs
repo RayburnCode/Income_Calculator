@@ -21,7 +21,7 @@ impl std::fmt::Display for Client {
 pub fn MainDashboard() -> Element {
     // Get the database client from context or create it
     let client_resource = use_resource(|| async {
-        client::Client::new().await
+        repository::Repository::new().await
     });
 
     // State for clients - will be loaded from database

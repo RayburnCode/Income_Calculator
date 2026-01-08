@@ -17,7 +17,7 @@ struct AnalyticsData {
 /// Analytics page component showcasing various analytics cards
 #[component]
 pub fn Analytics() -> Element {
-    let client = use_context::<client::Client>();
+    let client = use_context::<repository::Repository>();
     let mut analytics_data = use_signal(|| None::<AnalyticsData>);
     let mut is_loading = use_signal(|| true);
     let mut error_message = use_signal(|| None::<String>);
@@ -161,7 +161,7 @@ pub fn Analytics() -> Element {
 }
 
 /// Load analytics data from the database
-async fn load_analytics_data(client: &client::Client) -> Result<AnalyticsData, Box<dyn std::error::Error>> {
+async fn load_analytics_data(client: &repository::Repository) -> Result<AnalyticsData, Box<dyn std::error::Error>> {
     // Get total clients count
     let total_clients = client.get_total_clients_count().await? as usize;
 

@@ -3,7 +3,7 @@ use shared::models::AppSettings;
 
 #[component]
 pub fn Settings() -> Element {
-    let client = use_context::<client::Client>();
+    let client = use_context::<repository::Repository>();
     let client_clone = client.clone();
     let mut settings = use_signal(|| AppSettings::default());
     let mut is_loading = use_signal(|| true);
@@ -89,7 +89,7 @@ pub fn Settings() -> Element {
                                         class: "border border-gray-300 rounded-md px-3 py-2",
                                         value: "{settings().theme}",
                                         onchange: move |e| {
-                                            let client = use_context::<client::Client>();
+                                            let client = use_context::<repository::Repository>();
                                             settings.write().theme = e.value().clone();
                                             spawn(async move {
                                                 let current_settings = settings();
@@ -117,7 +117,7 @@ pub fn Settings() -> Element {
                                         class: "border border-gray-300 rounded-md px-3 py-2",
                                         value: "{settings().currency}",
                                         onchange: move |e| {
-                                            let client = use_context::<client::Client>();
+                                            let client = use_context::<repository::Repository>();
                                             settings.write().currency = e.value().clone();
                                             spawn(async move {
                                                 let current_settings = settings();
@@ -167,7 +167,7 @@ pub fn Settings() -> Element {
                                         r#type: "checkbox",
                                         checked: "{settings().auto_backup}",
                                         onchange: move |e| {
-                                            let client = use_context::<client::Client>();
+                                            let client = use_context::<repository::Repository>();
                                             settings.write().auto_backup = e.checked();
                                             spawn(async move {
                                                 let current_settings = settings();
@@ -216,7 +216,7 @@ pub fn Settings() -> Element {
                                         value: "{settings().default_loan_term}",
                                         onchange: move |e| {
                                             if let Ok(term) = e.value().parse::<i32>() {
-                                                let client = use_context::<client::Client>();
+                                                let client = use_context::<repository::Repository>();
                                                 settings.write().default_loan_term = term;
                                                 spawn(async move {
                                                     let current_settings = settings();
@@ -247,7 +247,7 @@ pub fn Settings() -> Element {
                                         value: "{settings().dti_threshold}",
                                         onchange: move |e| {
                                             if let Ok(threshold) = e.value().parse::<f64>() {
-                                                let client = use_context::<client::Client>();
+                                                let client = use_context::<repository::Repository>();
                                                 settings.write().dti_threshold = threshold;
                                                 spawn(async move {
                                                     let current_settings = settings();

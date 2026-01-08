@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use crate::views::dashboard::by_id::options_template::*;
 use shared::models::*;
-use client::Client;
+use repository::Repository;
 use chrono::Utc;
 use uuid::Uuid;
 

@@ -10,7 +10,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
 
     // Get the database client from context or create it
     let client_resource = use_resource(|| async {
-        client::Client::new().await
+        repository::Repository::new().await
     });
 
     // Load W2 jobs data when component mounts

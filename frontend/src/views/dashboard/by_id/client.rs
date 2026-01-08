@@ -12,7 +12,7 @@ pub fn ClientDetails(id: i32) -> Element {
 
     // Get the database client from context or create it
     let client_resource = use_resource(|| async {
-        client::Client::new().await
+        repository::Repository::new().await
     });
 
     // State for borrower data

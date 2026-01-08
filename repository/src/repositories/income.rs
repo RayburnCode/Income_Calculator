@@ -1,15 +1,13 @@
-use sea_orm::{EntityTrait, ActiveModelTrait, Set};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait};
 use shared::models::*;
 use database::entities::*;
 use uuid::Uuid;
 use rust_decimal::{Decimal, prelude::ToPrimitive};
 
-use crate::Client;
+use crate::converters::*;
 
-impl Client {
-    // Income Information CRUD operations
-    pub async fn save_income_information(&self, income: IncomeInformation) -> Result<(), Box<dyn std::error::Error>> {
-        let db = self.db.lock().await;
+// Income Information CRUD operations
+pub async fn save_income_information(db: &DatabaseConnection, income: IncomeInformation) -> Result<(), Box<dyn std::error::Error>> {
         let active_model = income_information::ActiveModel {
             id: Set(income.id),
             borrower_monthly_income: Set(Decimal::from_f64_retain(income.borrower_monthly_income).unwrap()),
@@ -78,4 +76,3 @@ impl Client {
         income_information::Entity::delete_by_id(id).exec(&*db).await?;
         Ok(())
     }
-}

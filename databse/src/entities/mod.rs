@@ -2,16 +2,17 @@
 
 pub mod prelude;
 
-pub mod borrower;
-pub mod consumer_debt;
-pub mod existing_loans;
-pub mod income_information;
-pub mod loan_information;
-pub mod mortgage_refinance;
-pub mod new_loan_details;
-pub mod benefit_to_borrower;
-pub mod other_fees;
-pub mod pricing_options;
-pub mod savings_calculations;
+// Organized entity modules
+pub mod client;
+pub mod income;
+pub mod loans;
+pub mod refinance;
+pub mod calculations;
 pub mod settings;
-pub mod w2_jobs;
+
+// Re-export entities at the top level for backward compatibility
+pub use client::borrower;
+pub use income::{consumer_debt, income_information, w2_jobs};
+pub use loans::{existing_loans, loan_information, new_loan_details};
+pub use refinance::{mortgage_refinance, other_fees};
+pub use calculations::{benefit_to_borrower, pricing_options, savings_calculations};

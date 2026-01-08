@@ -6,7 +6,7 @@ members = [
 	"databse",
 	"shared",
 	"frontend",
-	"client",
+	"repository",
 ]
 
 [profile]

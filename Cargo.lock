@@ -611,19 +611,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1d728cc89cf3aee9ff92b05e62b19ee65a02b5702cff7d5a377e32c6ae29d8d"
 
 [[package]]
-name = "client"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "database",
- "rust_decimal",
- "sea-orm",
- "shared",
- "tokio",
- "uuid",
-]
-
-[[package]]
 name = "cocoa"
 version = "0.26.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2007,9 +1994,9 @@ name = "frontend"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "client",
  "dioxus",
  "log",
+ "repository",
  "serde",
  "shared",
  "tokio",
@@ -4517,6 +4504,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71fe3824f5629716b1589be05dacd749f6aa084c87e00e016714a8cdfccc997c"
 dependencies = [
  "bytecheck",
+]
+
+[[package]]
+name = "repository"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "database",
+ "rust_decimal",
+ "sea-orm",
+ "shared",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]

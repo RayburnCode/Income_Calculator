@@ -22,76 +22,76 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::loan_information::Entity",
+        belongs_to = "crate::entities::loans::loan_information::Entity",
         from = "Column::LoanInformationId",
-        to = "super::loan_information::Column::Id"
+        to = "crate::entities::loans::loan_information::Column::Id"
     )]
     LoanInformation,
     #[sea_orm(
-        belongs_to = "super::new_loan_details::Entity",
+        belongs_to = "crate::entities::loans::new_loan_details::Entity",
         from = "Column::NewLoanDetailsId",
-        to = "super::new_loan_details::Column::Id"
+        to = "crate::entities::loans::new_loan_details::Column::Id"
     )]
     NewLoanDetails,
     #[sea_orm(
-        belongs_to = "super::benefit_to_borrower::Entity",
+        belongs_to = "crate::entities::calculations::benefit_to_borrower::Entity",
         from = "Column::BenefitToBorrowerId",
-        to = "super::benefit_to_borrower::Column::Id"
+        to = "crate::entities::calculations::benefit_to_borrower::Column::Id"
     )]
     BenefitToBorrower,
     #[sea_orm(
-        belongs_to = "super::other_fees::Entity",
+        belongs_to = "crate::entities::refinance::other_fees::Entity",
         from = "Column::OtherFeesId",
-        to = "super::other_fees::Column::Id"
+        to = "crate::entities::refinance::other_fees::Column::Id"
     )]
     OtherFees,
     #[sea_orm(
-        belongs_to = "super::income_information::Entity",
+        belongs_to = "crate::entities::income::income_information::Entity",
         from = "Column::IncomeInformationId",
-        to = "super::income_information::Column::Id"
+        to = "crate::entities::income::income_information::Column::Id"
     )]
     IncomeInformation,
     #[sea_orm(
-        belongs_to = "super::savings_calculations::Entity",
+        belongs_to = "crate::entities::calculations::savings_calculations::Entity",
         from = "Column::SavingsCalculationId",
-        to = "super::savings_calculations::Column::Id"
+        to = "crate::entities::calculations::savings_calculations::Column::Id"
     )]
     SavingsCalculation,
     // Note: Many-to-many relationships with existing_loans, pricing_options, and consumer_debt
     // are handled through junction tables and require custom implementation
 }
 
-impl Related<super::loan_information::Entity> for Entity {
+impl Related<crate::entities::loans::loan_information::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::LoanInformation.def()
     }
 }
 
-impl Related<super::new_loan_details::Entity> for Entity {
+impl Related<crate::entities::loans::new_loan_details::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::NewLoanDetails.def()
     }
 }
 
-impl Related<super::benefit_to_borrower::Entity> for Entity {
+impl Related<crate::entities::calculations::benefit_to_borrower::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::BenefitToBorrower.def()
     }
 }
 
-impl Related<super::other_fees::Entity> for Entity {
+impl Related<crate::entities::refinance::other_fees::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::OtherFees.def()
     }
 }
 
-impl Related<super::income_information::Entity> for Entity {
+impl Related<crate::entities::income::income_information::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::IncomeInformation.def()
     }
 }
 
-impl Related<super::savings_calculations::Entity> for Entity {
+impl Related<crate::entities::calculations::savings_calculations::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::SavingsCalculation.def()
     }

@@ -29,14 +29,14 @@ pub struct Model {
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::borrower::Entity",
+        belongs_to = "crate::entities::client::borrower::Entity",
         from = "Column::BorrowerId",
-        to = "super::borrower::Column::Id"
+        to = "crate::entities::client::borrower::Column::Id"
     )]
     Borrower,
 }
 
-impl Related<super::borrower::Entity> for Entity {
+impl Related<crate::entities::client::borrower::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Borrower.def()
     }

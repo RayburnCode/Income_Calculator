@@ -4,7 +4,7 @@ use shared::models::{Borrower, Status};
 
 #[component]
 pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
-    let client = use_context::<client::Client>();
+    let client = use_context::<repository::Repository>();
     let mut is_open = use_signal(|| false);
     let mut first_name = use_signal(|| String::new());
     let mut last_name = use_signal(|| String::new());

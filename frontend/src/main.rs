@@ -15,7 +15,7 @@ const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 #[component]
 fn App() -> Element {
     let client_result = use_resource(|| async {
-        client::Client::new().await
+        repository::Repository::new().await
     });
 
     match &*client_result.value().read() {

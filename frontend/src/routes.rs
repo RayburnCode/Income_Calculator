@@ -5,7 +5,7 @@ use crate::views::{ Welcome, Help};
 use crate::views::dashboard::{MainDashboard, Analytics, Settings};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
-use crate::views::dashboard::by_id::client::ClientDetails;
+use crate::views::dashboard::by_id::repository::RepositoryDetails;
 use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]

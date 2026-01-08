@@ -17,7 +17,7 @@ The Income Calculator is a Dioxus-based desktop application that uses SQLite for
 
 ```
 Income_Calculator/
-├── databse/           # Database layer (SeaORM + SQLite)
+├── database/           # Database layer (SeaORM + SQLite)
 ├── client/            # Business logic
 ├── shared/            # Shared models and types
 ├── frontend/          # Dioxus desktop application
@@ -37,7 +37,7 @@ For desktop applications, we use SQLite as the database engine because:
 
 ### Database Configuration
 
-The database connection is configured in `databse/.env`:
+The database connection is configured in `database/.env`:
 
 ```env
 # Database configuration for production/distribution
@@ -174,7 +174,7 @@ Frontend (Dioxus) → Client Service → Database Layer → SQLite
 
 ### Database Service Implementation
 
-The database connection is managed in `databse/src/lib.rs`:
+The database connection is managed in `database/src/lib.rs`:
 
 ```rust
 use sea_orm::{Database, DatabaseConnection, DbErr};

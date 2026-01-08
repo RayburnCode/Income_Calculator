@@ -49,9 +49,8 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(
                         ColumnDef::new(Alias::new("id"))
-                            .integer()
+                            .uuid()
                             .not_null()
-                            .auto_increment()
                             .primary_key(),
                     )
                     .col(ColumnDef::new(Alias::new("borrower_id")).integer().not_null())
@@ -67,6 +66,8 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Alias::new("other_income")).decimal_len(15, 2).null())
                     .col(ColumnDef::new(Alias::new("borrower_monthly_income")).decimal_len(15, 2).null())
                     .col(ColumnDef::new(Alias::new("coborrower_monthly_income")).decimal_len(15, 2).null())
+                    .col(ColumnDef::new(Alias::new("front_end_ratio")).decimal_len(5, 2).null())
+                    .col(ColumnDef::new(Alias::new("back_end_ratio")).decimal_len(5, 2).null())
                     .col(ColumnDef::new(Alias::new("created_at")).timestamp_with_time_zone().not_null())
                     .col(ColumnDef::new(Alias::new("updated_at")).timestamp_with_time_zone().not_null())
                     .foreign_key(

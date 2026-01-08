@@ -3,12 +3,12 @@
 [workspace]
 resolver = "2"
 members = [
-	"databse",
+	"database",
 	"shared",
 	"frontend",
 	"repository",
-]
-
+] 
+ 
 [profile]
 
 [profile.wasm-dev]

@@ -45,7 +45,7 @@ pub fn MainDashboard() -> Element {
                                 Client {
                                     id: (i as i32 + 1),
                                     name: b.name,
-                                    email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
+                                    email: b.email.unwrap_or_else(|| "N/A".to_string()),
                                     status: b.status.map(|s| s.to_string()).unwrap_or("Active".to_string()),
                                 }
                             }).collect();
@@ -82,7 +82,7 @@ pub fn MainDashboard() -> Element {
                                 Client {
                                     id: (i as i32 + 1),
                                     name: b.name,
-                                    email: b.employer_name.unwrap_or_else(|| "N/A".to_string()),
+                                    email: b.email.unwrap_or_else(|| "N/A".to_string()),
                                     status: b.status.map(|s| s.to_string()).unwrap_or("Active".to_string()),
                                 }
                             }).collect();

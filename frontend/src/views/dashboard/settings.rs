@@ -86,7 +86,7 @@ pub fn Settings() -> Element {
                                         }
                                     }
                                     select {
-                                        class: "border border-gray-300 rounded-md px-3 py-2",
+                                        class: "border border-gray-300 rounded-md px-3 py-2 text-gray-900",
                                         value: "{settings().theme}",
                                         onchange: move |e| {
                                             let client = use_context::<repository::Repository>();
@@ -114,7 +114,7 @@ pub fn Settings() -> Element {
                                         }
                                     }
                                     select {
-                                        class: "border border-gray-300 rounded-md px-3 py-2",
+                                        class: "border border-gray-300 rounded-md px-3 py-2 text-gray-900",
                                         value: "{settings().currency}",
                                         onchange: move |e| {
                                             let client = use_context::<repository::Repository>();
@@ -212,7 +212,7 @@ pub fn Settings() -> Element {
                                         }
                                     }
                                     select {
-                                        class: "border border-gray-300 rounded-md px-3 py-2",
+                                        class: "border border-gray-300 rounded-md px-3 py-2 text-gray-900",
                                         value: "{settings().default_loan_term}",
                                         onchange: move |e| {
                                             if let Ok(term) = e.value().parse::<i32>() {
@@ -258,7 +258,7 @@ pub fn Settings() -> Element {
                                                 });
                                             }
                                         },
-                                        class: "border border-gray-300 rounded-md px-3 py-2 w-20",
+                                        class: "border border-gray-300 rounded-md px-3 py-2 w-20 text-gray-900",
                                     }
                                     span { class: "text-sm text-gray-500 ml-2", "%" }
                                 }

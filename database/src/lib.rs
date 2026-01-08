@@ -55,22 +55,33 @@ pub async fn establish_connection() -> Result<DatabaseConnection, DatabaseError>
     Ok(conn)
 }
 
-/// Get the database URL - for SQLite, we use file-based
+/// Get the database URL - for SQLite, we use file-based storage in the user's app data directory
 pub fn get_database_url() -> Result<String, DatabaseError> {
-    // Check if DATABASE_URL environment variable is set
+    // Check if DATABASE_URL environment variable is set (useful for development/testing)
     if let Ok(url) = std::env::var("DATABASE_URL") {
         return Ok(url);
     }
 
-    // Use absolute path to the database in the project root
-    let db_path = std::path::PathBuf::from("/Users/DylanRayburn/Documents/GitHub/Income_Calculator/income_calculator.db");
+    // Use platform-specific application data directory
+    // macOS: ~/Library/Application Support/Income Calculator/
+    // Windows: C:\Users\<Username>\AppData\Roaming\Income Calculator\
+    // Linux: ~/.local/share/income-calculator/
+    let proj_dirs = directories::ProjectDirs::from("", "", "Income Calculator")
+        .ok_or_else(|| DatabaseError::PathError(
+            "Could not determine application data directory. This might be a system configuration issue.".to_string()
+        ))?;
     
-    // Ensure the parent directory exists
-    if let Some(parent) = db_path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| DatabaseError::PathError(format!("Failed to create database directory '{}': {}", parent.display(), e)))?;
-    }
-
+    let data_dir = proj_dirs.data_dir();
+    
+    // Ensure the directory exists
+    std::fs::create_dir_all(data_dir)
+        .map_err(|e| DatabaseError::PathError(format!(
+            "Failed to create database directory '{}': {}", 
+            data_dir.display(), e
+        )))?;
+    
+    let db_path = data_dir.join("income_calculator.db");
     let url = format!("sqlite://{}?mode=rwc", db_path.display());
+    
     Ok(url)
 }

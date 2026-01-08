@@ -1770,6 +1770,18 @@
     }
   }
 }
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+:root {
+  --font-display: "Poppins", "system-ui", "sans-serif";
+  --color-avocado-100: oklch(0.99 0 0);
+  --color-avocado-200: oklch(0.98 0.04 113.22);
+  --color-avocado-300: oklch(0.94 0.11 115.03);
+  --color-avocado-400: oklch(0.92 0.19 114.08);
+  --color-avocado-500: oklch(0.84 0.18 117.33);
+  --color-avocado-600: oklch(0.53 0.12 118.34);
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+}
 input[type="number"] {
   -moz-appearance: textfield;
   -webkit-appearance: none;
@@ -1778,6 +1790,16 @@ input[type="number"] {
 input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+input, select, textarea {
+  color: #111827;
+}
+option {
+  color: #111827;
+  background-color: white;
+}
+html, body {
+  font-family: var(--font-display);
 }
 @property --tw-space-y-reverse {
   syntax: "*";

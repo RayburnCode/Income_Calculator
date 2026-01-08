@@ -2,13 +2,11 @@ use dioxus::prelude::*;
 use crate::views::dashboard::by_id::options_template::*;
 use shared::models::*;
 use repository::Repository;
-use chrono::Utc;
-use uuid::Uuid;
 
 #[component]
 pub fn OptionsTemplate(id: i32) -> Element {
     // Get client from context
-    let client = use_context::<Client>();
+    let client = use_context::<Repository>();
 
     // Main state for all options template data
     let mut template_data = use_signal(|| OptionsTemplateData::default());
@@ -78,7 +76,7 @@ pub fn OptionsTemplate(id: i32) -> Element {
     });
 
     // Function to save data to backend
-    fn save_to_backend(client: Client, data: OptionsTemplateData, borrower_id: i32) {
+    fn save_to_backend(client: Repository, data: OptionsTemplateData, borrower_id: i32) {
         spawn(async move {
             // Save the full options template
             match client.save_options_template(data, borrower_id).await {
@@ -239,118 +237,5 @@ pub fn OptionsTemplate(id: i32) -> Element {
                 },
             }
         }
-    }
-}
-
-// Conversion functions from frontend data to shared models
-fn convert_to_loan_information(data: &LoanInformationData) -> LoanInformation {
-    use shared::models::enums::*;
-
-    let property_type = match data.property_type.as_str() {
-        "sfr" => PropertyType::SFR,
-        "manufactured" => PropertyType::Manufactured,
-        "multiUnit" => PropertyType::MultiUnit,
-        "condo" => PropertyType::Condo,
-        "pud" => PropertyType::PUD,
-        _ => PropertyType::SFR,
-    };
-
-    let occupancy_type = match data.occupancy.as_str() {
-        "primary" => OccupancyType::Primary,
-        "secondary" => OccupancyType::Secondary,
-        "investment" => OccupancyType::Investment,
-        _ => OccupancyType::Primary,
-    };
-
-    let loan_type = match data.loan_type.as_str() {
-        "cnv" => LoanType::CNV,
-        "fha" => LoanType::FHA,
-        "va" => LoanType::VA,
-        "nonQM" => LoanType::NonQM,
-        _ => LoanType::CNV,
-    };
-
-    let loan_purpose = match data.purpose.as_str() {
-        "purchase" => LoanPurpose::Purchase,
-        "cashOut" => LoanPurpose::CashOut,
-        "refinance" => LoanPurpose::Refinance,
-        "irrrl" => LoanPurpose::IRRRLStreamline,
-        _ => LoanPurpose::Refinance,
-    };
-
-    LoanInformation {
-        id: Uuid::new_v4(),
-        property_type,
-        occupancy_type,
-        loan_type,
-        new_term_months: data.term_months,
-        loan_purpose,
-        appraisal_waiver: data.appraisal_waiver,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
-    }
-}
-
-fn convert_to_new_loan_details(data: &NewLoanData) -> NewLoanDetails {
-    NewLoanDetails {
-        id: Uuid::new_v4(),
-        market_value: data.market_value,
-        sales_price: data.sales_price,
-        down_payment: data.down_payment,
-        base_loan_amount: data.base_loan_amount,
-        subordinated_amount: data.subordinated_amount,
-        ff_umip_percentage: 0.0, // TODO: Add this field to frontend
-        umip_refund: 0.0, // TODO: Add this field to frontend
-        total_loan_amount: data.total_loan_amount,
-        note_rate: data.note_rate,
-        appraisal_waiver: data.appraisal_waiver,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
-    }
-}
-
-fn convert_to_savings_calculation(data: &SavingsData) -> SavingsCalculation {
-    SavingsCalculation {
-        id: Uuid::new_v4(),
-        monthly_savings: data.monthly_savings,
-        annual_savings: data.annual_savings,
-        debt_paid: data.debt_paid,
-        payment_reduction: data.payment_reduction,
-        recoup_period_months: data.recoup_period_months,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
-    }
-}
-
-fn convert_to_other_fees(data: &OtherFeesData) -> OtherFees {
-    OtherFees {
-        id: Uuid::new_v4(),
-        third_party_fees: data.third_party_fees,
-        appraisal_fee: data.appraisal_fee,
-        investor_fee: data.investor_fee,
-        padded_taxes: data.padded_taxes,
-        padded_taxes_months: data.padded_taxes_months,
-        padded_insurance: data.padded_insurance,
-        padded_insurance_months: data.padded_insurance_months,
-        lender_credit: data.lender_credit,
-        admin_fees: data.admin_fees,
-        tax_service: data.tax_service,
-        flood_certification: data.flood_certification,
-        total_closing_costs: data.total_closing_costs,
-        cash_out_amount: data.cash_out_amount,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
-    }
-}
-
-fn convert_to_income_information(data: &IncomeInformationData) -> IncomeInformation {
-    IncomeInformation {
-        id: Uuid::new_v4(),
-        borrower_monthly_income: data.borrower_monthly_income,
-        coborrower_monthly_income: data.coborrower_monthly_income,
-        front_end_ratio: data.front_end_ratio,
-        back_end_ratio: data.back_end_ratio,
-        created_at: Utc::now(),
-        updated_at: Utc::now(),
     }
 }

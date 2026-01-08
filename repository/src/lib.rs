@@ -151,9 +151,9 @@ impl Repository {
         options_template::save_options_template(&db, template, borrower_id).await
     }
 
-    pub async fn get_options_template(&self, id: uuid::Uuid) -> Result<Option<shared::models::OptionsTemplateData>, Box<dyn std::error::Error>> {
+    pub async fn get_options_template(&self, borrower_id: i32) -> Result<Option<shared::models::OptionsTemplateData>, Box<dyn std::error::Error>> {
         let db = self.db.lock().await;
-        options_template::get_options_template(&db, id).await
+        options_template::get_options_template(&db, borrower_id).await
     }
 
     pub async fn get_all_mortgage_refinance_options(&self) -> Result<Vec<shared::models::MortgageRefinanceOptions>, Box<dyn std::error::Error>> {

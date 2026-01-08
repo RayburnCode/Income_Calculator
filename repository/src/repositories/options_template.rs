@@ -1,4 +1,4 @@
-use sea_orm::{EntityTrait, ActiveModelTrait, Set, QueryFilter, ColumnTrait};
+use sea_orm::{EntityTrait, ActiveModelTrait, Set, QueryFilter, ColumnTrait, DatabaseConnection};
 use shared::models::*;
 use database::entities::{
     loan_information, new_loan_details, benefit_to_borrower, other_fees, 
@@ -9,19 +9,15 @@ use uuid::Uuid;
 use rust_decimal::{Decimal, prelude::ToPrimitive};
 use chrono::Utc;
 
-use crate::{parse_credit_type};
+use crate::{parse_credit_type, parse_property_type, parse_occupancy_type, parse_loan_type, parse_loan_purpose};
 
-use crate::Client;
+// Options Template CRUD operations - composite operations that handle all related data
 
-impl Client {
-    // Options Template CRUD operations - composite operations that handle all related data
-
-    /// Save a complete options template for a borrower
-    pub async fn save_options_template(&self, template: OptionsTemplateData, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
-        let db = self.db.lock().await;
+/// Save a complete options template for a borrower
+pub async fn save_options_template(db: &DatabaseConnection, template: OptionsTemplateData, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
 
         // Convert and save loan information
-        let loan_info = self.convert_to_loan_information(&template.loan_information, borrower_id);
+        let loan_info = convert_to_loan_information(&template.loan_information, borrower_id);
         let loan_info_active = loan_information::ActiveModel {
             id: Set(loan_info.id),
             property_type: Set(loan_info.property_type.to_string()),
@@ -31,12 +27,12 @@ impl Client {
             loan_purpose: Set(loan_info.loan_purpose.to_string()),
             appraisal_waiver: Set(loan_info.appraisal_waiver),
             created_at: Set(loan_info.created_at),
-            updated_at: Set(loan_info.updated_at),
+            updated_at: Set(Utc::now()),
         };
-        loan_info_active.insert(&*db).await?;
+        loan_info_active.insert(db).await?;
 
         // Convert and save new loan details
-        let new_loan = self.convert_to_new_loan_details(&template.new_loan, borrower_id);
+        let new_loan = convert_to_new_loan_details(&template.new_loan, borrower_id);
         let new_loan_active = new_loan_details::ActiveModel {
             id: Set(new_loan.id),
             market_value: Set(Decimal::from_f64_retain(new_loan.market_value).unwrap()),
@@ -48,14 +44,14 @@ impl Client {
             note_rate: Set(Decimal::from_f64_retain(new_loan.note_rate).unwrap()),
             appraisal_waiver: Set(new_loan.appraisal_waiver),
             created_at: Set(new_loan.created_at),
-            updated_at: Set(new_loan.updated_at),
+            updated_at: Set(Utc::now()),
             ff_umip_percentage: Set(Decimal::from_f64_retain(0.0).unwrap()), // Default values for fields not in frontend
             umip_refund: Set(Decimal::from_f64_retain(0.0).unwrap()),
         };
-        new_loan_active.insert(&*db).await?;
+        new_loan_active.insert(db).await?;
 
         // Convert and save benefit to borrower
-        let benefit = self.convert_to_benefit_to_borrower(&template.benefit_to_borrower, borrower_id);
+        let benefit = convert_to_benefit_to_borrower(&template.benefit_to_borrower, borrower_id);
         let benefit_active = benefit_to_borrower::ActiveModel {
             id: Set(benefit.id),
             existing_pi: Set(Decimal::from_f64_retain(benefit.existing_pi).unwrap()),
@@ -80,12 +76,12 @@ impl Client {
             existing_total_obligations: Set(Decimal::from_f64_retain(benefit.existing_total_obligations).unwrap()),
             proposed_total_obligations: Set(Decimal::from_f64_retain(benefit.proposed_total_obligations).unwrap()),
             created_at: Set(benefit.created_at),
-            updated_at: Set(benefit.updated_at),
+            updated_at: Set(Utc::now()),
         };
-        benefit_active.insert(&*db).await?;
+        benefit_active.insert(db).await?;
 
         // Convert and save other fees
-        let other_fees = self.convert_to_other_fees(&template.other_fees, borrower_id);
+        let other_fees = convert_to_other_fees(&template.other_fees, borrower_id);
         let other_fees_active = other_fees::ActiveModel {
             id: Set(other_fees.id),
             third_party_fees: Set(Decimal::from_f64_retain(other_fees.third_party_fees).unwrap()),
@@ -102,12 +98,12 @@ impl Client {
             total_closing_costs: Set(Decimal::from_f64_retain(other_fees.total_closing_costs).unwrap()),
             cash_out_amount: Set(Decimal::from_f64_retain(other_fees.cash_out_amount).unwrap()),
             created_at: Set(other_fees.created_at),
-            updated_at: Set(other_fees.updated_at),
+            updated_at: Set(Utc::now()),
         };
-        other_fees_active.insert(&*db).await?;
+        other_fees_active.insert(db).await?;
 
         // Convert and save income information
-        let income_info = self.convert_to_income_information(&template.income_information, borrower_id);
+        let income_info = convert_to_income_information(&template.income_information, borrower_id);
         let income_info_active = income_information::ActiveModel {
             id: Set(income_info.id),
             borrower_monthly_income: Set(Decimal::from_f64_retain(income_info.borrower_monthly_income).unwrap()),
@@ -115,12 +111,12 @@ impl Client {
             front_end_ratio: Set(Decimal::from_f64_retain(income_info.front_end_ratio).unwrap()),
             back_end_ratio: Set(Decimal::from_f64_retain(income_info.back_end_ratio).unwrap()),
             created_at: Set(income_info.created_at),
-            updated_at: Set(income_info.updated_at),
+            updated_at: Set(Utc::now()),
         };
-        income_info_active.insert(&*db).await?;
+        income_info_active.insert(db).await?;
 
         // Convert and save savings calculation
-        let savings = self.convert_to_savings_calculation(&template.savings, borrower_id);
+        let savings = convert_to_savings_calculation(&template.savings, borrower_id);
         let savings_active = savings_calculations::ActiveModel {
             id: Set(savings.id),
             monthly_savings: Set(Decimal::from_f64_retain(savings.monthly_savings).unwrap()),
@@ -129,13 +125,13 @@ impl Client {
             payment_reduction: Set(Decimal::from_f64_retain(savings.payment_reduction).unwrap()),
             recoup_period_months: Set(Decimal::from_f64_retain(savings.recoup_period_months).unwrap()),
             created_at: Set(savings.created_at),
-            updated_at: Set(savings.updated_at),
+            updated_at: Set(Utc::now()),
         };
-        savings_active.insert(&*db).await?;
+        savings_active.insert(db).await?;
 
         // Save existing loans
         for loan in &template.mortgage_payoffs.existing_loans {
-            let existing_loan = self.convert_to_existing_loan(loan, borrower_id);
+            let existing_loan = convert_to_existing_loan(loan, borrower_id);
             let existing_loan_active = existing_loans::ActiveModel {
                 id: Set(existing_loan.id),
                 position: Set(existing_loan.position as i16),
@@ -145,14 +141,14 @@ impl Client {
                 interest_rate: Set(Decimal::from_f64_retain(existing_loan.interest_rate).unwrap()),
                 is_subordinate: Set(existing_loan.is_subordinate),
                 created_at: Set(existing_loan.created_at),
-                updated_at: Set(existing_loan.updated_at),
+                updated_at: Set(Utc::now()),
             };
-            existing_loan_active.insert(&*db).await?;
+            existing_loan_active.insert(db).await?;
         }
 
         // Save consumer debts
         for debt_item in &template.consumer_debt.consumer_debts {
-            let consumer_debt = self.convert_to_consumer_debt(debt_item, borrower_id);
+            let consumer_debt = convert_to_consumer_debt(debt_item, borrower_id);
             let consumer_debt_active = consumer_debt::ActiveModel {
                 id: Set(consumer_debt.id),
                 borrower_id: Set(borrower_id),
@@ -165,22 +161,21 @@ impl Client {
                 omit_from_dti: Set(consumer_debt.omit_from_dti),
                 pay_off_at_closing: Set(consumer_debt.pay_off_at_closing),
                 created_at: Set(consumer_debt.created_at),
-                updated_at: Set(consumer_debt.updated_at),
+                updated_at: Set(Utc::now()),
             };
-            consumer_debt_active.insert(&*db).await?;
+            consumer_debt_active.insert(db).await?;
         }
 
         Ok(())
     }
 
     /// Get a complete options template for a borrower
-    pub async fn get_options_template(&self, borrower_id: i32) -> Result<Option<OptionsTemplateData>, Box<dyn std::error::Error>> {
-        let db = self.db.lock().await;
+    pub async fn get_options_template(db: &DatabaseConnection, borrower_id: i32) -> Result<Option<OptionsTemplateData>, Box<dyn std::error::Error>> {
 
         // Get loan information
         let loan_info_entity = loan_information::Entity::find()
             .filter(loan_information::Column::Id.eq(borrower_id.to_string() + "-loan-info"))
-            .one(&*db)
+            .one(db)
             .await?;
 
         if loan_info_entity.is_none() {
@@ -222,7 +217,7 @@ impl Client {
         // Get benefit to borrower
         let benefit_entity = benefit_to_borrower::Entity::find()
             .filter(benefit_to_borrower::Column::Id.eq(borrower_id.to_string() + "-benefit"))
-            .one(&*db)
+            .one(db)
             .await?;
 
         let benefit_to_borrower = if let Some(model) = benefit_entity {
@@ -256,7 +251,7 @@ impl Client {
         // Get other fees
         let other_fees_entity = other_fees::Entity::find()
             .filter(other_fees::Column::Id.eq(borrower_id.to_string() + "-other-fees"))
-            .one(&*db)
+            .one(db)
             .await?;
 
         let other_fees = if let Some(model) = other_fees_entity {
@@ -282,7 +277,7 @@ impl Client {
         // Get income information
         let income_entity = income_information::Entity::find()
             .filter(income_information::Column::Id.eq(borrower_id.to_string() + "-income"))
-            .one(&*db)
+            .one(db)
             .await?;
 
         let income_information = if let Some(model) = income_entity {
@@ -300,7 +295,7 @@ impl Client {
         // Get savings calculation
         let savings_entity = savings_calculations::Entity::find()
             .filter(savings_calculations::Column::Id.eq(borrower_id.to_string() + "-savings"))
-            .one(&*db)
+            .one(db)
             .await?;
 
         let savings = if let Some(model) = savings_entity {
@@ -403,75 +398,79 @@ impl Client {
     }
 
     /// Update an existing options template
-    pub async fn update_options_template(&self, template: OptionsTemplateData, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn update_options_template(db: &DatabaseConnection, template: OptionsTemplateData, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
         // For now, delete and re-insert. In a production system, you'd want more sophisticated update logic
-        self.delete_options_template(borrower_id).await?;
-        self.save_options_template(template, borrower_id).await
+        delete_options_template(db, borrower_id).await?;
+        save_options_template(db, template, borrower_id).await
     }
 
     /// Delete an options template and all its related data
-    pub async fn delete_options_template(&self, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
-        let db = self.db.lock().await;
+    pub async fn delete_options_template(db: &DatabaseConnection, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
         let borrower_prefix = borrower_id.to_string();
 
         // Delete all related records
         loan_information::Entity::delete_many()
             .filter(loan_information::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         new_loan_details::Entity::delete_many()
             .filter(new_loan_details::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         benefit_to_borrower::Entity::delete_many()
             .filter(benefit_to_borrower::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         other_fees::Entity::delete_many()
             .filter(other_fees::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         income_information::Entity::delete_many()
             .filter(income_information::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         savings_calculations::Entity::delete_many()
             .filter(savings_calculations::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         existing_loans::Entity::delete_many()
             .filter(existing_loans::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         pricing_options::Entity::delete_many()
             .filter(pricing_options::Column::Id.starts_with(&borrower_prefix))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         consumer_debt::Entity::delete_many()
             .filter(consumer_debt::Column::BorrowerId.eq(borrower_id))
-            .exec(&*db)
+            .exec(db)
             .await?;
 
         Ok(())
     }
 
     /// Get all options templates (for admin purposes)
-    pub async fn get_all_options_templates(&self) -> Result<Vec<(i32, OptionsTemplateData)>, Box<dyn std::error::Error>> {
+    pub async fn get_all_options_templates(_db: &DatabaseConnection) -> Result<Vec<(i32, OptionsTemplateData)>, Box<dyn std::error::Error>> {
         // This would require querying all borrowers and their templates
         // For now, return empty vec
         Ok(vec![])
     }
 
+    pub async fn get_all_mortgage_refinance_options(_db: &DatabaseConnection) -> Result<Vec<shared::models::MortgageRefinanceOptions>, Box<dyn std::error::Error>> {
+        // Stub implementation
+        Ok(vec![])
+    }
+
     // Helper conversion functions
-    fn convert_to_loan_information(&self, data: &LoanInformationData, borrower_id: i32) -> LoanInformation {
+    pub fn convert_to_loan_information(data: &LoanInformationData, _borrower_id: i32) -> LoanInformation {
         LoanInformation {
             id: Uuid::new_v4(),
             property_type: parse_property_type(&data.property_type),
@@ -485,7 +484,7 @@ impl Client {
         }
     }
 
-    fn convert_to_new_loan_details(&self, data: &NewLoanData, borrower_id: i32) -> NewLoanDetails {
+    pub fn convert_to_new_loan_details(data: &NewLoanData, _borrower_id: i32) -> NewLoanDetails {
         NewLoanDetails {
             id: Uuid::new_v4(),
             market_value: data.market_value,
@@ -503,7 +502,7 @@ impl Client {
         }
     }
 
-    fn convert_to_benefit_to_borrower(&self, data: &BenefitToBorrowerData, borrower_id: i32) -> BenefitToBorrower {
+    pub fn convert_to_benefit_to_borrower(data: &BenefitToBorrowerData, _borrower_id: i32) -> BenefitToBorrower {
         BenefitToBorrower {
             id: Uuid::new_v4(),
             existing_pi: data.existing_pi,
@@ -532,7 +531,7 @@ impl Client {
         }
     }
 
-    fn convert_to_other_fees(&self, data: &OtherFeesData, borrower_id: i32) -> OtherFees {
+    pub fn convert_to_other_fees(data: &OtherFeesData, _borrower_id: i32) -> OtherFees {
         OtherFees {
             id: Uuid::new_v4(),
             third_party_fees: data.third_party_fees,
@@ -553,7 +552,7 @@ impl Client {
         }
     }
 
-    fn convert_to_income_information(&self, data: &IncomeInformationData, borrower_id: i32) -> IncomeInformation {
+    pub fn convert_to_income_information(data: &IncomeInformationData, _borrower_id: i32) -> IncomeInformation {
         IncomeInformation {
             id: Uuid::new_v4(),
             borrower_monthly_income: data.borrower_monthly_income,
@@ -565,7 +564,7 @@ impl Client {
         }
     }
 
-    fn convert_to_savings_calculation(&self, data: &SavingsData, borrower_id: i32) -> SavingsCalculation {
+    pub fn convert_to_savings_calculation(data: &SavingsData, _borrower_id: i32) -> SavingsCalculation {
         SavingsCalculation {
             id: Uuid::new_v4(),
             monthly_savings: data.monthly_savings,
@@ -578,7 +577,7 @@ impl Client {
         }
     }
 
-    fn convert_to_existing_loan(&self, data: &ExistingLoanData, borrower_id: i32) -> ExistingLoan {
+    pub fn convert_to_existing_loan(data: &ExistingLoanData, _borrower_id: i32) -> ExistingLoan {
         ExistingLoan {
             id: Uuid::new_v4(),
             position: data.position,
@@ -592,7 +591,7 @@ impl Client {
         }
     }
 
-    fn convert_to_pricing_option(&self, data: &PricingOptionData, borrower_id: i32) -> PricingOption {
+    pub fn convert_to_pricing_option(data: &PricingOptionData, _borrower_id: i32) -> PricingOption {
         PricingOption {
             id: Uuid::new_v4(),
             description: data.description.clone(),
@@ -607,7 +606,7 @@ impl Client {
         }
     }
 
-    fn convert_to_consumer_debt(&self, data: &ConsumerDebtItemData, borrower_id: i32) -> ConsumerDebt {
+    pub fn convert_to_consumer_debt(data: &ConsumerDebtItemData, _borrower_id: i32) -> ConsumerDebt {
         ConsumerDebt {
             id: Uuid::new_v4(),
             debtor_name: data.debtor_name.clone(),
@@ -622,4 +621,3 @@ impl Client {
             updated_at: Utc::now(),
         }
     }
-}

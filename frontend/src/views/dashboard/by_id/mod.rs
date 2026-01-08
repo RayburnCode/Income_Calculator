@@ -1,3 +1,8 @@
 pub mod income_worksheet;
+pub use income_worksheet::Worksheet;
+
 pub mod options_template;
+pub use options_template::OptionsTemplate;
+
 pub mod client;
+pub use client::ClientDetails;

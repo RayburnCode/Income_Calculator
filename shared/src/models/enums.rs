@@ -97,6 +97,29 @@ impl std::fmt::Display for CreditType {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum Status {
+    Active,
+    Inactive,
+    Pending,
+    Approved,
+    Rejected,
+    Closed,
+}
+
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Status::Active => write!(f, "Active"),
+            Status::Inactive => write!(f, "Inactive"),
+            Status::Pending => write!(f, "Pending"),
+            Status::Approved => write!(f, "Approved"),
+            Status::Rejected => write!(f, "Rejected"),
+            Status::Closed => write!(f, "Closed"),
+        }
+    }
+}
+
 // Parsing functions for converting strings to enums
 pub fn parse_property_type(s: &str) -> PropertyType {
     match s {
@@ -131,5 +154,16 @@ pub fn parse_loan_purpose(s: &str) -> LoanPurpose {
         "Refinance" => LoanPurpose::Refinance,
         "IRRRLStreamline" => LoanPurpose::IRRRLStreamline,
         _ => LoanPurpose::Purchase,
+    }
+}
+
+pub fn parse_status(s: &str) -> Status {
+    match s {
+        "Inactive" => Status::Inactive,
+        "Pending" => Status::Pending,
+        "Approved" => Status::Approved,
+        "Rejected" => Status::Rejected,
+        "Closed" => Status::Closed,
+        _ => Status::Active,
     }
 }

@@ -7,6 +7,7 @@ pub fn Settings() -> Element {
     let client_clone = client.clone();
     let mut settings = use_signal(|| AppSettings::default());
     let mut is_loading = use_signal(|| true);
+    let mut error_message = use_signal(|| None::<String>);
 
     // Load settings on component mount
     use_effect(move || {
@@ -19,14 +20,16 @@ pub fn Settings() -> Element {
                 }
                 Err(e) => {
                     log::error!("Failed to load settings: {:?}", e);
+                    error_message.set(Some(format!("Failed to load settings: {}", e)));
                     is_loading.set(false);
                 }
             }
         });
     });
 
+    let client_clone = client.clone();
     let save_settings = move |_| {
-        let client = client.clone();
+        let client = client_clone.clone();
         spawn(async move {
             let current_settings = settings();
             match client.save_settings(current_settings).await {
@@ -41,6 +44,7 @@ pub fn Settings() -> Element {
             }
         });
     };
+
     rsx! {
         div { class: "min-h-screen bg-gray-100 p-6",
             div { class: "max-w-4xl mx-auto",
@@ -54,6 +58,13 @@ pub fn Settings() -> Element {
                     div { class: "flex justify-center items-center py-12",
                         div { class: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" }
                         span { class: "ml-2 text-gray-600", "Loading settings..." }
+                    }
+                } else if let Some(error) = error_message() {
+                    div { class: "flex justify-center items-center py-12",
+                        div { class: "text-red-600",
+                            "Error: "
+                            {error}
+                        }
                     }
                 } else {
                     // Settings sections
@@ -78,7 +89,15 @@ pub fn Settings() -> Element {
                                         class: "border border-gray-300 rounded-md px-3 py-2",
                                         value: "{settings().theme}",
                                         onchange: move |e| {
+                                            let client = use_context::<client::Client>();
                                             settings.write().theme = e.value().clone();
+                                            spawn(async move {
+                                                let current_settings = settings();
+                                                match client.save_settings(current_settings).await {
+                                                    Ok(_) => log::info!("Settings saved"),
+                                                    Err(e) => log::error!("Failed to save: {:?}", e),
+                                                }
+                                            });
                                         },
                                         option { value: "light", "Light" }
                                         option { value: "dark", "Dark" }
@@ -98,7 +117,15 @@ pub fn Settings() -> Element {
                                         class: "border border-gray-300 rounded-md px-3 py-2",
                                         value: "{settings().currency}",
                                         onchange: move |e| {
+                                            let client = use_context::<client::Client>();
                                             settings.write().currency = e.value().clone();
+                                            spawn(async move {
+                                                let current_settings = settings();
+                                                match client.save_settings(current_settings).await {
+                                                    Ok(_) => log::info!("Settings saved"),
+                                                    Err(e) => log::error!("Failed to save: {:?}", e),
+                                                }
+                                            });
                                         },
                                         option { value: "USD ($)", "USD ($)" }
                                         option { value: "EUR (€)", "EUR (€)" }
@@ -140,7 +167,15 @@ pub fn Settings() -> Element {
                                         r#type: "checkbox",
                                         checked: "{settings().auto_backup}",
                                         onchange: move |e| {
+                                            let client = use_context::<client::Client>();
                                             settings.write().auto_backup = e.checked();
+                                            spawn(async move {
+                                                let current_settings = settings();
+                                                match client.save_settings(current_settings).await {
+                                                    Ok(_) => log::info!("Settings saved"),
+                                                    Err(e) => log::error!("Failed to save: {:?}", e),
+                                                }
+                                            });
                                         },
                                         class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded",
                                     }
@@ -181,7 +216,15 @@ pub fn Settings() -> Element {
                                         value: "{settings().default_loan_term}",
                                         onchange: move |e| {
                                             if let Ok(term) = e.value().parse::<i32>() {
+                                                let client = use_context::<client::Client>();
                                                 settings.write().default_loan_term = term;
+                                                spawn(async move {
+                                                    let current_settings = settings();
+                                                    match client.save_settings(current_settings).await {
+                                                        Ok(_) => log::info!("Settings saved"),
+                                                        Err(e) => log::error!("Failed to save: {:?}", e),
+                                                    }
+                                                });
                                             }
                                         },
                                         option { value: "15", "15 years" }
@@ -204,7 +247,15 @@ pub fn Settings() -> Element {
                                         value: "{settings().dti_threshold}",
                                         onchange: move |e| {
                                             if let Ok(threshold) = e.value().parse::<f64>() {
+                                                let client = use_context::<client::Client>();
                                                 settings.write().dti_threshold = threshold;
+                                                spawn(async move {
+                                                    let current_settings = settings();
+                                                    match client.save_settings(current_settings).await {
+                                                        Ok(_) => log::info!("Settings saved"),
+                                                        Err(e) => log::error!("Failed to save: {:?}", e),
+                                                    }
+                                                });
                                             }
                                         },
                                         class: "border border-gray-300 rounded-md px-3 py-2 w-20",
@@ -249,12 +300,12 @@ pub fn Settings() -> Element {
                         div { class: "bg-white p-6 rounded-lg shadow-md",
                             div { class: "flex justify-between items-center",
                                 p { class: "text-sm text-gray-600",
-                                    "Settings are automatically saved to your local database."
+                                    "Settings are saved automatically when changed."
                                 }
                                 button {
                                     class: "bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 font-medium",
                                     onclick: save_settings,
-                                    "Save Settings"
+                                    "Save Manually"
                                 }
                             }
                         }

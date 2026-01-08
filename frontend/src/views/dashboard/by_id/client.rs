@@ -4,6 +4,7 @@ use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::views::dashboard::by_id::income_worksheet::W2Jobs;
 use chrono::Utc;
+use shared::models::Status;
 
 #[component]
 pub fn ClientDetails(id: i32) -> Element {
@@ -19,7 +20,7 @@ pub fn ClientDetails(id: i32) -> Element {
     let error_message = use_signal(|| None::<String>);
     let mut is_editing = use_signal(|| false);
     let mut edit_name = use_signal(|| String::new());
-    let mut edit_status = use_signal(|| String::new());
+    let mut edit_status = use_signal(|| Status::Active);
     let mut edit_email = use_signal(|| String::new());
     let mut edit_phone = use_signal(|| String::new());
 
@@ -43,7 +44,7 @@ pub fn ClientDetails(id: i32) -> Element {
                             borrower.set(Some(borrower_data.clone()));
                             // Populate edit fields
                             edit_name.set(borrower_data.name.clone());
-                            edit_status.set(borrower_data.status.unwrap_or_default());
+                            edit_status.set(borrower_data.status.unwrap_or(Status::Active));
                             edit_email.set(borrower_data.email.unwrap_or_default());
                             edit_phone.set(borrower_data.phone_number.unwrap_or_default());
                             error_message.set(None);
@@ -85,7 +86,7 @@ pub fn ClientDetails(id: i32) -> Element {
                     if let Some(mut borrower_data) = borrower_clone() {
                         // Update the borrower data
                         borrower_data.name = edit_name();
-                        borrower_data.status = if edit_status().is_empty() { None } else { Some(edit_status()) };
+                        borrower_data.status = Some(edit_status());
                         borrower_data.email = if edit_email().is_empty() { None } else { Some(edit_email()) };
                         borrower_data.phone_number = if edit_phone().is_empty() { None } else { Some(edit_phone()) };
                         borrower_data.updated_at = Utc::now();
@@ -119,7 +120,7 @@ pub fn ClientDetails(id: i32) -> Element {
             // Reset edit fields to current borrower data
             if let Some(borrower_data) = borrower() {
                 edit_name.set(borrower_data.name.clone());
-                edit_status.set(borrower_data.status.unwrap_or_default());
+                edit_status.set(borrower_data.status.unwrap_or(Status::Active));
                 edit_email.set(borrower_data.email.unwrap_or_default());
                 edit_phone.set(borrower_data.phone_number.unwrap_or_default());
             }
@@ -173,6 +174,15 @@ pub fn ClientDetails(id: i32) -> Element {
                 // Content based on active tab
                 match *active_tab.read() {
                     0 => {
+                        let status_text = if let Some(borrower_data) = borrower() {
+                            if let Some(status) = borrower_data.status {
+                                status.to_string()
+                            } else {
+                                "N/A".to_string()
+                            }
+                        } else {
+                            "Loading...".to_string()
+                        };
                         let content: Element = rsx! {
                             // Error message
                             if let Some(error) = error_message() {
@@ -225,10 +235,27 @@ pub fn ClientDetails(id: i32) -> Element {
                                         }
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Status" }
-                                            input {
+                                            select {
                                                 class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
-                                                value: "{edit_status()}",
-                                                oninput: move |evt| edit_status.set(evt.value()),
+                                                value: "{edit_status().to_string()}",
+                                                onchange: move |evt| {
+                                                    let value = evt.value();
+                                                    let status = match value.as_str() {
+                                                        "Inactive" => Status::Inactive,
+                                                        "Pending" => Status::Pending,
+                                                        "Approved" => Status::Approved,
+                                                        "Rejected" => Status::Rejected,
+                                                        "Closed" => Status::Closed,
+                                                        _ => Status::Active,
+                                                    };
+                                                    edit_status.set(status);
+                                                },
+                                                option { value: "Active", "Active" }
+                                                option { value: "Inactive", "Inactive" }
+                                                option { value: "Pending", "Pending" }
+                                                option { value: "Approved", "Approved" }
+                                                option { value: "Rejected", "Rejected" }
+                                                option { value: "Closed", "Closed" }
                                             }
                                         }
                                         div {
@@ -261,13 +288,7 @@ pub fn ClientDetails(id: i32) -> Element {
             
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Status" }
-                                            p { class: "mt-1 text-sm text-gray-900",
-                                                if let Some(borrower_data) = borrower() {
-                                                    "{borrower_data.status.as_deref().unwrap_or(\"N/A\")}"
-                                                } else {
-                                                    "Loading..."
-                                                }
-                                            }
+                                            p { class: "mt-1 text-sm text-gray-900", "{status_text}" }
                                         }
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Email" }

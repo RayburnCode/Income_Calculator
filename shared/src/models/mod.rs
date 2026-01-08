@@ -1,3 +1,6 @@
+pub mod main;
+pub use main::*;
+
 pub mod income;
 pub use income::*;
 
@@ -18,6 +21,3 @@ pub use frontend_models::*;
 
 pub mod settings;
 pub use settings::*;
-
-pub mod main;
-pub use main::*;

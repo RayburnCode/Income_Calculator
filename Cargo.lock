@@ -616,10 +616,8 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "database",
- "num-traits",
  "rust_decimal",
  "sea-orm",
- "serde",
  "shared",
  "tokio",
  "uuid",
@@ -1028,7 +1026,6 @@ dependencies = [
  "sea-orm-migration",
  "serde",
  "shared",
- "tokio",
 ]
 
 [[package]]

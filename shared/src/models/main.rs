@@ -2,9 +2,8 @@ use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
-use super::consumer_debt::ConsumerDebt;
-use super::loan_models::{ExistingLoan, NewLoanDetails, LoanInformation};
-use super::financial_models::{BenefitToBorrower, OtherFees, PricingOption, IncomeInformation, SavingsCalculation};
+use crate::models::*;
+use super::enums::Status;
 
 // Borrower Information Model
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -14,7 +13,7 @@ pub struct Borrower {
     pub employer_name: Option<String>,
     pub income_type: Option<String>,
     pub loan_number: Option<String>,
-    pub status: Option<String>,
+    pub status: Option<Status>,
     pub email: Option<String>,
     pub phone_number: Option<String>,
     pub created_at: DateTime<Utc>,
@@ -30,7 +29,7 @@ impl Default for Borrower {
             employer_name: None,
             income_type: None,
             loan_number: None,
-            status: None,
+            status: Some(Status::Active),
             email: None,
             phone_number: None,
             created_at: now,

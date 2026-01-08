@@ -152,7 +152,7 @@ impl Client {
             employer_name: Set(borrower.employer_name),
             income_type: Set(borrower.income_type),
             loan_number: Set(borrower.loan_number),
-            status: Set(borrower.status),
+            status: Set(borrower.status.map(|s| s.to_string())),
             email: Set(borrower.email),
             phone_number: Set(borrower.phone_number),
             created_at: Set(borrower.created_at),
@@ -170,7 +170,7 @@ impl Client {
             employer_name: sea_orm::ActiveValue::Set(borrower.employer_name),
             income_type: sea_orm::ActiveValue::Set(borrower.income_type),
             loan_number: sea_orm::ActiveValue::Set(borrower.loan_number),
-            status: sea_orm::ActiveValue::Set(borrower.status),
+            status: sea_orm::ActiveValue::Set(borrower.status.map(|s| s.to_string())),
             email: sea_orm::ActiveValue::Set(borrower.email),
             phone_number: sea_orm::ActiveValue::Set(borrower.phone_number),
             created_at: sea_orm::ActiveValue::Set(borrower.created_at),
@@ -191,7 +191,7 @@ impl Client {
                     employer_name: model.employer_name,
                     income_type: model.income_type,
                     loan_number: model.loan_number,
-                    status: model.status,
+                    status: model.status.as_ref().map(|s| parse_status(s)),
                     email: model.email,
                     phone_number: model.phone_number,
                     created_at: model.created_at,
@@ -212,7 +212,7 @@ impl Client {
             employer_name: model.employer_name,
             income_type: model.income_type,
             loan_number: model.loan_number,
-            status: model.status,
+            status: model.status.as_ref().map(|s| parse_status(s)),
             email: model.email,
             phone_number: model.phone_number,
             created_at: model.created_at,
@@ -439,7 +439,8 @@ impl Client {
             default_loan_term: Set(settings.default_loan_term),
             dti_threshold: Set(settings.dti_threshold),
             auto_backup: Set(settings.auto_backup),
-            ..Default::default() // Let SeaORM handle timestamps
+            created_at: Set(Utc::now()),
+            updated_at: Set(Utc::now()),
         };
 
         // Try to update first, if it fails (no record exists), insert
@@ -453,7 +454,8 @@ impl Client {
                     default_loan_term: Set(settings.default_loan_term),
                     dti_threshold: Set(settings.dti_threshold),
                     auto_backup: Set(settings.auto_backup),
-                    ..Default::default()
+                    created_at: Set(Utc::now()),
+                    updated_at: Set(Utc::now()),
                 };
                 let _ = insert_model.insert(&*db).await?;
                 Ok(())

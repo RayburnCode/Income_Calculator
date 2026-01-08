@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use chrono::Utc;
-use shared::models::Borrower;
+use shared::models::{Borrower, Status};
 
 #[component]
 pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
@@ -50,7 +50,7 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
             employer_name: None,
             income_type: Some("employed".to_string()),
             loan_number: None,
-            status: Some("active".to_string()),
+            status: Some(Status::Active),
             email: Some(email_val),
             phone_number: Some(phone_val),
             created_at: Utc::now(),

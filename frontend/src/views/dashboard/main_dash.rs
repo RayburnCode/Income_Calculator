@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::add_client_modal::AddClientModal;
+use crate::views::dashboard::AddClientModal;
 use crate::components::AnalyticsCard;
 
 #[derive(Clone, PartialEq)]

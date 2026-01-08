@@ -1,11 +1,12 @@
 // client/src/lib.rs
-use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait, QueryFilter, ColumnTrait, DeleteResult};
 use shared::models::*;
 use database::entities::*;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
-use rust_decimal::prelude::ToPrimitive;
+use rust_decimal::prelude::*;
+use chrono::Utc;
 
 mod income;
 mod options_template;
@@ -34,10 +35,73 @@ impl Client {
     }
 
     // Placeholder for W2 jobs data - to be implemented
-    pub async fn get_w2_jobs_data(&self, _borrower_id: i32) -> Result<Option<W2JobsData>, Box<dyn std::error::Error>> {
-        // TODO: Implement W2 jobs data persistence
-        // For now, return None to indicate no data available
-        Ok(None)
+    pub async fn get_w2_jobs_data(&self, borrower_id: i32) -> Result<Option<W2JobsData>, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        let jobs: Vec<w2_jobs::Model> = w2_jobs::Entity::find()
+            .filter(w2_jobs::Column::BorrowerId.eq(borrower_id))
+            .all(&*db)
+            .await?;
+
+        if jobs.is_empty() {
+            return Ok(None);
+        }
+
+        let w2_jobs: Vec<W2Job> = jobs.into_iter().map(|job| {
+            W2Job {
+                employer_name: job.employer_name,
+                job_title: job.job_title,
+                years_employed: job.years_employed.map(|y| y.to_string()).unwrap_or_default(),
+                months_employed: job.months_employed.map(|m| m.to_string()).unwrap_or_default(),
+                annual_salary: job.annual_salary.map(|s| s.to_string()).unwrap_or_default(),
+                hourly_rate: job.hourly_rate.map(|r| r.to_string()).unwrap_or_default(),
+                hours_per_week: job.hours_per_week.map(|h| h.to_string()).unwrap_or_default(),
+                commission_monthly: job.commission_monthly.map(|c| c.to_string()).unwrap_or_default(),
+                bonus_monthly: job.bonus_monthly.map(|b| b.to_string()).unwrap_or_default(),
+                overtime_monthly: job.overtime_monthly.map(|o| o.to_string()).unwrap_or_default(),
+            }
+        }).collect();
+
+        // For now, assume not verified
+        let w2_data = W2JobsData {
+            jobs: w2_jobs,
+            is_verified: false,
+            verified_at: None,
+        };
+
+        Ok(Some(w2_data))
+    }
+
+    pub async fn save_w2_jobs_data(&self, borrower_id: i32, w2_data: &W2JobsData) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+
+        // First, delete existing jobs for this borrower
+        w2_jobs::Entity::delete_many()
+            .filter(w2_jobs::Column::BorrowerId.eq(borrower_id))
+            .exec(&*db)
+            .await?;
+
+        // Then insert new jobs
+        for job in &w2_data.jobs {
+            let active_model = w2_jobs::ActiveModel {
+                id: Set(Uuid::new_v4()),
+                borrower_id: Set(borrower_id),
+                employer_name: Set(job.employer_name.clone()),
+                job_title: Set(job.job_title.clone()),
+                years_employed: Set(job.years_employed.parse::<i32>().ok()),
+                months_employed: Set(job.months_employed.parse::<i32>().ok()),
+                annual_salary: Set(job.annual_salary.parse::<Decimal>().ok()),
+                hourly_rate: Set(job.hourly_rate.parse::<Decimal>().ok()),
+                hours_per_week: Set(job.hours_per_week.parse::<i32>().ok()),
+                commission_monthly: Set(job.commission_monthly.parse::<Decimal>().ok()),
+                bonus_monthly: Set(job.bonus_monthly.parse::<Decimal>().ok()),
+                overtime_monthly: Set(job.overtime_monthly.parse::<Decimal>().ok()),
+                created_at: Set(Utc::now()),
+                updated_at: Set(Utc::now()),
+            };
+            active_model.insert(&*db).await?;
+        }
+
+        Ok(())
     }
 
     pub async fn save_loan_information(&self, info: LoanInformation) -> Result<(), Box<dyn std::error::Error>> {

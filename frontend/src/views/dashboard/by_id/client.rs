@@ -3,7 +3,7 @@ use crate::components::tab::{Tab, TabItem};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::views::dashboard::by_id::income_worksheet::W2Jobs;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 
 #[component]
 pub fn ClientDetails(id: i32) -> Element {
@@ -183,9 +183,11 @@ pub fn ClientDetails(id: i32) -> Element {
 
                             // Client Info Card
 
-            
                             // Edit mode
                             // Display mode
+
+            
+            
 
                             div { class: "bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Client Information" }
@@ -216,7 +218,7 @@ pub fn ClientDetails(id: i32) -> Element {
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Full Name" }
                                             input {
-                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                                                 value: "{edit_name()}",
                                                 oninput: move |evt| edit_name.set(evt.value()),
                                             }
@@ -224,7 +226,7 @@ pub fn ClientDetails(id: i32) -> Element {
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Status" }
                                             input {
-                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                                                 value: "{edit_status()}",
                                                 oninput: move |evt| edit_status.set(evt.value()),
                                             }
@@ -232,7 +234,7 @@ pub fn ClientDetails(id: i32) -> Element {
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Email" }
                                             input {
-                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                                                 value: "{edit_email()}",
                                                 oninput: move |evt| edit_email.set(evt.value()),
                                             }
@@ -240,7 +242,7 @@ pub fn ClientDetails(id: i32) -> Element {
                                         div {
                                             label { class: "block text-sm font-medium text-gray-700", "Phone Number" }
                                             input {
-                                                class: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
+                                                class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                                                 value: "{edit_phone()}",
                                                 oninput: move |evt| edit_phone.set(evt.value()),
                                             }
@@ -293,7 +295,7 @@ pub fn ClientDetails(id: i32) -> Element {
             
                             div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",
                                 h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Income Information" }
-                                W2Jobs {}
+                                W2Jobs { borrower_id: id }
                             }
             
                             div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",

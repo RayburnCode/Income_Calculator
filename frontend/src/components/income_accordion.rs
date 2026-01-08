@@ -51,15 +51,14 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
     });
 
     rsx! {
-        div {
-            class: if !class.is_empty() { "{class}" } else { "space-y-4" },
+        div { class: if !class.is_empty() { "{class}" } else { "space-y-4" },
             for (idx , item) in items_vec.read().iter().enumerate() {
                 {
                     let item_id = item.id.clone();
                     let item_title = item.title.clone();
                     let is_open = open_items.read().contains(&idx);
                     let is_included = include_states.read().get(idx).copied().unwrap_or(false);
-                    
+
                     rsx! {
                         div {
                             key: "{item_id}",
@@ -78,23 +77,25 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                         open_items.set(current_open);
                                     },
                                     div { class: "flex items-center gap-4",
-                                        input {
-                                            r#type: "checkbox",
-                                            class: "w-5 h-5 text-blue-600 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer",
-                                            checked: is_included,
-                                            onclick: move |evt: Event<MouseData>| {
-                                                evt.stop_propagation();
-                                            },
-                                            onchange: move |_| {
-                                                let mut states = include_states();
-                                                if let Some(state) = states.get_mut(idx) {
-                                                    *state = !*state;
-                                                    if let Some(handler) = &on_include_change {
-                                                        handler.call((item_id.clone(), *state));
+                                        if on_include_change.is_some() {
+                                            input {
+                                                r#type: "checkbox",
+                                                class: "w-5 h-5 text-blue-600 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer",
+                                                checked: is_included,
+                                                onclick: move |evt: Event<MouseData>| {
+                                                    evt.stop_propagation();
+                                                },
+                                                onchange: move |_| {
+                                                    let mut states = include_states();
+                                                    if let Some(state) = states.get_mut(idx) {
+                                                        *state = !*state;
+                                                        if let Some(handler) = &on_include_change {
+                                                            handler.call((item_id.clone(), *state));
+                                                        }
                                                     }
-                                                }
-                                                include_states.set(states);
-                                            },
+                                                    include_states.set(states);
+                                                },
+                                            }
                                         }
                                         span { class: "text-lg font-bold text-gray-900", "{item_title}" }
                                     }
@@ -115,10 +116,7 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                 }
                             }
                             if is_open {
-                                div {
-                                    class: "p-8 border-t border-gray-200 bg-gray-50",
-                                    {item.content.clone()}
-                                }
+                                div { class: "p-8 border-t border-gray-200 bg-gray-50", {item.content.clone()} }
                             }
                         }
                     }

@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use shared::models::{ConsumerDebt, ConsumerDebtData, ConsumerDebtItemData};
+use shared::models::{ConsumerDebtData, ConsumerDebtItemData};
 
 #[component]
 pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<ConsumerDebtData>) -> Element {

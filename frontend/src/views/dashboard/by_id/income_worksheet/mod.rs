@@ -1,5 +1,5 @@
 pub mod info;
-pub use info::Information;
+//pub use info::Information;
 
 pub mod main;
 pub use main::Worksheet;

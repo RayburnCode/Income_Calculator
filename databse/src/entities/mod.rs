@@ -14,3 +14,4 @@ pub mod other_fees;
 pub mod pricing_options;
 pub mod savings_calculations;
 pub mod settings;
+pub mod w2_jobs;

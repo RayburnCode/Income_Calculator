@@ -1,59 +1,50 @@
 use dioxus::prelude::*;
 use crate::components::Input;
-use chrono::Utc;
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct W2Job {
-    pub employer_name: String,
-    pub job_title: String,
-    pub years_employed: String,
-    pub months_employed: String,
-    pub annual_salary: String,
-    pub hourly_rate: String,
-    pub hours_per_week: String,
-    pub commission_monthly: String,
-    pub bonus_monthly: String,
-    pub overtime_monthly: String,
-}
-
-impl Default for W2Job {
-    fn default() -> Self {
-        Self {
-            employer_name: String::new(),
-            job_title: String::new(),
-            years_employed: String::new(),
-            months_employed: String::new(),
-            annual_salary: String::new(),
-            hourly_rate: String::new(),
-            hours_per_week: String::new(),
-            commission_monthly: String::new(),
-            bonus_monthly: String::new(),
-            overtime_monthly: String::new(),
-        }
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct W2JobsData {
-    pub jobs: Vec<W2Job>,
-    pub is_verified: bool,
-    pub verified_at: Option<String>,
-}
-
-impl Default for W2JobsData {
-    fn default() -> Self {
-        Self {
-            jobs: vec![W2Job::default()],
-            is_verified: false,
-            verified_at: None,
-        }
-    }
-}
+use client;
+use shared::models::{W2Job, W2JobsData};
 
 #[component]
-pub fn W2Jobs() -> Element {
+pub fn W2Jobs(borrower_id: i32) -> Element {
     let mut w2_data = use_signal(|| W2JobsData::default());
     let mut expanded_job = use_signal(|| None);
+
+    // Get the database client from context or create it
+    let client_resource = use_resource(|| async {
+        client::Client::new().await
+    });
+
+    // Load W2 jobs data when component mounts
+    use_effect(move || {
+        let resource_value = client_resource.read().clone();
+        let mut w2_data = w2_data.clone();
+        let client_id = borrower_id;
+        
+        spawn(async move {
+            match resource_value.as_ref() {
+                Some(Ok(db_client)) => {
+                    // Load W2 jobs from database
+                    match db_client.get_w2_jobs_data(client_id).await {
+                        Ok(Some(data)) => {
+                            w2_data.set(data);
+                        }
+                        Ok(None) => {
+                            // No data, keep default
+                        }
+                        Err(e) => {
+                            // For now, just ignore error. In production, show error message
+                            tracing::error!("Error loading W2 jobs: {:?}", e); 
+                        }
+                    }
+                }
+                Some(Err(e)) => {
+                    tracing::error!("Database connection error: {:?}", e);
+                }
+                None => {
+                    // Still loading
+                }
+            }
+        });
+    });
 
     // Calculate totals
     let total_annual_salary = use_memo(move || {
@@ -80,6 +71,18 @@ pub fn W2Jobs() -> Element {
         let new_index = data.jobs.len() - 1;
         w2_data.set(data);
         expanded_job.set(Some(new_index));
+
+        // Auto-save to database
+        let client_resource = client_resource.clone();
+        let current_data = w2_data();
+        let client_id = borrower_id;
+        spawn(async move {
+            if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                if let Err(e) = db_client.save_w2_jobs_data(client_id, &current_data).await {
+                    tracing::error!("Error saving W2 jobs: {:?}", e);
+                }
+            }
+        });
     };
 
     let mut remove_job = move |index: usize| {
@@ -99,6 +102,18 @@ pub fn W2Jobs() -> Element {
                     expanded_job.set(Some(expanded - 1));
                 }
             }
+
+            // Auto-save to database
+            let client_resource = client_resource.clone();
+            let current_data = w2_data();
+            let client_id = borrower_id;
+            spawn(async move {
+                if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                    if let Err(e) = db_client.save_w2_jobs_data(client_id, &current_data).await {
+                        tracing::error!("Error saving W2 jobs: {:?}", e);
+                    }
+                }
+            });
         }
     };
 
@@ -120,6 +135,18 @@ pub fn W2Jobs() -> Element {
             }
         }
         w2_data.set(data);
+
+        // Auto-save to database
+        let client_resource = client_resource.clone();
+        let current_data = w2_data();
+        let client_id = borrower_id;
+        spawn(async move {
+            if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                if let Err(e) = db_client.save_w2_jobs_data(client_id, &current_data).await {
+                    tracing::error!("Error saving W2 jobs: {:?}", e);
+                }
+            }
+        });
     };
 
     let toggle_verified = move |_| {
@@ -131,6 +158,18 @@ pub fn W2Jobs() -> Element {
             data.verified_at = None;
         }
         w2_data.set(data);
+
+        // Auto-save to database
+        let client_resource = client_resource.clone();
+        let current_data = w2_data();
+        let client_id = borrower_id;
+        spawn(async move {
+            if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                if let Err(e) = db_client.save_w2_jobs_data(client_id, &current_data).await {
+                    tracing::error!("Error saving W2 jobs: {:?}", e);
+                }
+            }
+        });
     };
 
     let mut toggle_expanded = move |index: usize| {

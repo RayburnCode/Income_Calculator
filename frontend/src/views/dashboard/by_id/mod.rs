@@ -6,3 +6,5 @@ pub use options_template::OptionsTemplate;
 
 pub mod client;
 pub use client::ClientDetails;
+
+pub mod outreach;

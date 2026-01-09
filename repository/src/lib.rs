@@ -161,6 +161,130 @@ impl Repository {
         options_template::get_all_mortgage_refinance_options(&db).await
     }
 
+    // ===== Timeline Events Operations =====
+    pub async fn create_timeline_event(&self, event: shared::models::TimelineEvent) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::save(&db, event).await
+    }
+
+    pub async fn get_timeline_events(&self, borrower_id: i32) -> Result<Vec<shared::models::TimelineEvent>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::get_by_borrower_id(&db, borrower_id).await
+    }
+
+    pub async fn get_timeline_event(&self, id: i32) -> Result<Option<shared::models::TimelineEvent>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::get_by_id(&db, id).await
+    }
+
+    pub async fn update_timeline_event(&self, event: shared::models::TimelineEvent) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::update(&db, event).await
+    }
+
+    pub async fn delete_timeline_event(&self, id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::delete(&db, id).await
+    }
+
+    pub async fn get_timeline_events_count(&self, borrower_id: i32) -> Result<i64, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        timeline_events::TimelineEventsRepository::count_by_borrower(&db, borrower_id).await
+    }
+
+    // ===== Outreach Templates Operations =====
+    pub async fn save_outreach_template(&self, template: shared::models::OutreachTemplate) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::save(&db, template).await
+    }
+
+    pub async fn get_all_outreach_templates(&self) -> Result<Vec<shared::models::OutreachTemplate>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::get_all_active(&db).await
+    }
+
+    pub async fn get_outreach_templates_by_type(&self, template_type: shared::models::TemplateType) -> Result<Vec<shared::models::OutreachTemplate>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::get_by_type(&db, template_type).await
+    }
+
+    pub async fn get_outreach_template(&self, id: i32) -> Result<Option<shared::models::OutreachTemplate>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::get_by_id(&db, id).await
+    }
+
+    pub async fn update_outreach_template(&self, template: shared::models::OutreachTemplate) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::update(&db, template).await
+    }
+
+    pub async fn delete_outreach_template(&self, id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::delete(&db, id).await
+    }
+
+    pub async fn get_default_outreach_templates(&self) -> Result<Vec<shared::models::OutreachTemplate>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::get_default_templates(&db).await
+    }
+
+    pub async fn get_user_outreach_templates(&self, user_id: &str) -> Result<Vec<shared::models::OutreachTemplate>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        outreach_templates::OutreachTemplatesRepository::get_user_templates(&db, user_id).await
+    }
+
+    // ===== Campaign Operations =====
+    pub async fn save_campaign(&self, campaign: shared::models::Campaign) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::save(&db, campaign).await
+    }
+
+    pub async fn get_all_campaigns(&self) -> Result<Vec<shared::models::Campaign>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::get_all(&db).await
+    }
+
+    pub async fn get_campaign(&self, id: i32) -> Result<Option<shared::models::Campaign>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::get_by_id(&db, id).await
+    }
+
+    pub async fn get_campaigns_by_status(&self, status: shared::models::CampaignStatus) -> Result<Vec<shared::models::Campaign>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::get_by_status(&db, status).await
+    }
+
+    pub async fn update_campaign(&self, campaign: shared::models::Campaign) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::update(&db, campaign).await
+    }
+
+    pub async fn delete_campaign(&self, id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::delete(&db, id).await
+    }
+
+    pub async fn update_campaign_analytics(&self, campaign_id: i32, sent: i32, opened: i32, clicked: i32, converted: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::CampaignsRepository::update_analytics(&db, campaign_id, sent, opened, clicked, converted).await
+    }
+
+    // ===== A/B Test Operations =====
+    pub async fn save_ab_test(&self, ab_test: shared::models::ABTest) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::ABTestsRepository::save(&db, ab_test).await
+    }
+
+    pub async fn get_ab_tests_by_campaign(&self, campaign_id: i32) -> Result<Vec<shared::models::ABTest>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::ABTestsRepository::get_by_campaign_id(&db, campaign_id).await
+    }
+
+    pub async fn update_ab_test_results(&self, test_id: i32, sent_a: i32, sent_b: i32, opened_a: i32, opened_b: i32, clicked_a: i32, clicked_b: i32, winner: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        campaigns::ABTestsRepository::update_results(&db, test_id, sent_a, sent_b, opened_a, opened_b, clicked_a, clicked_b, winner).await
+    }
+
     // Additional legacy methods can be added here as needed
 }
 

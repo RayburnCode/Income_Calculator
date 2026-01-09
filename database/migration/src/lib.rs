@@ -10,6 +10,9 @@ mod m20260106_000008_create_junction_tables;
 mod m20260109_000001_add_property_type_to_loan_information;
 mod m20260109_000002_add_missing_columns_to_loan_information;
 mod m20260109_000003_add_borrower_personal_info;
+mod m20260109_000004_create_timeline_events_table;
+mod m20260109_000005_create_outreach_templates_table;
+mod m20260109_000006_create_campaigns_table;
 
 pub struct Migrator;
 
@@ -26,6 +29,9 @@ impl MigratorTrait for Migrator {
             Box::new(m20260109_000001_add_property_type_to_loan_information::Migration),
             Box::new(m20260109_000002_add_missing_columns_to_loan_information::Migration),
             Box::new(m20260109_000003_add_borrower_personal_info::Migration),
+            Box::new(m20260109_000004_create_timeline_events_table::Migration),
+            Box::new(m20260109_000005_create_outreach_templates_table::Migration),
+            Box::new(m20260109_000006_create_campaigns_table::Migration),
         ]
     }
 } 

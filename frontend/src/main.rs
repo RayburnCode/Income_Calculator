@@ -13,6 +13,11 @@ use components::ThemeProvider;
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
+// Utility function to get repository from context
+pub fn get_repository() -> repository::Repository {
+    use_context::<repository::Repository>()
+}
+
 #[component]
 fn App() -> Element {
     let client_result = use_resource(|| async {

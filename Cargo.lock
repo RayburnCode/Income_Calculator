@@ -2021,6 +2021,7 @@ dependencies = [
  "log",
  "repository",
  "serde",
+ "serde_json",
  "shared",
  "tokio",
  "tracing",
@@ -3365,6 +3366,7 @@ name = "migration"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "chrono",
  "sea-orm-migration",
  "tokio",
 ]
@@ -4549,6 +4551,7 @@ dependencies = [
  "database",
  "rust_decimal",
  "sea-orm",
+ "serde_json",
  "shared",
  "tokio",
  "uuid",
@@ -5193,6 +5196,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "serde",
+ "serde_json",
  "uuid",
  "validator",
 ]

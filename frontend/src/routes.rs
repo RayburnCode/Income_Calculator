@@ -1,7 +1,7 @@
 
 use dioxus::prelude::*;
 
-use crate::views::{ Welcome, Help};
+use crate::views::{ Welcome, Help, CampaignManager};
 use crate::views::dashboard::{MainDashboard, Analytics, Settings};
 use crate::views::dashboard::by_id::{Worksheet, ClientDetails, OptionsTemplate};
 use crate::components::layout::AppLayout;
@@ -18,6 +18,8 @@ pub enum Route {
         Welcome {},
         #[route("/dashboard/analytics")]
         Analytics {},
+        #[route("/dashboard/campaigns")]
+        CampaignManager {},
         #[route("/dashboard/settings")]
         Settings {},
         #[route("/:id/client")]

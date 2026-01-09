@@ -57,6 +57,20 @@ pub fn income_information_to_domain(model: &income_information::Model) -> Income
     }
 }
 
+/// Convert database timeline_events model to domain model
+pub fn timeline_event_to_domain(model: &timeline_events::Model) -> TimelineEvent {
+    TimelineEvent {
+        id: model.id,
+        borrower_id: model.borrower_id,
+        event_type: serde_json::from_str(&model.event_type).unwrap_or(TimelineEventType::Other),
+        title: model.title.clone(),
+        description: model.description.clone(),
+        metadata: model.metadata.clone(),
+        user_id: model.user_id.clone(),
+        created_at: model.created_at,
+    }
+}
+
 /// Convert database w2_jobs model to domain model
 pub fn w2_job_to_domain(model: &w2_jobs::Model) -> W2Job {
     W2Job {
@@ -70,5 +84,64 @@ pub fn w2_job_to_domain(model: &w2_jobs::Model) -> W2Job {
         commission_monthly: model.commission_monthly.map(|c| c.to_string()).unwrap_or_default(),
         bonus_monthly: model.bonus_monthly.map(|b| b.to_string()).unwrap_or_default(),
         overtime_monthly: model.overtime_monthly.map(|o| o.to_string()).unwrap_or_default(),
+    }
+}
+
+/// Convert database outreach_templates model to domain model
+pub fn outreach_template_to_domain(model: &outreach_templates::Model) -> OutreachTemplate {
+    OutreachTemplate {
+        id: model.id,
+        name: model.name.clone(),
+        template_type: serde_json::from_str(&model.template_type).unwrap_or(TemplateType::Other),
+        subject: model.subject.clone(),
+        content: model.content.clone(),
+        description: model.description.clone(),
+        is_default: model.is_default,
+        is_active: model.is_active,
+        created_by: model.created_by.clone(),
+        created_at: model.created_at,
+        updated_at: model.updated_at,
+    }
+}
+
+/// Convert database campaigns model to domain model
+pub fn campaign_to_domain(model: &campaigns::Model) -> Campaign {
+    Campaign {
+        id: model.id,
+        name: model.name.clone(),
+        description: model.description.clone(),
+        campaign_type: serde_json::from_str(&model.campaign_type).unwrap_or(CampaignType::Email),
+        template_id: model.template_id,
+        segment_criteria: model.segment_criteria.clone(),
+        status: serde_json::from_str(&model.status).unwrap_or(CampaignStatus::Draft),
+        scheduled_date: model.scheduled_date,
+        completed_date: model.completed_date,
+        target_audience_count: model.target_audience_count,
+        sent_count: model.sent_count,
+        opened_count: model.opened_count,
+        clicked_count: model.clicked_count,
+        converted_count: model.converted_count,
+        created_by: model.created_by.clone(),
+        created_at: model.created_at,
+        updated_at: model.updated_at,
+    }
+}
+
+/// Convert database ab_tests model to domain model
+pub fn ab_test_to_domain(model: &ab_tests::Model) -> ABTest {
+    ABTest {
+        id: model.id,
+        campaign_id: model.campaign_id,
+        test_name: model.test_name.clone(),
+        subject_a: model.subject_a.clone(),
+        subject_b: model.subject_b.clone(),
+        winner: model.winner.clone(),
+        sent_a: model.sent_a,
+        sent_b: model.sent_b,
+        opened_a: model.opened_a,
+        opened_b: model.opened_b,
+        clicked_a: model.clicked_a,
+        clicked_b: model.clicked_b,
+        created_at: model.created_at,
     }
 }

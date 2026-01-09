@@ -2,6 +2,10 @@
 
 // Client entities
 pub use super::client::borrower::{self as Borrower, Entity as BorrowerEntity};
+pub use super::client::timeline_events::{self as TimelineEvents, Entity as TimelineEventsEntity};
+pub use super::client::outreach_templates::{self as OutreachTemplates, Entity as OutreachTemplatesEntity};
+pub use super::client::campaigns::{self as Campaigns, Entity as CampaignsEntity};
+pub use super::client::ab_tests::{self as ABTests, Entity as ABTestsEntity};
 
 // Income entities
 pub use super::income::consumer_debt::{self as ConsumerDebt, Entity as ConsumerDebtEntity};

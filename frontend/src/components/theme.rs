@@ -18,7 +18,7 @@ impl ThemeContext {
             Theme::Light => Theme::Dark,
             Theme::Dark => Theme::Light,
         };
-        self.theme.set(new_theme);
+        *self.theme.write() = new_theme;
     }
 
     pub fn is_dark(&self) -> bool {
@@ -36,13 +36,7 @@ pub fn ThemeProvider(children: Element) -> Element {
 
     use_context_provider(|| ThemeContext { theme });
 
-    let class = if matches!(*theme.read(), Theme::Dark) {
-        "dark min-h-screen"
-    } else {
-        "min-h-screen"
-    };
-
     rsx! {
-        div { class, {children} }
+        {children}
     }
 }

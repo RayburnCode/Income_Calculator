@@ -129,8 +129,8 @@ pub fn Worksheet(id: i32) -> Element {
         div { class: "space-y-8 p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen",
 
             // Income Type Selection
-            div { class: "bg-white p-8 rounded-xl shadow-lg border border-gray-200",
-                h2 { class: "text-3xl font-bold text-gray-900 mb-6 border-b-2 border-green-500 pb-3",
+            div { class: "bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-600",
+                h2 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 border-b-2 border-green-500 pb-3",
                     "Select Income Types to Include"
                 }
                 p { class: "text-gray-600 mb-4",

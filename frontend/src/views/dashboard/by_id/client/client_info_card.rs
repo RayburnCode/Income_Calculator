@@ -32,8 +32,10 @@ pub fn ClientInfoCard(
             }
         }
 
-        div { class: "bg-white p-6 rounded-lg shadow-md",
-            h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Client Information" }
+        div { class: "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
+            h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
+                "Client Information"
+            }
             div { class: "mb-4 flex justify-end",
                 if *is_editing.read() {
                     div { class: "space-x-2",
@@ -59,7 +61,9 @@ pub fn ClientInfoCard(
             div { class: "grid grid-cols-1 md:grid-cols-2 gap-4",
                 if *is_editing.read() {
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Full Name" }
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Full Name"
+                        }
                         input {
                             class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                             value: "{edit_name()}",
@@ -67,7 +71,9 @@ pub fn ClientInfoCard(
                         }
                     }
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Status" }
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Status"
+                        }
                         select {
                             class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                             value: "{edit_status().to_string()}",
@@ -92,7 +98,9 @@ pub fn ClientInfoCard(
                         }
                     }
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Email" }
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Email"
+                        }
                         input {
                             class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                             value: "{edit_email()}",
@@ -100,7 +108,9 @@ pub fn ClientInfoCard(
                         }
                     }
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Phone Number" }
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Phone Number"
+                        }
                         input {
                             class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                             value: "{edit_phone()}",
@@ -109,8 +119,10 @@ pub fn ClientInfoCard(
                     }
                 } else {
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Full Name" }
-                        p { class: "mt-1 text-sm text-gray-900",
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Full Name"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
                             if let Some(borrower_data) = borrower() {
                                 "{borrower_data.name}"
                             } else {
@@ -120,12 +132,18 @@ pub fn ClientInfoCard(
                     }
 
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Status" }
-                        p { class: "mt-1 text-sm text-gray-900", "{status_text}" }
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Status"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            "{status_text}"
+                        }
                     }
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Email" }
-                        p { class: "mt-1 text-sm text-gray-900",
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Email"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
                             if let Some(borrower_data) = borrower() {
                                 "{borrower_data.email.as_deref().unwrap_or(\"N/A\")}"
                             } else {
@@ -134,8 +152,10 @@ pub fn ClientInfoCard(
                         }
                     }
                     div {
-                        label { class: "block text-sm font-medium text-gray-700", "Phone Number" }
-                        p { class: "mt-1 text-sm text-gray-900",
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Phone Number"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
                             if let Some(borrower_data) = borrower() {
                                 if let Some(phone) = borrower_data.phone_number.as_deref() {
                                     if phone.is_empty() {

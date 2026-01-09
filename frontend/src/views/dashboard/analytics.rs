@@ -40,11 +40,13 @@ pub fn Analytics() -> Element {
     });
 
     rsx! {
-        div { class: "min-h-screen bg-gray-100 p-6",
+        div { class: "min-h-screen bg-gray-100 dark:bg-gray-900 p-6",
             div { class: "max-w-7xl mx-auto",
                 // Header
                 div { class: "mb-8",
-                    h1 { class: "text-3xl font-bold text-gray-900", "Analytics Dashboard" }
+                    h1 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100",
+                        "Analytics Dashboard"
+                    }
                     p { class: "text-gray-600 mt-2", "Key metrics and insights for your business" }
                 }
 
@@ -151,8 +153,10 @@ pub fn Analytics() -> Element {
                 }
 
                 // Additional sections can be added here
-                div { class: "bg-white p-6 rounded-lg shadow-md",
-                    h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Detailed Analytics" }
+                div { class: "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
+                    h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
+                        "Detailed Analytics"
+                    }
                     p { class: "text-gray-600", "More detailed charts and graphs would go here." }
                 }
             }

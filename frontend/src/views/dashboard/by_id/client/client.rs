@@ -167,17 +167,17 @@ pub fn ClientDetails(id: i32) -> Element {
     ];
 
     rsx! {
-        div { class: "min-h-screen bg-theme-bg-primary",
+        div { class: "min-h-screen bg-theme-bg-primary dark:bg-theme-bg-secondary",
             // Banner background
             div { class: "relative h-32 bg-gradient-to-r from-primary-dark via-primary-medium to-accent",
                 // Optional overlay for better text readability if needed
-                div { class: "absolute inset-0 bg-theme-bg-primary/20" }
+                div { class: "absolute inset-0 bg-theme-bg-primary/20 dark:bg-theme-bg-secondary/30" }
 
                 // Client name, status, and tabs overlay
                 div { class: "absolute bottom-4 left-6 right-6 flex items-end justify-between",
                     // Name and status on the left
                     div { class: "flex flex-col gap-2",
-                        h1 { class: "text-2xl font-bold text-theme-text-primary drop-shadow-lg",
+                        h1 { class: "text-2xl font-bold text-theme-text-primary dark:text-theme-text-secondary drop-shadow-lg",
                             {borrower().map(|b| b.name.clone()).unwrap_or_else(|| "Loading...".to_string())}
                         }
                         {
@@ -185,12 +185,14 @@ pub fn ClientDetails(id: i32) -> Element {
                                 .and_then(|b| b.status)
                                 .map(|status| {
                                     let class_name = match status {
-                                        Status::Active => "bg-green-500 text-white",
-                                        Status::Inactive => "bg-gray-500 text-white",
-                                        Status::Pending => "bg-yellow-500 text-black",
-                                        Status::Approved => "bg-blue-500 text-white",
-                                        Status::Rejected => "bg-red-500 text-white",
-                                        Status::Closed => "bg-purple-500 text-white",
+                                        Status::Active => "bg-green-500 dark:bg-green-600 text-white",
+                                        Status::Inactive => "bg-gray-500 dark:bg-gray-600 text-white",
+                                        Status::Pending => {
+                                            "bg-yellow-500 dark:bg-yellow-600 text-black dark:text-gray-900"
+                                        }
+                                        Status::Approved => "bg-blue-500 dark:bg-blue-600 text-white",
+                                        Status::Rejected => "bg-red-500 dark:bg-red-600 text-white",
+                                        Status::Closed => "bg-purple-500 dark:bg-purple-600 text-white",
                                     };
                                     rsx! {
                                         span { class: "px-3 py-1 rounded-full text-sm font-medium {class_name} w-fit", "{status}" }
@@ -214,7 +216,7 @@ pub fn ClientDetails(id: i32) -> Element {
                 }
             }
 
-            div { class: "relative p-6",
+            div { class: "dark:bg-theme-bg-secondary relative p-6",
                 // Content based on active tab
                 match *active_tab.read() {
                     0 => {

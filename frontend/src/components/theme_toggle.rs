@@ -4,15 +4,16 @@ use crate::components::theme::{use_theme, Theme};
 #[component]
 pub fn ThemeToggle() -> Element {
     let mut theme_context = use_theme();
+    // Make is_dark reactive by reading the signal in the component body
     let is_dark = matches!(*theme_context.theme.read(), Theme::Dark);
 
     rsx! {
         button {
             onclick: move |_| theme_context.toggle(),
-            class: "p-2 rounded-lg bg-theme-surface-100 hover:bg-theme-surface-200 dark:bg-theme-surface-800 dark:hover:bg-theme-surface-700 transition-colors duration-200 border border-gray-300 dark:border-gray-600",
+            class: "p-2 rounded-lg bg-theme-surface-100 hover:bg-theme-surface-200 transition-colors duration-200 border border-theme-border-300",
             title: if is_dark { "Switch to Light Mode" } else { "Switch to Dark Mode" },
             svg {
-                class: "w-5 h-5 text-gray-900 dark:text-gray-100",
+                class: "w-5 h-5 text-theme-text-primary",
                 fill: "none",
                 view_box: "0 0 24 24",
                 stroke: "currentColor",

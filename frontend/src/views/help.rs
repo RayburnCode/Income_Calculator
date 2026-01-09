@@ -81,7 +81,7 @@ pub fn Help() -> Element {
                             "Analytics Dashboard"
                         }
                         p { class: "text-gray-900 mb-2", "Understanding your business metrics:" }
-                        pre { class: "bg-gray-100 p-3 rounded text-sm text-gray-900",
+                        pre { class: "bg-gray-100 dark:bg-gray-700 p-3 rounded text-sm text-gray-900 dark:text-gray-100",
                             "📊 Total Clients: Current number of active borrowers\n💰 Total Income: Combined monthly income across all clients\n📈 Average Income: Mean income per client\n🏠 Total Loans: Number of loan applications processed"
                         }
                         p { class: "text-gray-900 mt-3",
@@ -180,7 +180,7 @@ pub fn Help() -> Element {
             }
 
             // Footer card: privacy / version
-            div { class: "bg-white rounded-lg shadow-md p-4 border border-gray-200 flex flex-col md:flex-row md:justify-between items-start md:items-center",
+            div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-600 flex flex-col md:flex-row md:justify-between items-start md:items-center",
                 p { class: "text-sm text-gray-600",
                     "Privacy: All client and financial data remains local to your device. No data is transmitted to external services or cloud storage."
                 }

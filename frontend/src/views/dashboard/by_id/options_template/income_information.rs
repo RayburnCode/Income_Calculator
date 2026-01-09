@@ -70,7 +70,7 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
     };
 
     rsx! {
-        div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
+        div { class: "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Income Information" }
 
             // Income Sources from W2 Jobs
@@ -84,7 +84,7 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
                     }
                 }
                 if w2_income_sources().is_empty() {
-                    div { class: "text-center py-8 text-gray-500 border border-gray-200 rounded-lg bg-gray-50",
+                    div { class: "text-center py-8 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700",
                         div { class: "text-lg mb-2", "📊" }
                         div { class: "font-medium mb-1", "No Income Sources Found" }
                         div { class: "text-sm",
@@ -92,9 +92,9 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
                         }
                     }
                 } else {
-                    div { class: "space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50",
+                    div { class: "space-y-3 max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700",
                         for income in w2_income_sources() {
-                            div { class: "flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200",
+                            div { class: "flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600",
                                 div { class: "flex items-center space-x-3",
                                     div { class: "w-4 h-4 rounded-full bg-green-500 flex items-center justify-center",
                                         span { class: "text-white text-xs", "✓" }

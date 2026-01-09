@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use crate::Route;
 use crate::components::layout::{Navbar};
+use crate::components::theme::use_theme;
 
 // Wrapper types to distinguish different f64 contexts
 #[derive(Clone, Copy)]
@@ -48,10 +49,14 @@ pub fn AppLayout() -> Element {
     let total_housing = use_signal(|| 0.0f64);
     use_context_provider(|| TotalHousing(total_housing));
     
-
+    // Get theme context
+    let theme_context = use_theme();
+    let is_dark = matches!(*theme_context.theme.read(), crate::components::theme::Theme::Dark);
 
     rsx! {
-        div { class: "min-h-screen bg-theme-bg-primary text-theme-text-primary flex flex-col",
+        div {
+            class: "min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col",
+            class: if is_dark { "dark" },
             // Header
             Navbar {}
             // Main Content Area
@@ -61,7 +66,7 @@ pub fn AppLayout() -> Element {
             // Toast overlay (bottom-right)
             if let Some(msg) = toast.read().as_ref() {
                 div { class: "fixed bottom-6 right-6 z-50",
-                    div { class: "bg-theme-bg-tertiary text-theme-text-primary rounded-md px-4 py-2 shadow-lg border border-theme-text-secondary/20",
+                    div { class: "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-4 py-2 shadow-lg border border-gray-200 dark:border-gray-700",
                         "{msg}"
                     }
                 }

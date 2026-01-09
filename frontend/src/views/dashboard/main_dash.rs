@@ -104,12 +104,14 @@ pub fn MainDashboard() -> Element {
     let active_clients = clients().iter().filter(|c| c.status == "Active").count();
 
     rsx! {
-        div { class: "min-h-screen bg-gray-100 p-3 sm:p-6",
+        div { class: "min-h-screen bg-gray-100 dark:bg-gray-900 p-3 sm:p-6",
             div { class: "mx-auto",
                 // Header
                 div { class: "mb-4 sm:mb-8",
-                    h1 { class: "text-2xl sm:text-3xl font-bold text-gray-900", "Dashboard" }
-                    p { class: "text-sm sm:text-base text-gray-600 mt-2",
+                    h1 { class: "text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100",
+                        "Dashboard"
+                    }
+                    p { class: "text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-2",
                         "Welcome to your Income Calculator Dashboard"
                     }
                 }
@@ -144,9 +146,9 @@ pub fn MainDashboard() -> Element {
                 }
 
                 // Clients Table
-                div { class: "bg-white p-3 sm:p-6 rounded-lg shadow-md",
+                div { class: "bg-white dark:bg-gray-800 p-3 sm:p-6 rounded-lg shadow-md",
                     div { class: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3",
-                        h2 { class: "text-lg sm:text-xl font-semibold text-gray-800",
+                        h2 { class: "text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200",
                             "Clients"
                         }
                         if let Some(Ok(_)) = client_resource.read().as_ref() {
@@ -159,12 +161,12 @@ pub fn MainDashboard() -> Element {
                             }
                         }
                     }
-                    div { class: "overflow-x-auto bg-white shadow-md rounded-lg -mx-3 sm:mx-0",
+                    div { class: "overflow-x-auto bg-white dark:bg-gray-800 shadow-md rounded-lg -mx-3 sm:mx-0",
                         table { class: "min-w-full table-auto",
-                            thead { class: "bg-gray-50",
+                            thead { class: "bg-gray-50 dark:bg-gray-700",
                                 tr {
                                     for header in &headers {
-                                        th { class: "px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+                                        th { class: "px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider",
                                             "{header}"
                                         }
                                     }
@@ -173,9 +175,9 @@ pub fn MainDashboard() -> Element {
                                     }
                                 }
                             }
-                            tbody { class: "bg-white divide-y divide-gray-200",
+                            tbody { class: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600",
                                 for client in clients() {
-                                    tr { class: "hover:bg-gray-50",
+                                    tr { class: "hover:bg-gray-50 dark:hover:bg-gray-700",
                                         td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
                                             "{client.id}"
                                         }

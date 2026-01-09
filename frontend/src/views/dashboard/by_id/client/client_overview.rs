@@ -31,14 +31,18 @@ pub fn ClientOverview(
             format_phone_number,
         }
 
-        div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",
-            h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Income Information" }
+        div { class: "mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
+            h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
+                "Income Information"
+            }
             W2Jobs { borrower_id: id }
         }
 
-        div { class: "mt-8 bg-white p-6 rounded-lg shadow-md",
-            h2 { class: "text-xl font-semibold text-gray-800 mb-4", "Loan Information" }
-            p { class: "text-gray-600", "Loan details will be displayed here." }
+        div { class: "mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
+            h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
+                "Loan Information"
+            }
+            p { class: "text-gray-600 dark:text-gray-300", "Loan details will be displayed here." }
         }
     }
 }

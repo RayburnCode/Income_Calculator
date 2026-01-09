@@ -216,10 +216,10 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
             // Job entries - more compact
             div { class: "space-y-2",
                 for (index , job) in w2_data().jobs.iter().enumerate() {
-                    div { class: "bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden",
+                    div { class: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden",
                         // Compact job header
                         div {
-                            class: "px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors",
+                            class: "px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
                             onclick: move |_| toggle_expanded(index),
                             div { class: "flex items-center justify-between",
                                 div { class: "flex items-center gap-2 flex-1",
@@ -230,7 +230,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
                                             "📁"
                                         }
                                     }
-                                    span { class: "font-medium text-gray-900",
+                                    span { class: "font-medium text-gray-900 dark:text-white",
                                         if job.employer_name.is_empty() {
                                             "Job #{index + 1}"
                                         } else {
@@ -238,16 +238,18 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
                                         }
                                     }
                                     if !job.job_title.is_empty() {
-                                        span { class: "text-gray-500 text-sm", "• {job.job_title}" }
+                                        span { class: "text-gray-500 dark:text-gray-400 text-sm",
+                                            "• {job.job_title}"
+                                        }
                                     }
                                 }
                                 div { class: "flex items-center gap-3 text-sm",
                                     if !job.annual_salary.is_empty() {
-                                        span { class: "text-green-700 font-semibold",
+                                        span { class: "text-green-700 dark:text-green-400 font-semibold",
                                             "${job.annual_salary}"
                                         }
                                     }
-                                    span { class: "text-gray-400",
+                                    span { class: "text-gray-400 dark:text-gray-500",
                                         if expanded_job() == Some(index) {
                                             "▼"
                                         } else {
@@ -260,7 +262,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
 
                         // Compact job details (expandable)
                         if expanded_job() == Some(index) {
-                            div { class: "px-4 py-3 border-t border-gray-200 bg-gray-50",
+                            div { class: "px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700",
                                 div { class: "space-y-3",
                                     // Employer Information - compact
                                     div { class: "grid grid-cols-1 md:grid-cols-2 gap-3",
@@ -349,7 +351,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
                                     }
 
                                     // Job actions - compact
-                                    div { class: "flex justify-between items-center pt-3 border-t border-gray-200",
+                                    div { class: "flex justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700",
                                         if w2_data().jobs.len() > 1 {
                                             button {
                                                 class: "bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded transition-colors",
@@ -359,7 +361,9 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
                                         } else {
                                             div {}
                                         }
-                                        div { class: "text-xs text-gray-500", "Job {index + 1}" }
+                                        div { class: "text-xs text-gray-500 dark:text-gray-400",
+                                            "Job {index + 1}"
+                                        }
                                     }
                                 }
                             }
@@ -379,10 +383,14 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
             }
 
             // Compact Summary section
-            div { class: "bg-gray-50 p-3 rounded-lg border border-gray-200",
+            div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-700",
                 div { class: "text-center",
-                    div { class: "text-sm text-gray-600 mb-1", "Total Monthly Qualifying Income" }
-                    div { class: "text-xl font-bold text-green-700", "${total_monthly_income():.0}" }
+                    div { class: "text-sm text-gray-600 dark:text-gray-300 mb-1",
+                        "Total Monthly Qualifying Income"
+                    }
+                    div { class: "text-xl font-bold text-green-700 dark:text-green-400",
+                        "${total_monthly_income():.0}"
+                    }
                 }
             }
         }

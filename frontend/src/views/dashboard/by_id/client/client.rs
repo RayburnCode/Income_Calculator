@@ -1,0 +1,230 @@
+use dioxus::prelude::*;
+use crate::components::tab::{Tab, TabItem};
+use crate::views::dashboard::by_id::income_worksheet::Worksheet;
+use crate::views::dashboard::by_id::options_template::OptionsTemplate;
+use chrono::Utc;
+use shared::models::Status;
+use crate::views::dashboard::by_id::client::{ClientOverview};
+
+#[component] 
+pub fn ClientDetails(id: i32) -> Element {
+    let mut active_tab = use_signal(|| 0);
+
+    // Function to format phone number as (111)111-1111
+    let format_phone_number = |input: &str| -> String {
+        let digits: String = input.chars().filter(|c| c.is_ascii_digit()).collect();
+        let len = digits.len();
+
+        match len {
+            0 => String::new(),
+            1..=3 => format!("({}", digits),
+            4..=6 => format!("({}){}", &digits[0..3], &digits[3..]),
+            _ => format!("({}){}-{}", &digits[0..3], &digits[3..6], &digits[6..len.min(10)]),
+        }
+    };
+
+    // Get the database client from context or create it
+    let client_resource = use_resource(|| async {
+        repository::Repository::new().await
+    });
+
+    // State for borrower data
+    let borrower = use_signal(|| None::<shared::models::Borrower>);
+    let error_message = use_signal(|| None::<String>);
+    let  is_editing = use_signal(|| false);
+    let  edit_name = use_signal(|| String::new());
+    let  edit_status = use_signal(|| Status::Active);
+    let  edit_email = use_signal(|| String::new());
+    let  edit_phone = use_signal(|| String::new());
+
+    // Load borrower when the resource is ready
+    use_effect(move || {
+        let resource_value = client_resource.read().clone();
+        let mut borrower = borrower.clone();
+        let mut error_message = error_message.clone();
+        let mut edit_name = edit_name.clone();
+        let mut edit_status = edit_status.clone();
+        let mut edit_email = edit_email.clone();
+        let mut edit_phone = edit_phone.clone();
+        let client_id = id;
+        
+        spawn(async move {
+            match resource_value.as_ref() {
+                Some(Ok(db_client)) => {
+                    // Load borrower from database
+                    match db_client.get_borrower(client_id).await {
+                        Ok(Some(borrower_data)) => {
+                            borrower.set(Some(borrower_data.clone()));
+                            // Populate edit fields
+                            edit_name.set(borrower_data.name.clone());
+                            edit_status.set(borrower_data.status.unwrap_or(Status::Active));
+                            edit_email.set(borrower_data.email.unwrap_or_default());
+                            edit_phone.set(borrower_data.phone_number.unwrap_or_default());
+                            error_message.set(None);
+                        }
+                        Ok(None) => {
+                            error_message.set(Some(format!("Borrower with ID {} not found", client_id)));
+                        }
+                        Err(e) => {
+                            error_message.set(Some(format!("Error loading borrower: {}", e)));
+                        }
+                    }
+                }
+                Some(Err(e)) => {
+                    // Database connection failed
+                    error_message.set(Some(e.clone()));
+                }
+                None => {
+                    // Still loading
+                }
+            }
+        });
+    });
+
+    // Save borrower changes
+    let save_changes = {
+        let client_resource = client_resource.clone();
+        let borrower = borrower.clone();
+        let mut error_message = error_message.clone();
+        let mut is_editing = is_editing.clone();
+        let edit_name = edit_name.clone();
+        let edit_status = edit_status.clone();
+        let edit_email = edit_email.clone();
+        let edit_phone = edit_phone.clone();
+        
+        move || {
+            let mut borrower_clone = borrower.clone();
+            spawn(async move {
+                if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                    if let Some(mut borrower_data) = borrower_clone() {
+                        // Update the borrower data
+                        borrower_data.name = edit_name();
+                        borrower_data.status = Some(edit_status());
+                        borrower_data.email = if edit_email().is_empty() { None } else { Some(edit_email()) };
+                        borrower_data.phone_number = if edit_phone().is_empty() { None } else { Some(edit_phone()) };
+                        borrower_data.updated_at = Utc::now();
+                        
+                        match db_client.update_borrower(borrower_data.clone()).await {
+                            Ok(_) => {
+                                borrower_clone.set(Some(borrower_data));
+                                error_message.set(None);
+                                is_editing.set(false);
+                            }
+                            Err(e) => {
+                                error_message.set(Some(format!("Error updating borrower: {}", e)));
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    // Cancel editing
+    let mut cancel_edit = {
+        let mut is_editing = is_editing.clone();
+        let borrower = borrower.clone();
+        let mut edit_name = edit_name.clone();
+        let mut edit_status = edit_status.clone();
+        let mut edit_email = edit_email.clone();
+        let mut edit_phone = edit_phone.clone();
+        
+        move || {
+            // Reset edit fields to current borrower data
+            if let Some(borrower_data) = borrower() {
+                edit_name.set(borrower_data.name.clone());
+                edit_status.set(borrower_data.status.unwrap_or(Status::Active));
+                edit_email.set(borrower_data.email.unwrap_or_default());
+                edit_phone.set(borrower_data.phone_number.unwrap_or_default());
+            }
+            is_editing.set(false);
+        }
+    };
+
+    // Wrap closures in Callbacks
+    let save_changes_cb = Callback::new(move |_| save_changes());
+    let cancel_edit_cb = Callback::new(move |_| cancel_edit());
+
+    let tabs = vec![
+        TabItem {
+            label: "Overview".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
+        TabItem {
+            label: "Income Worksheet".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
+        TabItem {
+            label: "Options Template".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
+    ];
+
+    rsx! {
+        div { class: "min-h-screen bg-gray-100 p-6",
+            div { class: "mx-auto",
+                // Header and Tabs on same line
+                div { class: "mb-8 flex justify-between items-start",
+                    div {
+                        h1 { class: "text-3xl font-bold text-gray-900", "Client Details" }
+                        p { class: "text-gray-600 mt-2", "Details for client ID: {id}" }
+                    }
+                    div {
+                        Tab {
+                            tabs,
+                            active_tab: *active_tab.read(),
+                            on_tab_change: Some(
+                                EventHandler::new(move |index: usize| {
+                                    active_tab.set(index);
+                                }),
+                            ),
+                        }
+                    }
+                }
+
+                // Content based on active tab
+                match *active_tab.read() {
+                    0 => {
+                        rsx! {
+                            ClientOverview {
+                                id,
+                                borrower,
+                                error_message,
+                                is_editing,
+                                edit_name,
+                                edit_status,
+                                edit_email,
+                                edit_phone,
+                                save_changes: save_changes_cb,
+                                cancel_edit: cancel_edit_cb,
+                                format_phone_number,
+                            }
+                        }
+                    }
+                    1 => {
+                        let content: Element = rsx! {
+                            Worksheet { id }
+                        };
+                        content
+                    }
+                    2 => {
+                        let content: Element = rsx! {
+                            OptionsTemplate { id }
+                        };
+                        content
+                    }
+                    _ => {
+                        let content: Element = rsx! { "Invalid tab" };
+                        content
+                    }
+                }
+            }
+        }
+    }
+}

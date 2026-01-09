@@ -145,3 +145,45 @@ pub fn ab_test_to_domain(model: &ab_tests::Model) -> ABTest {
         created_at: model.created_at,
     }
 }
+
+/// Convert database note model to domain model
+pub fn note_to_domain(model: &database::entities::note::Model) -> Note {
+    Note {
+        id: model.id,
+        client_id: model.client_id,
+        user_id: model.user_id,
+        content: model.content.clone(),
+        created_at: model.created_at,
+    }
+}
+
+/// Convert database document model to domain model
+pub fn document_to_domain(model: &database::entities::document::Model) -> Document {
+    Document {
+        id: model.id,
+        client_id: model.client_id,
+        filename: model.filename.clone(),
+        file_size: model.file_size,
+        file_type: model.file_type.clone(),
+        file_path: model.file_path.clone(),
+        mime_type: model.mime_type.clone(),
+        upload_date: model.upload_date.format("%Y-%m-%d %H:%M:%S UTC").to_string(),
+        description: model.description.clone(),
+        checksum: model.checksum.clone(),
+    }
+}
+
+/// Convert database condition model to domain model
+pub fn condition_to_domain(model: &database::entities::client::condition::Model) -> Condition {
+    Condition {
+        id: model.id,
+        client_id: model.client_id,
+        title: model.title.clone(),
+        description: model.description.clone(),
+        condition_type: parsers::parse_condition_type(&model.condition_type),
+        severity: parsers::parse_condition_severity(&model.severity),
+        status: parsers::parse_condition_status(&model.status),
+        created_at: model.created_at,
+        updated_at: model.updated_at,
+    }
+}

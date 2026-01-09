@@ -28,5 +28,8 @@ pub use theme::{ThemeProvider, use_theme, Theme};
 pub mod theme_toggle;
 pub use theme_toggle::ThemeToggle;
 
+pub mod file_upload;
+pub use file_upload::{FileUpload, SelectedFile};
+
 pub mod analytics_card;
 pub use analytics_card::AnalyticsCard;

@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 
 use crate::views::{ Welcome, Help, CampaignManager};
 use crate::views::dashboard::{MainDashboard, Analytics, Settings};
-use crate::views::dashboard::by_id::{Worksheet, ClientDetails, OptionsTemplate, Timeline, OutreachTemplates};
+use crate::views::dashboard::by_id::{Worksheet, ClientDetails, OptionsTemplate, Timeline, OutreachTemplates, UploadDocuments, ClientDocuments, ClientNotes};
 use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -34,6 +34,15 @@ pub enum Route {
 
         #[route("/:id/outreach/timeline")]
         Timeline {id: i32},
+
+        #[route("/:id/upload-documents")]
+        UploadDocuments {id: i32},
+
+        #[route("/:id/documents")]
+        ClientDocuments {id: i32},  
+
+        #[route("/:id/notes")]
+        ClientNotes {id: i32},  
 
         #[route("/help")]
         Help {},

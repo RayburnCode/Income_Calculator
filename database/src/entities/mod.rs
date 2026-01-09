@@ -11,7 +11,7 @@ pub mod calculations;
 pub mod settings;
 
 // Re-export entities at the top level for backward compatibility
-pub use client::{borrower, timeline_events, outreach_templates, campaigns, ab_tests};
+pub use client::{borrower, timeline_events, outreach_templates, campaigns, ab_tests, note, document};
 pub use income::{consumer_debt, income_information, w2_jobs};
 pub use loans::{existing_loans, loan_information, new_loan_details};
 pub use refinance::{mortgage_refinance, other_fees};

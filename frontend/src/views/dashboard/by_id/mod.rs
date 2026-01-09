@@ -1,4 +1,5 @@
 pub mod income_worksheet;
+use dioxus::html::mo;
 pub use income_worksheet::Worksheet;
 
 pub mod options_template;
@@ -9,3 +10,12 @@ pub use client::ClientDetails;
 
 pub mod outreach;
 pub use outreach::{Timeline, OutreachTemplates};
+
+pub mod notes;
+pub use notes::ClientNotes;
+
+pub mod document;
+pub use document::{ClientDocuments, UploadDocuments};
+
+pub mod conditions;
+pub use conditions::ClientConditions;

@@ -60,3 +60,35 @@ pub fn parse_status(s: &str) -> Status {
         _ => Status::Active,
     }
 }
+
+pub fn parse_condition_type(s: &str) -> ConditionType {
+    match s {
+        "Medical" => ConditionType::Medical,
+        "Financial" => ConditionType::Financial,
+        "Legal" => ConditionType::Legal,
+        "Employment" => ConditionType::Employment,
+        "Housing" => ConditionType::Housing,
+        "Other" => ConditionType::Other,
+        _ => ConditionType::Other,
+    }
+}
+
+pub fn parse_condition_severity(s: &str) -> ConditionSeverity {
+    match s {
+        "Low" => ConditionSeverity::Low,
+        "Medium" => ConditionSeverity::Medium,
+        "High" => ConditionSeverity::High,
+        "Critical" => ConditionSeverity::Critical,
+        _ => ConditionSeverity::Medium,
+    }
+}
+
+pub fn parse_condition_status(s: &str) -> ConditionStatus {
+    match s {
+        "Active" => ConditionStatus::Active,
+        "Resolved" => ConditionStatus::Resolved,
+        "Monitoring" => ConditionStatus::Monitoring,
+        "Inactive" => ConditionStatus::Inactive,
+        _ => ConditionStatus::Active,
+    }
+}

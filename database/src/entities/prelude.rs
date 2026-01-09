@@ -6,6 +6,8 @@ pub use super::client::timeline_events::{self as TimelineEvents, Entity as Timel
 pub use super::client::outreach_templates::{self as OutreachTemplates, Entity as OutreachTemplatesEntity};
 pub use super::client::campaigns::{self as Campaigns, Entity as CampaignsEntity};
 pub use super::client::ab_tests::{self as ABTests, Entity as ABTestsEntity};
+pub use super::client::note::{self as Note, Entity as NoteEntity};
+pub use super::client::document::{self as Document, Entity as DocumentEntity};
 
 // Income entities
 pub use super::income::consumer_debt::{self as ConsumerDebt, Entity as ConsumerDebtEntity};

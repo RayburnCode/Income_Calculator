@@ -19,5 +19,14 @@ pub use financial_models::*;
 pub mod frontend_models;
 pub use frontend_models::*;
 
+pub mod note;
+pub use note::*;
+
 pub mod settings;
 pub use settings::*;
+
+pub mod document;
+pub use document::*;
+
+pub mod condition;
+pub use condition::*;

@@ -285,6 +285,72 @@ impl Repository {
         campaigns::ABTestsRepository::update_results(&db, test_id, sent_a, sent_b, opened_a, opened_b, clicked_a, clicked_b, winner).await
     }
 
+    // ===== Note Operations =====
+
+    pub async fn create_note(&self, note_request: shared::models::CreateNoteRequest) -> Result<shared::models::Note, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        note::NoteRepository::create(&db, note_request).await
+    }
+
+    pub async fn get_notes_by_client(&self, client_id: i32) -> Result<Vec<shared::models::Note>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        note::NoteRepository::get_by_client_id(&db, client_id).await
+    }
+
+    pub async fn delete_note(&self, note_id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        note::NoteRepository::delete(&db, note_id).await
+    }
+
+    // ===== Document Operations =====
+
+    pub async fn upload_document(&self, upload_request: shared::models::UploadDocumentRequest) -> Result<shared::models::Document, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        document::DocumentRepository::create(&db, upload_request).await
+    }
+
+    pub async fn get_documents_by_client(&self, client_id: i32) -> Result<Vec<shared::models::Document>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        document::DocumentRepository::get_by_client_id(&db, client_id).await
+    }
+
+    pub async fn delete_document(&self, document_id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        document::DocumentRepository::delete(&db, document_id).await
+    }
+
+    // ===== Condition Operations =====
+
+    pub async fn create_condition(&self, condition_request: shared::models::CreateConditionRequest) -> Result<shared::models::Condition, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        condition::ConditionRepository::create(&db, condition_request).await
+    }
+
+    pub async fn get_conditions_by_client(&self, client_id: i32) -> Result<Vec<shared::models::Condition>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        condition::ConditionRepository::get_by_client_id(&db, client_id).await
+    }
+
+    pub async fn get_condition_by_id(&self, condition_id: i32) -> Result<Option<shared::models::Condition>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        condition::ConditionRepository::get_by_id(&db, condition_id).await
+    }
+
+    pub async fn update_condition(&self, condition_id: i32, update_request: shared::models::UpdateConditionRequest) -> Result<Option<shared::models::Condition>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        condition::ConditionRepository::update(&db, condition_id, update_request).await
+    }
+
+    pub async fn delete_condition(&self, condition_id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        condition::ConditionRepository::delete(&db, condition_id).await
+    }
+
+    pub async fn download_document(&self, document_id: i32) -> Result<Option<(shared::models::Document, Vec<u8>)>, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        document::DocumentRepository::get_file_data(&db, document_id).await
+    }
+
     // Additional legacy methods can be added here as needed
 }
 

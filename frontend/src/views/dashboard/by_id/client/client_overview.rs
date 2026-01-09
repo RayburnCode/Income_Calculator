@@ -13,6 +13,13 @@ pub fn ClientOverview(
     edit_status: Signal<Status>,
     edit_email: Signal<String>,
     edit_phone: Signal<String>,
+    edit_date_of_birth: Signal<String>,
+    edit_social_security_number: Signal<String>,
+    edit_address: Signal<String>,
+    edit_city: Signal<String>,
+    edit_state: Signal<String>,
+    edit_zip_code: Signal<String>,
+    edit_mailing_address_different: Signal<bool>,
     save_changes: Callback<()>,
     cancel_edit: Callback<()>,
     format_phone_number: fn(&str) -> String,
@@ -26,6 +33,13 @@ pub fn ClientOverview(
             edit_status,
             edit_email,
             edit_phone,
+            edit_date_of_birth,
+            edit_social_security_number,
+            edit_address,
+            edit_city,
+            edit_state,
+            edit_zip_code,
+            edit_mailing_address_different,
             save_changes,
             cancel_edit,
             format_phone_number,
@@ -37,12 +51,5 @@ pub fn ClientOverview(
             }
             W2Jobs { borrower_id: id }
         }
-
-        div { class: "mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
-            h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
-                "Loan Information"
-            }
-            p { class: "text-gray-600 dark:text-gray-300", "Loan details will be displayed here." }
-        }
     }
-}
+    }

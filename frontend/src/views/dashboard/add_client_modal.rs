@@ -53,6 +53,13 @@ pub fn AddClientModal(on_client_added: EventHandler<()>) -> Element {
             status: Some(Status::Active),
             email: Some(email_val),
             phone_number: Some(phone_val),
+            date_of_birth: None,
+            social_security_number: None,
+            address: None,
+            city: None,
+            state: None,
+            zip_code: None,
+            mailing_address_different: Some(false),
             created_at: Utc::now(),
             updated_at: Utc::now(),
         };

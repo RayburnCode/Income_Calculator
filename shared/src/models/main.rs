@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, NaiveDate};
 use uuid::Uuid;
 
 use crate::models::*;
@@ -16,6 +16,13 @@ pub struct Borrower {
     pub status: Option<Status>,
     pub email: Option<String>,
     pub phone_number: Option<String>,
+    pub date_of_birth: Option<NaiveDate>,
+    pub social_security_number: Option<String>,
+    pub address: Option<String>,
+    pub city: Option<String>,
+    pub state: Option<String>,
+    pub zip_code: Option<String>,
+    pub mailing_address_different: Option<bool>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -32,6 +39,13 @@ impl Default for Borrower {
             status: Some(Status::Active),
             email: None,
             phone_number: None,
+            date_of_birth: None,
+            social_security_number: None,
+            address: None,
+            city: None,
+            state: None,
+            zip_code: None,
+            mailing_address_different: Some(false),
             created_at: now,
             updated_at: now,
         }

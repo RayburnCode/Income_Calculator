@@ -9,6 +9,7 @@ mod m20260106_000007_create_fee_and_refinance_tables;
 mod m20260106_000008_create_junction_tables;
 mod m20260109_000001_add_property_type_to_loan_information;
 mod m20260109_000002_add_missing_columns_to_loan_information;
+mod m20260109_000003_add_borrower_personal_info;
 
 pub struct Migrator;
 
@@ -24,6 +25,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260106_000008_create_junction_tables::Migration),
             Box::new(m20260109_000001_add_property_type_to_loan_information::Migration),
             Box::new(m20260109_000002_add_missing_columns_to_loan_information::Migration),
+            Box::new(m20260109_000003_add_borrower_personal_info::Migration),
         ]
     }
 } 

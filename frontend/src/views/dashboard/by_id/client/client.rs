@@ -36,6 +36,13 @@ pub fn ClientDetails(id: i32) -> Element {
     let  edit_status = use_signal(|| Status::Active);
     let  edit_email = use_signal(|| String::new());
     let  edit_phone = use_signal(|| String::new());
+    let mut edit_date_of_birth = use_signal(|| String::new());
+    let mut edit_social_security_number = use_signal(|| String::new());
+    let mut edit_address = use_signal(|| String::new());
+    let mut edit_city = use_signal(|| String::new());
+    let mut edit_state = use_signal(|| String::new());
+    let mut edit_zip_code = use_signal(|| String::new());
+    let mut edit_mailing_address_different = use_signal(|| false);
 
     // Load borrower when the resource is ready
     use_effect(move || {
@@ -60,6 +67,13 @@ pub fn ClientDetails(id: i32) -> Element {
                             edit_status.set(borrower_data.status.unwrap_or(Status::Active));
                             edit_email.set(borrower_data.email.unwrap_or_default());
                             edit_phone.set(borrower_data.phone_number.unwrap_or_default());
+                            edit_date_of_birth.set(borrower_data.date_of_birth.map(|d| d.format("%Y-%m-%d").to_string()).unwrap_or_default());
+                            edit_social_security_number.set(borrower_data.social_security_number.unwrap_or_default());
+                            edit_address.set(borrower_data.address.unwrap_or_default());
+                            edit_city.set(borrower_data.city.unwrap_or_default());
+                            edit_state.set(borrower_data.state.unwrap_or_default());
+                            edit_zip_code.set(borrower_data.zip_code.unwrap_or_default());
+                            edit_mailing_address_different.set(borrower_data.mailing_address_different.unwrap_or(false));
                             error_message.set(None);
                         }
                         Ok(None) => {
@@ -102,6 +116,13 @@ pub fn ClientDetails(id: i32) -> Element {
                         borrower_data.status = Some(edit_status());
                         borrower_data.email = if edit_email().is_empty() { None } else { Some(edit_email()) };
                         borrower_data.phone_number = if edit_phone().is_empty() { None } else { Some(edit_phone()) };
+                        borrower_data.date_of_birth = if edit_date_of_birth().is_empty() { None } else { chrono::NaiveDate::parse_from_str(&edit_date_of_birth(), "%Y-%m-%d").ok() };
+                        borrower_data.social_security_number = if edit_social_security_number().is_empty() { None } else { Some(edit_social_security_number()) };
+                        borrower_data.address = if edit_address().is_empty() { None } else { Some(edit_address()) };
+                        borrower_data.city = if edit_city().is_empty() { None } else { Some(edit_city()) };
+                        borrower_data.state = if edit_state().is_empty() { None } else { Some(edit_state()) };
+                        borrower_data.zip_code = if edit_zip_code().is_empty() { None } else { Some(edit_zip_code()) };
+                        borrower_data.mailing_address_different = Some(edit_mailing_address_different());
                         borrower_data.updated_at = Utc::now();
                         
                         match db_client.update_borrower(borrower_data.clone()).await {
@@ -136,6 +157,13 @@ pub fn ClientDetails(id: i32) -> Element {
                 edit_status.set(borrower_data.status.unwrap_or(Status::Active));
                 edit_email.set(borrower_data.email.unwrap_or_default());
                 edit_phone.set(borrower_data.phone_number.unwrap_or_default());
+                edit_date_of_birth.set(borrower_data.date_of_birth.map(|d| d.format("%Y-%m-%d").to_string()).unwrap_or_default());
+                edit_social_security_number.set(borrower_data.social_security_number.unwrap_or_default());
+                edit_address.set(borrower_data.address.unwrap_or_default());
+                edit_city.set(borrower_data.city.unwrap_or_default());
+                edit_state.set(borrower_data.state.unwrap_or_default());
+                edit_zip_code.set(borrower_data.zip_code.unwrap_or_default());
+                edit_mailing_address_different.set(borrower_data.mailing_address_different.unwrap_or(false));
             }
             is_editing.set(false);
         }
@@ -230,6 +258,13 @@ pub fn ClientDetails(id: i32) -> Element {
                                 edit_status,
                                 edit_email,
                                 edit_phone,
+                                edit_date_of_birth,
+                                edit_social_security_number,
+                                edit_address,
+                                edit_city,
+                                edit_state,
+                                edit_zip_code,
+                                edit_mailing_address_different,
                                 save_changes: save_changes_cb,
                                 cancel_edit: cancel_edit_cb,
                                 format_phone_number,

@@ -17,6 +17,13 @@ pub fn borrower_to_domain(model: &borrower::Model) -> Borrower {
         status: model.status.as_ref().map(|s| parsers::parse_status(s)),
         email: model.email.clone(),
         phone_number: model.phone_number.clone(),
+        date_of_birth: model.date_of_birth,
+        social_security_number: model.social_security_number.clone(),
+        address: model.address.clone(),
+        city: model.city.clone(),
+        state: model.state.clone(),
+        zip_code: model.zip_code.clone(),
+        mailing_address_different: model.mailing_address_different,
         created_at: model.created_at,
         updated_at: model.updated_at,
     }

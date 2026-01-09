@@ -13,6 +13,13 @@ pub struct Model {
     pub status: Option<String>,
     pub email: Option<String>,
     pub phone_number: Option<String>,
+    pub date_of_birth: Option<Date>,
+    pub social_security_number: Option<String>,
+    pub address: Option<String>,
+    pub city: Option<String>,
+    pub state: Option<String>,
+    pub zip_code: Option<String>,
+    pub mailing_address_different: Option<bool>,
     pub created_at: DateTimeUtc,
     pub updated_at: DateTimeUtc,
 }

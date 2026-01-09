@@ -303,17 +303,19 @@ pub fn Worksheet(id: i32) -> Element {
                     "Pay Type"
                 }
                 IncomeAccordion { items: pay_type_items, on_include_change: None }
+            }
 
-                // Other Income Section
-                if !other_income_items.is_empty() {
-                    h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
-                        span { class: "text-green-600", "📊" }
-                        "Other Taxable and Nontaxable Income"
-                    }
-                    IncomeAccordion { items: other_income_items, on_include_change: None }
+            // Other Income Section
+            if !other_income_items.is_empty() {
+                h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
+                    span { class: "text-green-600", "📊" }
+                    "Other Taxable and Nontaxable Income"
                 }
+                IncomeAccordion { items: other_income_items, on_include_change: None }
+            }
 
-                // Summary section
+            // Summary section - show if any items are selected
+            if !displayed_sections.read().is_empty() {
                 div { class: "bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-xl shadow-lg border-2 border-blue-200 mt-10",
                     h3 { class: "text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2",
                         span { class: "text-blue-600", "✓" }
@@ -348,11 +350,6 @@ pub fn Worksheet(id: i32) -> Element {
                                         section_id.as_str()
                                     }
                                 }
-                            }
-                        }
-                        if displayed_sections.read().is_empty() {
-                            span { class: "text-gray-700 italic font-medium",
-                                "No income sources selected"
                             }
                         }
                     }

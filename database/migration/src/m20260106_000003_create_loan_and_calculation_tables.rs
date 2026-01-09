@@ -96,6 +96,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Alias::new("debt_to_income_ratio")).decimal_len(5, 4).not_null())
                     .col(ColumnDef::new(Alias::new("employment_status")).string().not_null())
                     .col(ColumnDef::new(Alias::new("years_employed")).integer().not_null())
+                    .col(ColumnDef::new(Alias::new("property_type")).string().not_null())
                     .col(ColumnDef::new(Alias::new("created_at")).timestamp_with_time_zone().not_null())
                     .col(ColumnDef::new(Alias::new("updated_at")).timestamp_with_time_zone().not_null())
                     .foreign_key(

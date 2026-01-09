@@ -29,30 +29,8 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
                 }
             }).collect::<Vec<_>>()
         } else {
-            // Fallback mock data if no W2 data available
-            vec![
-                IncomeSource {
-                    id: "w2_jobs".to_string(),
-                    name: "W-2 Employment".to_string(),
-                    monthly_amount: 5500.0,
-                    category: "Employment".to_string(),
-                    included_in_dti: true,
-                },
-                IncomeSource {
-                    id: "commission".to_string(),
-                    name: "Commission Income".to_string(),
-                    monthly_amount: 800.0,
-                    category: "Employment".to_string(),
-                    included_in_dti: true,
-                },
-                IncomeSource {
-                    id: "overtime".to_string(),
-                    name: "Overtime Pay".to_string(),
-                    monthly_amount: 600.0,
-                    category: "Employment".to_string(),
-                    included_in_dti: false,
-                },
-            ]
+            // No fallback mock data - show empty if no W2 data available
+            Vec::new()
         }
     });
 
@@ -105,23 +83,35 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
                         }
                     }
                 }
-                div { class: "space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50",
-                    for income in w2_income_sources() {
-                        div { class: "flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200",
-                            div { class: "flex items-center space-x-3",
-                                div { class: "w-4 h-4 rounded-full bg-green-500 flex items-center justify-center",
-                                    span { class: "text-white text-xs", "✓" }
+                if w2_income_sources().is_empty() {
+                    div { class: "text-center py-8 text-gray-500 border border-gray-200 rounded-lg bg-gray-50",
+                        div { class: "text-lg mb-2", "📊" }
+                        div { class: "font-medium mb-1", "No Income Sources Found" }
+                        div { class: "text-sm",
+                            "Add income information in the Client Details → Income Worksheet tab"
+                        }
+                    }
+                } else {
+                    div { class: "space-y-3 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50",
+                        for income in w2_income_sources() {
+                            div { class: "flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200",
+                                div { class: "flex items-center space-x-3",
+                                    div { class: "w-4 h-4 rounded-full bg-green-500 flex items-center justify-center",
+                                        span { class: "text-white text-xs", "✓" }
+                                    }
+                                    div {
+                                        div { class: "font-medium text-gray-900", "{income.name}" }
+                                        div { class: "text-sm text-gray-600", "{income.category}" }
+                                    }
                                 }
-                                div {
-                                    div { class: "font-medium text-gray-900", "{income.name}" }
-                                    div { class: "text-sm text-gray-600", "{income.category}" }
+                                div { class: "text-right",
+                                    div { class: "font-semibold text-green-700",
+                                        "${income.monthly_amount:.0}/mo"
+                                    }
+                                    div { class: "text-xs text-green-600 font-medium",
+                                        "Included in DTI"
+                                    }
                                 }
-                            }
-                            div { class: "text-right",
-                                div { class: "font-semibold text-green-700",
-                                    "${income.monthly_amount:.0}/mo"
-                                }
-                                div { class: "text-xs text-green-600 font-medium", "Included in DTI" }
                             }
                         }
                     }

@@ -2,7 +2,7 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-:root {
+@theme {
   --font-display: "Poppins", "system-ui", "sans-serif";
 
   /* Light Mode Theme Colors in OKLCH */
@@ -18,6 +18,54 @@
   --color-text-primary: oklch(16% 0.02 240deg); /* Dark text */
   --color-text-secondary: oklch(35% 0.01 240deg); /* Medium text */
   --color-text-accent: oklch(60% 0.18 190deg); /* Accent text */
+
+  /* Custom theme colors */
+  --color-theme-primary-50: var(--color-bg-primary);
+  --color-theme-primary-100: var(--color-bg-secondary);
+  --color-theme-primary-200: var(--color-bg-tertiary);
+  --color-theme-primary-500: var(--color-accent);
+  --color-theme-primary-600: var(--color-primary-medium);
+  --color-theme-primary-700: var(--color-primary-dark);
+  --color-theme-primary-900: var(--color-text-primary);
+
+  --color-theme-surface-50: var(--color-bg-primary);
+  --color-theme-surface-100: var(--color-bg-secondary);
+  --color-theme-surface-200: var(--color-bg-tertiary);
+  --color-theme-surface-700: var(--color-bg-secondary);
+  --color-theme-surface-800: var(--color-bg-tertiary);
+  --color-theme-surface-900: var(--color-bg-primary);
+
+  --color-theme-text-primary: var(--color-text-primary);
+  --color-theme-text-secondary: var(--color-text-secondary);
+  --color-theme-text-accent: var(--color-text-accent);
+  --color-theme-text-100: var(--color-text-primary);
+  --color-theme-text-200: var(--color-text-secondary);
+  --color-theme-text-300: var(--color-text-secondary);
+  --color-theme-text-400: var(--color-text-secondary);
+  --color-theme-text-500: var(--color-text-secondary);
+  --color-theme-text-600: var(--color-text-secondary);
+  --color-theme-text-700: var(--color-text-primary);
+  --color-theme-text-800: var(--color-text-primary);
+  --color-theme-text-900: var(--color-text-primary);
+
+  --color-theme-border-200: var(--color-bg-tertiary);
+  --color-theme-border-300: var(--color-bg-tertiary);
+  --color-theme-border-600: var(--color-bg-secondary);
+  --color-theme-border-700: var(--color-bg-tertiary);
+
+  --color-theme-bg-primary: var(--color-bg-primary);
+  --color-theme-bg-secondary: var(--color-bg-secondary);
+  --color-theme-bg-tertiary: var(--color-bg-tertiary);
+
+  --color-theme-success-400: var(--color-accent);
+  --color-theme-success-600: var(--color-accent);
+
+  --color-theme-error-400: var(--color-primary-dark);
+  --color-theme-error-500: var(--color-primary-dark);
+  --color-theme-error-600: var(--color-primary-dark);
+
+  --color-theme-warning-400: var(--color-light);
+  --color-theme-warning-600: var(--color-light);
 
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
   --ease-snappy: cubic-bezier(0.2, 0, 0, 1);

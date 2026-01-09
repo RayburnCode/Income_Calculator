@@ -169,9 +169,9 @@ pub fn ClientDetails(id: i32) -> Element {
     rsx! {
         div { class: "min-h-screen bg-theme-bg-primary",
             // Banner background
-            div { class: "relative h-32 bg-gradient-to-r from-primary-dark via-primary-medium to-accent opacity-60",
+            div { class: "relative h-32 bg-gradient-to-r from-primary-dark via-primary-medium to-accent",
                 // Optional overlay for better text readability if needed
-                div { class: "absolute inset-0 bg-theme-bg-primary/10" }
+                div { class: "absolute inset-0 bg-theme-bg-primary/20" }
 
                 // Client name, status, and tabs overlay
                 div { class: "absolute bottom-4 left-6 right-6 flex items-end justify-between",

@@ -36,9 +36,9 @@ pub fn Tab(props: TabProps) -> Element {
         class,
     } = props;
 
-    let active_classes = "inline-block p-4 text-accent bg-theme-bg-secondary rounded-t-lg active border-b-2 border-accent";
-    let inactive_classes = "inline-block p-4 text-theme-text-secondary rounded-t-lg hover:text-theme-text-primary hover:bg-theme-bg-tertiary border-b-2 border-transparent";
-    let disabled_classes = "inline-block p-4 text-theme-text-secondary/50 rounded-t-lg cursor-not-allowed border-b-2 border-transparent";
+    let active_classes = "inline-block p-4 text-white bg-gray-600 rounded-t-lg active border-b-2 border-accent";
+    let inactive_classes = "inline-block p-4 text-white rounded-t-lg hover:text-white hover:bg-theme-bg-tertiary border-b-2 border-transparent";
+    let disabled_classes = "inline-block p-4 text-white/50 rounded-t-lg cursor-not-allowed border-b-2 border-transparent";
 
     rsx! {
         ul {

@@ -3,6 +3,7 @@ use crate::components::tab::{Tab, TabItem};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
 use crate::views::dashboard::by_id::outreach::{OutreachTemplates, Timeline};
+use crate::views::dashboard::by_id::{ClientNotes,ClientDocuments, ClientConditions};
 use chrono::Utc;
 use shared::models::Status;
 use crate::views::dashboard::by_id::client::{ClientOverview};
@@ -193,6 +194,22 @@ pub fn ClientDetails(id: i32) -> Element {
             disabled: false,
             icon: None,
         },
+                    TabItem {
+            label: "Notes".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },            TabItem {
+            label: "Documents".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },            TabItem {
+            label: "Conditions".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
             TabItem {
             label: "Outreach".to_string(),
             href: None,
@@ -210,14 +227,14 @@ pub fn ClientDetails(id: i32) -> Element {
     rsx! {
         div { class: "min-h-screen bg-theme-bg-primary dark:bg-theme-bg-secondary",
             // Banner background
-            div { class: "relative h-32 bg-gradient-to-r from-primary-medium  to-accent",
+            div { class: "relative h-32 bg-gradient-to-r from-primary-medium to-accent pt-20",
                 // Optional overlay for better text readability if needed
                 div { class: "absolute inset-0 bg-theme-bg-primary/20 dark:bg-theme-bg-secondary/30" }
 
                 // Client name, status, and tabs overlay
-                div { class: "absolute bottom-4 left-6 right-6 flex items-end justify-between",
-                    // Name and status on the left
-                    div { class: "flex flex-col gap-2",
+                div { class: "absolute bottom-4 left-6 right-6 flex flex-col items-start gap-4",
+                    // Name and status on the top
+                    div { class: "pb-4",
                         h1 { class: "text-2xl font-bold text-theme-text-primary dark:text-theme-text-secondary drop-shadow-lg",
                             {borrower().map(|b| b.name.clone()).unwrap_or_else(|| "Loading...".to_string())}
                         }
@@ -242,7 +259,7 @@ pub fn ClientDetails(id: i32) -> Element {
                         }
                     }
 
-                    // Tabs on the right
+                    // Tabs below the name
                     div {
                         Tab {
                             tabs,
@@ -298,11 +315,29 @@ pub fn ClientDetails(id: i32) -> Element {
                     }
                     3 => {
                         let content: Element = rsx! {
-                            OutreachTemplates { id }
+                            ClientNotes { id }
                         };
                         content
                     }
                     4 => {
+                        let content: Element = rsx! {
+                            ClientDocuments { id }
+                        };
+                        content
+                    }
+                    5 => {
+                        let content: Element = rsx! {
+                            ClientConditions { id }
+                        };
+                        content
+                    }
+                    6 => {
+                        let content: Element = rsx! {
+                            OutreachTemplates { id }
+                        };
+                        content
+                    }
+                    7 => {
                         let content: Element = rsx! {
                             Timeline { id }
                         };

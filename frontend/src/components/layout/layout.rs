@@ -51,7 +51,7 @@ pub fn AppLayout() -> Element {
 
 
     rsx! {
-        div { class: "min-h-screen bg-gray-900 text-gray-100 flex flex-col",
+        div { class: "min-h-screen bg-theme-bg-primary text-theme-text-primary flex flex-col",
             // Header
             Navbar {}
             // Main Content Area
@@ -61,7 +61,7 @@ pub fn AppLayout() -> Element {
             // Toast overlay (bottom-right)
             if let Some(msg) = toast.read().as_ref() {
                 div { class: "fixed bottom-6 right-6 z-50",
-                    div { class: "bg-black/80 text-white rounded-md px-4 py-2 shadow-lg",
+                    div { class: "bg-theme-bg-tertiary text-theme-text-primary rounded-md px-4 py-2 shadow-lg border border-theme-text-secondary/20",
                         "{msg}"
                     }
                 }

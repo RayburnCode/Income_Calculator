@@ -8,6 +8,7 @@ mod components;
 mod views;
 mod routes;
 use routes::Route;
+use components::ThemeProvider;
  
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
@@ -24,7 +25,7 @@ fn App() -> Element {
             rsx! {
                 document::Link { rel: "icon", href: FAVICON }
                 document::Link { rel: "stylesheet", href: TAILWIND_CSS }
-                Router::<Route> {}
+                ThemeProvider { Router::<Route> {} }
             }
         },
         Some(Err(error_msg)) => {
@@ -67,9 +68,7 @@ fn App() -> Element {
                         div { class: "mt-4",
                             button {
                                 class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200",
-                                onclick: // For desktop apps, we can't reload the page like in web browsers
-                                // The user needs to manually restart the application
-                                move |_| {},
+                                onclick: move |_| {},
                                 "Restart Application"
                             }
                             p { class: "text-sm text-gray-500 mt-2 text-center",

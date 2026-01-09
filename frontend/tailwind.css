@@ -4,14 +4,44 @@
 
 :root {
   --font-display: "Poppins", "system-ui", "sans-serif";
-  --color-avocado-100: oklch(0.99 0 0);
-  --color-avocado-200: oklch(0.98 0.04 113.22);
-  --color-avocado-300: oklch(0.94 0.11 115.03);
-  --color-avocado-400: oklch(0.92 0.19 114.08);
-  --color-avocado-500: oklch(0.84 0.18 117.33);
-  --color-avocado-600: oklch(0.53 0.12 118.34);
+
+  /* Light Mode Theme Colors in OKLCH */
+  --color-primary-dark: oklch(16% 0.02 240deg); /* #222831 - Dark blue-gray */
+  --color-primary-medium: oklch(25% 0.015 240deg); /* #393E46 - Medium gray */
+  --color-accent: oklch(60% 0.18 190deg); /* #00ADB5 - Teal */
+  --color-light: oklch(93% 0.001 240deg); /* #EEEEEE - Light gray */
+
+  /* Background and surface colors for light mode */
+  --color-bg-primary: oklch(98% 0.005 240deg); /* Very light gray background */
+  --color-bg-secondary: oklch(96% 0.003 240deg); /* Light gray surfaces */
+  --color-bg-tertiary: oklch(94% 0.002 240deg); /* Medium light surfaces */
+  --color-text-primary: oklch(16% 0.02 240deg); /* Dark text */
+  --color-text-secondary: oklch(35% 0.01 240deg); /* Medium text */
+  --color-text-accent: oklch(60% 0.18 190deg); /* Accent text */
+
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
   --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Dark Mode Theme */
+.dark {
+  /* Dark Mode Theme Colors in OKLCH */
+  --color-primary-dark: oklch(
+    84% 0.02 240deg
+  ); /* Light blue-gray for dark backgrounds */
+  --color-primary-medium: oklch(
+    75% 0.015 240deg
+  ); /* Medium light gray for surfaces */
+  --color-accent: oklch(70% 0.18 190deg); /* Brighter teal for dark mode */
+  --color-light: oklch(20% 0.001 240deg); /* Dark gray text */
+
+  /* Background and surface colors for dark mode */
+  --color-bg-primary: oklch(12% 0.02 240deg); /* Dark background */
+  --color-bg-secondary: oklch(18% 0.015 240deg); /* Dark surface */
+  --color-bg-tertiary: oklch(22% 0.01 240deg); /* Medium dark surface */
+  --color-text-primary: oklch(95% 0.005 240deg); /* Light text */
+  --color-text-secondary: oklch(75% 0.01 240deg); /* Medium light text */
+  --color-text-accent: oklch(70% 0.18 190deg); /* Accent text */
 }
 
 /* Hide number input spinners */

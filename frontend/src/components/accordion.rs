@@ -66,8 +66,8 @@ pub fn Accordion(props: AccordionProps) -> Element {
     });
 
     let base_container_class = "space-y-4";
-    let base_button_class = "flex items-center justify-between w-full p-5 font-medium text-left text-gray-700 hover:bg-gray-50 transition";
-    let base_content_class = "p-6 border-t border-gray-200";
+    let base_button_class = "flex items-center justify-between w-full p-5 font-medium text-left text-theme-text-700 dark:text-theme-text-200 hover:bg-theme-surface-100 dark:hover:bg-theme-surface-800 transition";
+    let base_content_class = "p-6 border-t border-theme-border-200 dark:border-theme-border-700";
 
     // Track checkbox states
     let mut checkbox_states = use_signal(|| {
@@ -87,8 +87,10 @@ pub fn Accordion(props: AccordionProps) -> Element {
                     let checkbox_checked = checkbox_states.read().get(idx).copied().unwrap_or(false);
                     let on_checkbox_change = item.on_checkbox_change.clone();
                     rsx! {
-                        div { key: "{item_id}", class: "bg-white rounded-lg shadow overflow-hidden",
-                            div { class: "border-b border-gray-200",
+                        div {
+                            key: "{item_id}",
+                            class: "bg-theme-surface-50 dark:bg-theme-surface-900 rounded-lg shadow overflow-hidden",
+                            div { class: "border-b border-theme-border-200 dark:border-theme-border-700",
                                 button {
                                     r#type: "button",
                                     class: if !button_class.is_empty() { "{button_class}" } else { "{base_button_class}" },
@@ -108,7 +110,7 @@ pub fn Accordion(props: AccordionProps) -> Element {
                                         if show_checkbox {
                                             input {
                                                 r#type: "checkbox",
-                                                class: "w-4 h-4 border border-gray-300 rounded",
+                                                class: "w-4 h-4 border border-theme-border-300 dark:border-theme-border-600 rounded",
                                                 checked: checkbox_checked,
                                                 onclick: move |evt: Event<MouseData>| {
                                                     evt.stop_propagation();

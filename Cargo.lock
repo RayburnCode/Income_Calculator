@@ -2017,6 +2017,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "dioxus",
+ "gloo-timers",
  "log",
  "repository",
  "serde",
@@ -2024,6 +2025,7 @@ dependencies = [
  "tokio",
  "tracing",
  "uuid",
+ "web-sys",
 ]
 
 [[package]]

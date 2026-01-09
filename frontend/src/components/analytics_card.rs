@@ -42,22 +42,22 @@ pub fn AnalyticsCard(props: AnalyticsCardProps) -> Element {
 
     // Color classes based on the color prop
     let color_classes = match color.as_str() {
-        "blue" => "text-blue-600",
-        "green" => "text-green-600",
-        "purple" => "text-purple-600",
-        "red" => "text-red-600",
-        "yellow" => "text-yellow-600",
-        "indigo" => "text-indigo-600",
-        "pink" => "text-pink-600",
-        "gray" => "text-gray-600",
-        _ => "text-blue-600",
+        "blue" | "primary" => "text-theme-primary-600 dark:text-theme-primary-400",
+        "green" | "success" => "text-theme-success-600 dark:text-theme-success-400",
+        "purple" | "secondary" => "text-theme-primary-700 dark:text-theme-primary-300",
+        "red" | "error" => "text-theme-error-600 dark:text-theme-error-400",
+        "yellow" | "warning" => "text-theme-warning-600 dark:text-theme-warning-400",
+        "indigo" => "text-theme-primary-800 dark:text-theme-primary-200",
+        "pink" => "text-theme-error-500 dark:text-theme-error-300",
+        "gray" => "text-theme-text-600 dark:text-theme-text-300",
+        _ => "text-theme-primary-600 dark:text-theme-primary-400",
     };
 
-    let trend_color = if trend_positive { "text-green-600" } else { "text-red-600" };
+    let trend_color = if trend_positive { "text-theme-success-600 dark:text-theme-success-400" } else { "text-theme-error-600 dark:text-theme-error-400" };
     let trend_icon = if trend_positive { "↗" } else { "↘" };
 
     rsx! {
-        div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md {class}",
+        div { class: "bg-theme-surface-50 dark:bg-theme-surface-900 p-4 sm:p-6 rounded-lg shadow-md {class}",
             div { class: "flex items-center justify-between",
                 div { class: "flex-1",
                     div { class: "flex items-center",
@@ -67,11 +67,11 @@ pub fn AnalyticsCard(props: AnalyticsCardProps) -> Element {
                             }
                         }
                         div {
-                            h3 { class: "text-sm sm:text-lg font-semibold text-gray-700",
+                            h3 { class: "text-sm sm:text-lg font-semibold text-theme-text-700 dark:text-theme-text-200",
                                 "{title}"
                             }
                             if let Some(sub) = subtitle {
-                                p { class: "text-xs sm:text-sm text-gray-500 mt-1",
+                                p { class: "text-xs sm:text-sm text-theme-text-500 dark:text-theme-text-400 mt-1",
                                     "{sub}"
                                 }
                             }

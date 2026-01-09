@@ -22,5 +22,11 @@ pub use table::Table;
 pub mod search;
 pub use search::Search;
 
+pub mod theme;
+pub use theme::{ThemeProvider, use_theme, Theme};
+
+pub mod theme_toggle;
+pub use theme_toggle::ThemeToggle;
+
 pub mod analytics_card;
 pub use analytics_card::AnalyticsCard;

@@ -236,7 +236,7 @@ pub fn Income() -> Element {
                     rsx! {
                         div { class: "mt-6 space-y-2",
                             // Table header
-                            div { class: "grid grid-cols-12 gap-2 px-3 py-2 bg-gray-100 rounded-lg font-semibold text-sm text-gray-700",
+                            div { class: "grid grid-cols-12 gap-2 px-3 py-2 bg-theme-surface-200 dark:bg-theme-surface-700 rounded-lg font-semibold text-sm text-theme-text-700 dark:text-theme-text-200",
                                 div { class: "col-span-4", "Description" }
                                 div { class: "col-span-3", "Type" }
                                 div { class: "col-span-3 text-right", "Monthly Amount" }
@@ -254,16 +254,16 @@ pub fn Income() -> Element {
                                         rsx! {
                                             div {
                                                 key: "{income_id}",
-                                                class: "grid grid-cols-12 gap-2 px-3 py-3 bg-gray-50 rounded-lg items-center hover:bg-gray-100 transition",
-                                                div { class: "col-span-4 text-gray-800", "{income_desc}" }
-                                                div { class: "col-span-3 text-gray-800", "{income_type_val}" }
-                                                div { class: "col-span-3 text-right font-semibold text-gray-800 px-4",
+                                                class: "grid grid-cols-12 gap-2 px-3 py-3 bg-theme-surface-100 dark:bg-theme-surface-800 rounded-lg items-center hover:bg-theme-surface-200 dark:hover:bg-theme-surface-700 transition",
+                                                div { class: "col-span-4 text-theme-text-800 dark:text-theme-text-100", "{income_desc}" }
+                                                div { class: "col-span-3 text-theme-text-800 dark:text-theme-text-100", "{income_type_val}" }
+                                                div { class: "col-span-3 text-right font-semibold text-theme-text-800 dark:text-theme-text-100 px-4",
                                                     "{format_money(income_amount)}"
                                                 }
                                                 div { class: "col-span-2 flex gap-2 justify-center",
                                                     // Edit button
                                                     button {
-                                                        class: "cursor-pointer px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded transition",
+                                                        class: "cursor-pointer px-3 py-1 bg-theme-primary-500 hover:bg-theme-primary-600 text-white text-xs font-medium rounded transition",
                                                         onclick: move |_| {
                                                             if let Some(i) = incomes_list.read().iter().find(|i| i.id == income_id) {
                                                                 description.set(i.description.clone());
@@ -276,7 +276,7 @@ pub fn Income() -> Element {
                                                     }
                                                     // Delete button
                                                     button {
-                                                        class: "cursor-pointer px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition",
+                                                        class: "cursor-pointer px-3 py-1 bg-theme-error-500 hover:bg-theme-error-600 text-white text-xs font-medium rounded transition",
                                                         onclick: move |_| {
                                                             incomes_list.write().retain(|i| i.id != income_id);
                                                             if editing_id() == Some(income_id) {
@@ -298,10 +298,14 @@ pub fn Income() -> Element {
                 }
             }
             // Total display
-            div { class: "mt-6 pt-4 border-t border-gray-200",
+            div { class: "mt-6 pt-4 border-t border-theme-border-200 dark:border-theme-border-700",
                 div { class: "flex justify-between items-center",
-                    span { class: "text-lg font-semibold text-gray-700", "Total Monthly Income:" }
-                    span { class: "text-2xl font-bold text-green-600", "{format_money(total_income())}" }
+                    span { class: "text-lg font-semibold text-theme-text-700 dark:text-theme-text-200",
+                        "Total Monthly Income:"
+                    }
+                    span { class: "text-2xl font-bold text-theme-success-600 dark:text-theme-success-400",
+                        "{format_money(total_income())}"
+                    }
                 }
             }
         }

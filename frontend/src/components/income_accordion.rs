@@ -62,11 +62,11 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                     rsx! {
                         div {
                             key: "{item_id}",
-                            class: "bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden",
-                            div { class: "border-b border-gray-200",
+                            class: "bg-theme-surface-50 dark:bg-theme-surface-900 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-theme-border-200 dark:border-theme-border-700 overflow-hidden",
+                            div { class: "border-b border-theme-border-200 dark:border-theme-border-700",
                                 button {
                                     r#type: "button",
-                                    class: "flex items-center justify-between w-full p-6 font-semibold text-left text-gray-900 hover:bg-blue-50 transition-all duration-200",
+                                    class: "flex items-center justify-between w-full p-6 font-semibold text-left text-theme-text-900 dark:text-theme-text-100 hover:bg-theme-primary-50 dark:hover:bg-theme-primary-900/20 transition-all duration-200",
                                     onclick: move |_| {
                                         let mut current_open = open_items();
                                         if current_open.contains(&idx) {
@@ -80,7 +80,7 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                         if on_include_change.is_some() {
                                             input {
                                                 r#type: "checkbox",
-                                                class: "w-5 h-5 text-blue-600 border-gray-400 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer",
+                                                class: "w-5 h-5 text-theme-primary-600 dark:text-theme-primary-400 border-theme-border-400 dark:border-theme-border-500 rounded focus:ring-2 focus:ring-theme-primary-500 dark:focus:ring-theme-primary-400 cursor-pointer",
                                                 checked: is_included,
                                                 onclick: move |evt: Event<MouseData>| {
                                                     evt.stop_propagation();
@@ -97,10 +97,12 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                                 },
                                             }
                                         }
-                                        span { class: "text-lg font-bold text-gray-900", "{item_title}" }
+                                        span { class: "text-lg font-bold text-theme-text-900 dark:text-theme-text-100",
+                                            "{item_title}"
+                                        }
                                     }
                                     svg {
-                                        class: "w-6 h-6 transition-transform text-gray-700",
+                                        class: "w-6 h-6 transition-transform text-theme-text-700 dark:text-theme-text-300",
                                         class: if is_open { "rotate-180" } else { "" },
                                         xmlns: "http://www.w3.org/2000/svg",
                                         fill: "none",
@@ -116,7 +118,9 @@ pub fn IncomeAccordion(props: IncomeAccordionProps) -> Element {
                                 }
                             }
                             if is_open {
-                                div { class: "p-8 border-t border-gray-200 bg-gray-50", {item.content.clone()} }
+                                div { class: "p-8 border-t border-theme-border-200 dark:border-theme-border-700 bg-theme-surface-100 dark:bg-theme-surface-800",
+                                    {item.content.clone()}
+                                }
                             }
                         }
                     }

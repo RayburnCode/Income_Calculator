@@ -41,14 +41,14 @@ pub fn Search(props: SearchProps) -> Element {
     } = props;
 
     let input_id = if !id.is_empty() { id } else { name.clone() };
-    let base_input_class = "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-4 py-3 shadow-sm placeholder:text-gray-500 transition-all duration-200 hover:border-gray-400";
+    let base_input_class = "bg-theme-bg-secondary border-2 border-theme-text-secondary/30 text-theme-text-primary text-sm rounded-lg focus:ring-2 focus:ring-accent focus:border-accent block w-full pl-10 pr-4 py-3 shadow-sm placeholder:text-theme-text-secondary transition-all duration-200 hover:border-theme-text-secondary/50";
 
     rsx! {
         div { class: "relative",
             // Search icon
             div { class: "absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none",
                 svg {
-                    class: "w-5 h-5 text-gray-400",
+                    class: "w-5 h-5 text-theme-text-secondary",
                     fill: "none",
                     view_box: "0 0 24 24",
                     stroke: "currentColor",

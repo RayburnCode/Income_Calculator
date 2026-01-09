@@ -36,13 +36,13 @@ pub fn Tab(props: TabProps) -> Element {
         class,
     } = props;
 
-    let active_classes = "inline-block p-4 text-blue-600 bg-neutral-secondary-soft rounded-t-base active";
-    let inactive_classes = "inline-block p-4 text-gray-700 rounded-t-base hover:text-gray-900 hover:bg-neutral-secondary-soft";
-    let disabled_classes = "inline-block p-4 text-gray-400 rounded-t-base cursor-not-allowed";
+    let active_classes = "inline-block p-4 text-accent bg-theme-bg-secondary rounded-t-lg active border-b-2 border-accent";
+    let inactive_classes = "inline-block p-4 text-theme-text-secondary rounded-t-lg hover:text-theme-text-primary hover:bg-theme-bg-tertiary border-b-2 border-transparent";
+    let disabled_classes = "inline-block p-4 text-theme-text-secondary/50 rounded-t-lg cursor-not-allowed border-b-2 border-transparent";
 
     rsx! {
         ul {
-            class: "flex flex-wrap text-sm font-medium text-center border-b border-default {class}",
+            class: "flex flex-wrap text-sm font-medium text-center border-b border-theme-text-secondary/20 {class}",
             aria_label: "Tabs",
             for (index , tab) in tabs.iter().enumerate() {
                 li {

@@ -57,8 +57,8 @@ pub fn Input(props: InputProps) -> Element {
     } = props;
 
     let input_id = if !id.is_empty() { id } else { name.clone() };
-    let base_label_class = "block mb-2.5 text-sm font-semibold text-gray-900";
-    let base_input_class = "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3 shadow-sm placeholder:text-gray-500 transition-all duration-200 hover:border-gray-400";
+    let base_label_class = "block mb-2.5 text-sm font-semibold text-theme-text-primary";
+    let base_input_class = "bg-theme-bg-secondary border-2 border-theme-text-secondary/30 text-theme-text-primary text-sm rounded-lg focus:ring-2 focus:ring-accent focus:border-accent block w-full px-4 py-3 shadow-sm placeholder:text-theme-text-secondary transition-all duration-200 hover:border-theme-text-secondary/50";
 
     rsx! {
         div {
@@ -68,7 +68,7 @@ pub fn Input(props: InputProps) -> Element {
                     r#for: "{input_id}",
                     "{label}"
                     if required {
-                        span { class: "text-red-600 ml-1 font-bold", "*" }
+                        span { class: "text-red-500 ml-1 font-bold", "*" }
                     }
                 }
             }

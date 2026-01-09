@@ -17,6 +17,8 @@ chrono = "0.4.42"
 uuid = { version = "1.0", features = ["v4", "serde"] }
 log = "0.4"
 tracing = "0.1.44"
+web-sys = { version = "0.3", features = ["Window", "Document", "Element", "HtmlElement", "Storage", "console", "DomTokenList"] }
+gloo-timers = "0.3"
 
 
  

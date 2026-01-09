@@ -71,7 +71,7 @@ pub fn OtherIncome() -> Element {
         div { class: "space-y-8",
             // Alimony Section
             div { class: "bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl shadow-md border-2 border-rose-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-rose-600", "💔" }
                     "Alimony Income"
                 }
@@ -88,16 +88,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount (75%)"
                             }
-                            div { class: "px-4 py-3 bg-rose-200 border-2 border-rose-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-rose-200 border-2 border-rose-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_alimony())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "📋 Fannie Mae: " }
                             "75% of gross alimony received is considered qualifying income. Must be documented with court order and payment history."
                         }
@@ -107,7 +107,7 @@ pub fn OtherIncome() -> Element {
 
             // Child Support Section
             div { class: "bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl shadow-md border-2 border-purple-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-purple-600", "👨‍👩‍👧‍👦" }
                     "Child Support Income"
                 }
@@ -124,16 +124,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount"
                             }
-                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_child_support())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-red-50 border-2 border-red-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-red-700", "⚠️ Note: " }
                             "Child support is generally NOT considered qualifying income for mortgage purposes as it is intended for child support, not borrower income."
                         }
@@ -143,7 +143,7 @@ pub fn OtherIncome() -> Element {
 
             // Rental Income Section
             div { class: "bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl shadow-md border-2 border-blue-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-blue-600", "🏠" }
                     "Rental Income"
                 }
@@ -170,16 +170,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount (75% of Net)"
                             }
-                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_rental())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "📋 Fannie Mae: " }
                             "75% of net rental income (gross minus expenses) is considered qualifying. Expenses must be documented and reasonable."
                         }
@@ -189,7 +189,7 @@ pub fn OtherIncome() -> Element {
 
             // Investment Income Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "📈" }
                     "Investment Income"
                 }
@@ -206,16 +206,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount (100%)"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_interest_dividends())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "📋 Fannie Mae: " }
                             "100% of taxable interest and dividend income is considered qualifying. Must be documented with tax returns."
                         }
@@ -225,7 +225,7 @@ pub fn OtherIncome() -> Element {
 
             // Disability & Workers Comp Section
             div { class: "bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl shadow-md border-2 border-orange-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-orange-600", "🏥" }
                     "Disability & Workers Compensation"
                 }
@@ -242,10 +242,10 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount"
                             }
-                            div { class: "px-4 py-3 bg-orange-200 border-2 border-orange-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-orange-200 border-2 border-orange-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_disability())}"
                             }
                         }
@@ -262,16 +262,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount"
                             }
-                            div { class: "px-4 py-3 bg-orange-200 border-2 border-orange-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-orange-200 border-2 border-orange-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_workers_comp())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "📋 Fannie Mae: " }
                             "Disability and workers compensation may be considered if expected to continue. Requires documentation of expected duration."
                         }
@@ -281,7 +281,7 @@ pub fn OtherIncome() -> Element {
 
             // Other Income Section
             div { class: "bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl shadow-md border-2 border-indigo-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-indigo-600", "💡" }
                     "Other Income Sources"
                 }
@@ -308,16 +308,16 @@ pub fn OtherIncome() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100",
                                 "Qualifying Amount"
                             }
-                            div { class: "px-4 py-3 bg-indigo-200 border-2 border-indigo-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-indigo-200 border-2 border-indigo-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right",
                                 "{format_money(qualifying_other())}"
                             }
                         }
                     }
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "📋 Note: " }
                             "Other income sources are evaluated on a case-by-case basis. Requires documentation of consistency and likelihood of continuation."
                         }
@@ -327,19 +327,19 @@ pub fn OtherIncome() -> Element {
 
             // Total Other Income Summary
             div { class: "bg-gradient-to-br from-gray-50 to-slate-50 p-6 rounded-xl shadow-md border-2 border-gray-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-gray-600", "📊" }
                     "Total Qualifying Other Income"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-gray-200 border-2 border-gray-400 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-gray-200 border-2 border-gray-400 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "Monthly Qualifying Other Income"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-gray-300 border-2 border-gray-500 rounded-lg text-gray-900 font-bold text-right text-xl",
+                            div { class: "px-4 py-3 bg-gray-300 border-2 border-gray-500 rounded-lg text-gray-900 dark:text-gray-100 dark:text-gray-100 font-bold text-right text-xl",
                                 "{format_money(total_qualifying_other_income())}"
                             }
                         }
@@ -348,7 +348,7 @@ pub fn OtherIncome() -> Element {
                         h4 { class: "font-bold text-blue-800 mb-2",
                             "General Documentation Requirements:"
                         }
-                        ul { class: "text-sm text-gray-900 space-y-1",
+                        ul { class: "text-sm text-gray-900 dark:text-gray-100 dark:text-gray-100 space-y-1",
                             li { "• Tax returns showing income reporting (minimum 2 years)" }
                             li { "• Award letters, court orders, or contracts" }
                             li { "• Payment history (minimum 12-24 months)" }

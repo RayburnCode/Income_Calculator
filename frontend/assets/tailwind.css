@@ -151,7 +151,6 @@
     --color-text-accent: oklch(60% 0.18 190deg);
     --color-theme-primary-50: var(--color-bg-primary);
     --color-theme-primary-100: var(--color-bg-secondary);
-    --color-theme-primary-200: var(--color-bg-tertiary);
     --color-theme-primary-500: var(--color-accent);
     --color-theme-primary-600: var(--color-primary-medium);
     --color-theme-primary-700: var(--color-primary-dark);
@@ -185,8 +184,6 @@
     --color-theme-error-400: var(--color-primary-dark);
     --color-theme-error-500: var(--color-primary-dark);
     --color-theme-error-600: var(--color-primary-dark);
-    --color-theme-warning-400: var(--color-light);
-    --color-theme-warning-600: var(--color-light);
   }
 }
 @layer base {

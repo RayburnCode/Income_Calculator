@@ -92,7 +92,7 @@ pub fn SocialSecurity() -> Element {
         div { class: "space-y-8",
             // With Documentation Section
             div { class: "bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md border-2 border-blue-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-blue-600", "📋" }
                     "With Documentation"
                 }
@@ -123,18 +123,18 @@ pub fn SocialSecurity() -> Element {
                             }
                         }
                         div { class: "col-span-2 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Multiplier"
                             }
-                            div { class: "px-4 py-3 bg-blue-100 border-2 border-blue-300 rounded-lg text-gray-900 font-semibold text-center",
+                            div { class: "px-4 py-3 bg-blue-100 border-2 border-blue-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center",
                                 "× 100%"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Result"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(taxable_income())}"
                             }
                         }
@@ -151,18 +151,18 @@ pub fn SocialSecurity() -> Element {
                             }
                         }
                         div { class: "col-span-2 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Multiplier"
                             }
-                            div { class: "px-4 py-3 bg-blue-100 border-2 border-blue-300 rounded-lg text-gray-900 font-semibold text-center",
+                            div { class: "px-4 py-3 bg-blue-100 border-2 border-blue-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center",
                                 "× 125%"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Result"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(non_taxable_income())}"
                             }
                         }
@@ -179,18 +179,18 @@ pub fn SocialSecurity() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Total Annual Income"
                             }
-                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(total_income_with_doc())}"
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Total Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(monthly_income_with_doc())}"
                             }
                         }
@@ -199,7 +199,7 @@ pub fn SocialSecurity() -> Element {
             }
             // Without Taxation Documentation Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "📊" }
                     "Without Taxation Documentation"
                 }
@@ -220,10 +220,10 @@ pub fn SocialSecurity() -> Element {
                     // 85% Calculation
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annual Benefit × 85%"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(annual_benefit_85())}"
                             }
                         }
@@ -231,10 +231,10 @@ pub fn SocialSecurity() -> Element {
                     // 15% Calculation
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annual Benefit × 15%"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(annual_benefit_15())}"
                             }
                         }
@@ -242,10 +242,10 @@ pub fn SocialSecurity() -> Element {
                     // Gross up 25%
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Gross up 25%"
                             }
-                            div { class: "px-4 py-3 bg-green-100 border-2 border-green-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-green-100 border-2 border-green-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(gross_up_25())}"
                             }
                         }
@@ -262,18 +262,18 @@ pub fn SocialSecurity() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Total Gross Up"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(total_gross_up())}"
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Total Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-blue-200 border-2 border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(monthly_income_without_doc())}"
                             }
                         }

@@ -69,18 +69,18 @@ pub fn Pension() -> Element {
         div { class: "space-y-8",
             // Pension Type Selection Section
             div { class: "bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-xl shadow-md border-2 border-emerald-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-emerald-600", "🏛️" }
                     "Pension Plan Information"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Pension Type"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{pension_type}",
                                 onchange: move |evt: Event<FormData>| pension_type.set(evt.value()),
                                 option { value: "defined_benefit", "Defined Benefit Pension" }
@@ -90,7 +90,7 @@ pub fn Pension() -> Element {
                             }
                         }
                         div { class: "col-span-3 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Years of Service"
                             }
                             Input {
@@ -103,7 +103,7 @@ pub fn Pension() -> Element {
                             }
                         }
                         div { class: "col-span-3 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Vesting %"
                             }
                             Input {
@@ -121,7 +121,7 @@ pub fn Pension() -> Element {
 
             // Pension Amount Section
             div { class: "bg-gradient-to-br from-cyan-50 to-blue-50 p-6 rounded-xl shadow-md border-2 border-cyan-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-cyan-600", "💰" }
                     "Pension Income Details"
                 }
@@ -138,7 +138,7 @@ pub fn Pension() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Taxable Portion (%)"
                             }
                             Input {
@@ -151,17 +151,17 @@ pub fn Pension() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annualized Pension"
                             }
-                            div { class: "px-4 py-3 bg-cyan-200 border-2 border-cyan-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-cyan-200 border-2 border-cyan-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(annualized_pension())}"
                             }
                         }
                     }
 
                     div { class: "mt-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-blue-700", "ℹ️ Note: " }
                             "Enter the gross monthly pension amount before taxes. The taxable portion will be used for qualifying income calculations."
                         }
@@ -171,19 +171,19 @@ pub fn Pension() -> Element {
 
             // Tax Treatment Section
             div { class: "bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl shadow-md border-2 border-indigo-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-indigo-600", "📊" }
                     "Tax Treatment & Calculations"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "Gross Monthly Pension"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(gross_monthly())}"
                             }
                         }
@@ -191,12 +191,12 @@ pub fn Pension() -> Element {
 
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "Taxable Amount"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(taxable_amount())}"
                             }
                         }
@@ -204,12 +204,12 @@ pub fn Pension() -> Element {
 
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "Non-Taxable Amount"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(non_taxable_amount())}"
                             }
                         }
@@ -217,12 +217,12 @@ pub fn Pension() -> Element {
 
                     div { class: "grid grid-cols-12 gap-4 items-center pt-4 border-t-2 border-indigo-300",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-red-200 border-2 border-red-400 rounded-lg text-gray-900 font-bold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-red-200 border-2 border-red-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-center min-w-[200px]",
                                 "Fannie Mae Qualifying Income"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-red-100 border-2 border-red-300 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-red-100 border-2 border-red-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(fannie_mae_income())}"
                             }
                         }
@@ -231,7 +231,7 @@ pub fn Pension() -> Element {
 
                 div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
                     h4 { class: "font-bold text-yellow-800 mb-2", "Fannie Mae Pension Guidelines:" }
-                    ul { class: "text-sm text-gray-900 space-y-1",
+                    ul { class: "text-sm text-gray-900 dark:text-gray-100 space-y-1",
                         li { "• 70% of the first $1,000 of monthly pension income" }
                         li { "• 85% of amounts over $1,000" }
                         li { "• Use the lower of Fannie Mae calculation or vested amount" }
@@ -243,17 +243,17 @@ pub fn Pension() -> Element {
 
             // Final Selection Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "✓" }
                     "Qualifying Pension Income"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Pension Type Selected"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-semibold",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold",
                                 {
                                     match pension_type().as_str() {
                                         "defined_benefit" => "Defined Benefit Pension",
@@ -266,10 +266,10 @@ pub fn Pension() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Qualifying Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-xl",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-xl",
                                 "{format_money(qualifying_income() / 12.0)}"
                             }
                         }
@@ -277,7 +277,7 @@ pub fn Pension() -> Element {
 
                     div { class: "mt-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg",
                         h4 { class: "font-bold text-blue-800 mb-2", "Documentation Required:" }
-                        ul { class: "text-sm text-gray-900 space-y-1",
+                        ul { class: "text-sm text-gray-900 dark:text-gray-100 space-y-1",
                             li { "• Pension award letter or benefit statement" }
                             li { "• Tax returns showing pension income reporting" }
                             li { "• Pension plan documents or summary plan description" }

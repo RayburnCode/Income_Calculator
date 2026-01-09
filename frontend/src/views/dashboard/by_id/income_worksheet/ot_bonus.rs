@@ -103,7 +103,7 @@ pub fn OTBonus() -> Element {
         div { class: "space-y-8",
             // Income Inputs Section
             div { class: "bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl shadow-md border-2 border-orange-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-orange-600", "💼" }
                     "Overtime & Bonus Income"
                 }
@@ -130,10 +130,10 @@ pub fn OTBonus() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annual Income"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(ytd_income())}"
                             }
                         }
@@ -160,10 +160,10 @@ pub fn OTBonus() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annual Income"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(past_year_income())}"
                             }
                         }
@@ -190,17 +190,17 @@ pub fn OTBonus() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annual Income"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(additional_year_income())}"
                             }
                         }
                     }
                     // Important Note
                     div { class: "mt-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-blue-700", "ℹ️ Note: " }
                             "*If DU requires only a YTD paystub, OT/Bonus must be annualized. Divide YTD OT/Bonus by 12 months; for qualifying purposes, typically a two year history of receipt is required."
                         }
@@ -209,7 +209,7 @@ pub fn OTBonus() -> Element {
             }
             // Calculations Section
             div { class: "bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl shadow-md border-2 border-purple-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-purple-600", "📊" }
                     "Calculation Methods"
                 }
@@ -217,12 +217,12 @@ pub fn OTBonus() -> Element {
                     // YTD Average
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "YTD Average"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(ytd_avg())}"
                             }
                         }
@@ -230,12 +230,12 @@ pub fn OTBonus() -> Element {
                     // YTD + 1 Year Average
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "YTD + 1 Year Average"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(ytd_plus_1year_avg())}"
                             }
                         }
@@ -243,12 +243,12 @@ pub fn OTBonus() -> Element {
                     // YTD + 2 Year Average
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-purple-100 border-2 border-purple-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "YTD + 2 Year Average"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(ytd_plus_2year_avg())}"
                             }
                         }
@@ -256,7 +256,7 @@ pub fn OTBonus() -> Element {
                     // Lowest Calculation
                     div { class: "grid grid-cols-12 gap-4 items-center pt-4 border-t-2 border-purple-300",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-indigo-200 border-2 border-indigo-400 rounded-lg text-gray-900 font-bold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-indigo-200 border-2 border-indigo-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-center min-w-[200px]",
                                 "Lowest of Calculations"
                             }
                         }
@@ -268,7 +268,7 @@ pub fn OTBonus() -> Element {
                                     0.0
                                 };
                                 rsx! {
-                                    div { class: "px-4 py-3 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 font-bold text-right text-lg",
+                                    div { class: "px-4 py-3 bg-indigo-100 border-2 border-indigo-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                         "{format_money(lowest_val)}"
                                     }
                                 }
@@ -279,18 +279,18 @@ pub fn OTBonus() -> Element {
             }
             // Final Selection Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "✓" }
                     "Income to Use for Qualifying"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Select Calculation Method"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{selected_calculation}",
                                 onchange: move |evt: Event<FormData>| selected_calculation.set(evt.value()),
                                 option { value: "none", "-- Select Method --" }
@@ -314,10 +314,10 @@ pub fn OTBonus() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Qualifying Income"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-xl",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-xl",
                                 "{format_money(final_income())}"
                             }
                         }

@@ -178,19 +178,19 @@ pub fn MainDashboard() -> Element {
                             tbody { class: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600",
                                 for client in clients() {
                                     tr { class: "hover:bg-gray-50 dark:hover:bg-gray-700",
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
+                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-100",
                                             "{client.id}"
                                         }
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
+                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-100",
                                             "{client.name}"
                                         }
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
+                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-100",
                                             "{client.email}"
                                         }
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
+                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-100",
                                             "{client.status}"
                                         }
-                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900",
+                                        td { class: "px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-100",
                                             Link {
                                                 to: format!("/{}/client", client.id),
                                                 class: "text-blue-600 hover:text-blue-800 font-medium",
@@ -207,3 +207,4 @@ pub fn MainDashboard() -> Element {
         }
     }
 }
+

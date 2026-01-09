@@ -181,7 +181,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
             // Compact Header with totals
             div { class: "bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg shadow-sm border border-green-200",
                 div { class: "flex items-center justify-between",
-                    h3 { class: "text-lg font-bold text-gray-900 flex items-center gap-2",
+                    h3 { class: "text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2",
                         span { class: "text-green-600", "🏢" }
                         "W-2 Jobs ({w2_data().jobs.len()})"
                         if w2_data().is_verified {
@@ -230,7 +230,7 @@ pub fn W2Jobs(borrower_id: i32) -> Element {
                                             "📁"
                                         }
                                     }
-                                    span { class: "font-medium text-gray-900 dark:text-white",
+                                    span { class: "font-medium text-gray-900 dark:text-gray-100 dark:text-white",
                                         if job.employer_name.is_empty() {
                                             "Job #{index + 1}"
                                         } else {

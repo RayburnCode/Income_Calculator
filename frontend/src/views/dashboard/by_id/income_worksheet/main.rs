@@ -133,7 +133,7 @@ pub fn Worksheet(id: i32) -> Element {
                 h2 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 border-b-2 border-green-500 pb-3",
                     "Select Income Types to Include"
                 }
-                p { class: "text-gray-600 mb-4",
+                p { class: "text-gray-600 dark:text-gray-400 mb-4",
                     "Choose which income types apply to this borrower. Only selected types will be displayed and included in calculations."
                 }
                 div { class: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
@@ -150,7 +150,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "hourly",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Hourly Pay"
                         }
                     }
@@ -167,7 +167,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "salary",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Salary"
                         }
                     }
@@ -184,7 +184,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "ot_bonus",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Overtime / Bonus"
                         }
                     }
@@ -201,7 +201,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "commission",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Commission"
                         }
                     }
@@ -218,7 +218,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "other_w2",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Other W2 Income"
                         }
                     }
@@ -237,7 +237,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "social_security",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Social Security"
                         }
                     }
@@ -254,7 +254,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "pension",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Pension"
                         }
                     }
@@ -271,7 +271,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "ira",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "IRA / 401(k)"
                         }
                     }
@@ -288,7 +288,7 @@ pub fn Worksheet(id: i32) -> Element {
                         }
                         label {
                             r#for: "other_income",
-                            class: "text-gray-900 font-medium cursor-pointer",
+                            class: "text-gray-900 dark:text-gray-100 font-medium cursor-pointer",
                             "Other Income"
                         }
                     }
@@ -298,7 +298,7 @@ pub fn Worksheet(id: i32) -> Element {
             // Display selected income sections
             // Pay Type Section
             if !pay_type_items.is_empty() {
-                h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
+                h2 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-6 flex items-center gap-3",
                     span { class: "text-blue-600", "💼" }
                     "Pay Type"
                 }
@@ -307,7 +307,7 @@ pub fn Worksheet(id: i32) -> Element {
 
             // Other Income Section
             if !other_income_items.is_empty() {
-                h2 { class: "text-3xl font-bold text-gray-900 mt-10 mb-6 flex items-center gap-3",
+                h2 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100 mt-10 mb-6 flex items-center gap-3",
                     span { class: "text-green-600", "📊" }
                     "Other Taxable and Nontaxable Income"
                 }
@@ -317,7 +317,7 @@ pub fn Worksheet(id: i32) -> Element {
             // Summary section - show if any items are selected
             if !displayed_sections.read().is_empty() {
                 div { class: "bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-xl shadow-lg border-2 border-blue-200 mt-10",
-                    h3 { class: "text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                    h3 { class: "text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                         span { class: "text-blue-600", "✓" }
                         "Included in Calculations"
                     }

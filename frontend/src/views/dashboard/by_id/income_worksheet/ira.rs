@@ -86,18 +86,18 @@ pub fn IRA() -> Element {
         div { class: "space-y-8",
             // IRA Type Selection Section
             div { class: "bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl shadow-md border-2 border-blue-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-blue-600", "🏦" }
                     "IRA Account Information"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "IRA Type"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{ira_type}",
                                 onchange: move |evt: Event<FormData>| ira_type.set(evt.value()),
                                 option { value: "qualified", "Qualified IRA (Traditional, SEP, SIMPLE)" }
@@ -105,7 +105,7 @@ pub fn IRA() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Current Account Balance"
                             }
                             Input {
@@ -123,7 +123,7 @@ pub fn IRA() -> Element {
 
             // Distribution Information Section
             div { class: "bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl shadow-md border-2 border-purple-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-purple-600", "💰" }
                     "Distribution Information"
                 }
@@ -140,11 +140,11 @@ pub fn IRA() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Distribution Frequency"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{distribution_frequency}",
                                 onchange: move |evt: Event<FormData>| distribution_frequency.set(evt.value()),
                                 option { value: "monthly", "Monthly" }
@@ -154,17 +154,17 @@ pub fn IRA() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Annualized Distribution"
                             }
-                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(annualized_distribution())}"
                             }
                         }
                     }
 
                     div { class: "mt-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-blue-700", "ℹ️ Note: " }
                             "Enter the gross distribution amount before taxes. For qualified plans, taxes will be deducted. For Roth IRAs, distributions are typically tax-free."
                         }
@@ -174,19 +174,19 @@ pub fn IRA() -> Element {
 
             // Fannie Mae Calculation Methods Section
             div { class: "bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl shadow-md border-2 border-orange-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-orange-600", "📊" }
                     "Fannie Mae Calculation Methods"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "Distribution Method"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(annualized_distribution())}"
                             }
                         }
@@ -194,12 +194,12 @@ pub fn IRA() -> Element {
 
                     div { class: "grid grid-cols-12 gap-4 items-center",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                 "4% Sustainable Withdrawal"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(sustainable_income())}"
                             }
                         }
@@ -208,12 +208,12 @@ pub fn IRA() -> Element {
                     if depletion_income() > 0.0 {
                         div { class: "grid grid-cols-12 gap-4 items-center",
                             div { class: "col-span-6 flex items-center gap-3",
-                                div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 font-semibold text-center min-w-[200px]",
+                                div { class: "px-4 py-2 bg-orange-100 border-2 border-orange-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold text-center min-w-[200px]",
                                     "Depletion Method"
                                 }
                             }
                             div { class: "col-span-6 flex flex-col",
-                                div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                                div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                     "{format_money(depletion_income())}"
                                 }
                             }
@@ -222,12 +222,12 @@ pub fn IRA() -> Element {
 
                     div { class: "grid grid-cols-12 gap-4 items-center pt-4 border-t-2 border-orange-300",
                         div { class: "col-span-6 flex items-center gap-3",
-                            div { class: "px-4 py-2 bg-red-200 border-2 border-red-400 rounded-lg text-gray-900 font-bold text-center min-w-[200px]",
+                            div { class: "px-4 py-2 bg-red-200 border-2 border-red-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-center min-w-[200px]",
                                 "Lowest Qualifying Amount"
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            div { class: "px-4 py-3 bg-red-100 border-2 border-red-300 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-red-100 border-2 border-red-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(qualifying_income())}"
                             }
                         }
@@ -236,7 +236,7 @@ pub fn IRA() -> Element {
 
                 div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
                     h4 { class: "font-bold text-yellow-800 mb-2", "Fannie Mae Guidelines:" }
-                    ul { class: "text-sm text-gray-900 space-y-1",
+                    ul { class: "text-sm text-gray-900 dark:text-gray-100 space-y-1",
                         li { "• Use the lowest calculated amount for qualifying income" }
                         li { "• Qualified plans: Income is taxable (taxes will be deducted)" }
                         li { "• Roth IRAs: Income is tax-free (no tax deduction needed)" }
@@ -248,17 +248,17 @@ pub fn IRA() -> Element {
 
             // Final Selection Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "✓" }
                     "Qualifying IRA Income"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "IRA Type Selected"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-semibold",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-semibold",
                                 {
                                     match ira_type().as_str() {
                                         "qualified" => "Qualified IRA (Taxable Income)",
@@ -269,10 +269,10 @@ pub fn IRA() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Qualifying Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-xl",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-xl",
                                 "{format_money(qualifying_income() / 12.0)}"
                             }
                         }
@@ -280,7 +280,7 @@ pub fn IRA() -> Element {
 
                     div { class: "mt-4 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg",
                         h4 { class: "font-bold text-blue-800 mb-2", "Documentation Required:" }
-                        ul { class: "text-sm text-gray-900 space-y-1",
+                        ul { class: "text-sm text-gray-900 dark:text-gray-100 space-y-1",
                             li { "• Most recent account statement showing balance and distributions" }
                             li { "• Tax returns showing IRA contributions/deductions" }
                             li { "• Distribution history (minimum 12-24 months)" }

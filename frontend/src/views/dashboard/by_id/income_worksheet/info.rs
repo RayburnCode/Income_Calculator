@@ -37,7 +37,7 @@ pub fn Information() -> Element {
 
             // Employment Information
             div { class: "bg-gray-50 p-6 rounded-lg",
-                h3 { class: "text-lg font-semibold text-gray-900 mb-4", "Employment Information" }
+                h3 { class: "text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4", "Employment Information" }
                 div { class: "grid grid-cols-1 md:grid-cols-2 gap-6",
                     Input {
                         placeholder: "Current Employer",

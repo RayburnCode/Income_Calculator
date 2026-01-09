@@ -104,7 +104,7 @@ pub fn Salary() -> Element {
         div { class: "space-y-8",
             // Current Salary Section
             div { class: "bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl shadow-md border-2 border-purple-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-purple-600", "💰" }
                     "Current Salary"
                 }
@@ -121,11 +121,11 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Pay Frequency"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{pay_frequency}",
                                 onchange: move |evt: Event<FormData>| pay_frequency.set(evt.value()),
                                 option { value: "monthly", "Monthly (×1)" }
@@ -135,10 +135,10 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-4 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 font-bold text-right text-lg",
+                            div { class: "px-4 py-3 bg-purple-200 border-2 border-purple-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-lg",
                                 "{format_money(calculated_income())}"
                             }
                         }
@@ -147,7 +147,7 @@ pub fn Salary() -> Element {
             }
             // Historical Income Section
             div { class: "bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl shadow-md border-2 border-blue-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-blue-600", "📊" }
                     "Historical Income"
                 }
@@ -174,10 +174,10 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Monthly Average"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(ytd_monthly_avg())}"
                             }
                         }
@@ -204,10 +204,10 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(w2_year1_income())}"
                             }
                         }
@@ -234,10 +234,10 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-5 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Monthly Income"
                             }
-                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 font-bold text-right",
+                            div { class: "px-4 py-3 bg-white border-2 border-gray-300 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right",
                                 "{format_money(w2_year2_income())}"
                             }
                         }
@@ -246,18 +246,18 @@ pub fn Salary() -> Element {
             }
             // Base Used to Qualify Section
             div { class: "bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-md border-2 border-green-200",
-                h3 { class: "text-xl font-bold text-gray-900 mb-6 flex items-center gap-2",
+                h3 { class: "text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2",
                     span { class: "text-green-600", "✓" }
                     "Base Used to Qualify"
                 }
                 div { class: "space-y-4",
                     div { class: "grid grid-cols-12 gap-4 items-end",
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Select Salary to Use"
                             }
                             select {
-                                class: "bg-white border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
+                                class: "bg-white border-2 border-gray-300 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 block w-full px-4 py-3 shadow-sm transition-all duration-200 hover:border-gray-400 font-semibold",
                                 value: "{selected_base}",
                                 onchange: move |evt: Event<FormData>| selected_base.set(evt.value()),
                                 option { value: "none", "-- Select Salary --" }
@@ -274,17 +274,17 @@ pub fn Salary() -> Element {
                             }
                         }
                         div { class: "col-span-6 flex flex-col",
-                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900",
+                            label { class: "block mb-2.5 text-sm font-semibold text-gray-900 dark:text-gray-100",
                                 "Qualifying Income"
                             }
-                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 font-bold text-right text-xl",
+                            div { class: "px-4 py-3 bg-green-200 border-2 border-green-400 rounded-lg text-gray-900 dark:text-gray-100 font-bold text-right text-xl",
                                 "{format_money(base_used_to_qualify())}"
                             }
                         }
                     }
                     // Note about requirements
                     div { class: "mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg",
-                        p { class: "text-sm text-gray-900 font-medium",
+                        p { class: "text-sm text-gray-900 dark:text-gray-100 font-medium",
                             span { class: "font-bold text-yellow-700", "⚠️ Note: " }
                             "If YTD or past year is lower, confirm why. Otherwise, lower of YTD and W2 required."
                         }

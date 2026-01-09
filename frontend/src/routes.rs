@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 
 use crate::views::{ Welcome, Help, CampaignManager};
 use crate::views::dashboard::{MainDashboard, Analytics, Settings};
-use crate::views::dashboard::by_id::{Worksheet, ClientDetails, OptionsTemplate};
+use crate::views::dashboard::by_id::{Worksheet, ClientDetails, OptionsTemplate, Timeline, OutreachTemplates};
 use crate::components::layout::AppLayout;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
@@ -28,6 +28,13 @@ pub enum Route {
         Worksheet {id: i32},
         #[route("/:id/options-template")]
         OptionsTemplate {id: i32},
+
+        #[route("/:id/outreach/templates")]
+        OutreachTemplates {id: i32},
+
+        #[route("/:id/outreach/timeline")]
+        Timeline {id: i32},
+
         #[route("/help")]
         Help {},
 

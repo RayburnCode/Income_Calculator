@@ -54,7 +54,7 @@ pub fn ClientOverview(
         }
 
         div { class: "mt-8",
-            Timeline { borrower_id: id }
+            Timeline { id }
         }
     }
     }

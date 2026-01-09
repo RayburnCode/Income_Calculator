@@ -1,11 +1,9 @@
 use dioxus::prelude::*;
 use shared::models::{OutreachTemplate, TemplateType};
 use crate::components::input::Input;
-use crate::components::tab::Tab;
-use crate::components::accordion::Accordion;
 
 #[component]
-pub fn Templates() -> Element {
+pub fn OutreachTemplates(id: i32) -> Element {
     let mut templates = use_resource(|| async {
         let repo = crate::get_repository();
         repo.get_all_outreach_templates().await.unwrap_or_default()
@@ -168,60 +166,61 @@ pub fn Templates() -> Element {
             // Templates List
             div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md",
                 {
-                    let templates_value = templates.value();
-                    let templates_read = templates_value.read();
-                    match &*templates_read {
+                    match templates.read_unchecked().as_ref() {
                         Some(templates_list) => {
                             let templates_list = templates_list.clone();
-                            rsx! {
-                                if templates_list.is_empty() {
+                            if templates_list.is_empty() {
+                                rsx! {
                                     div { class: "p-8 text-center text-gray-500 dark:text-gray-400",
                                         "No templates found. Create your first template to get started."
                                     }
-                                } else {
-                                    for template in templates_list.iter() {
-                                div { class: "divide-y divide-gray-200 dark:divide-gray-700",
-                                    for template in templates_list.iter() {
-                                        div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
-                                            div { class: "flex justify-between items-start",
-                                                div { class: "flex-1",
-                                                    h3 { class: "text-lg font-medium text-gray-900 dark:text-white",
-                                                        "{template.name}"
-                                                    }
-                                                    p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
-                                                        "{template.description.as_deref().unwrap_or(\"\")}"
-                                                    }
-                                                    div { class: "flex items-center space-x-4 mt-2",
-                                                        span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-                                                            "{template.template_type:?}"
+                                }
+                            } else {
+                                rsx! {
+                                    div { class: "divide-y divide-gray-200 dark:divide-gray-700",
+                                        for template in templates_list {
+                                            div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
+                                                div { class: "flex justify-between items-start",
+                                                    div { class: "flex-1",
+                                                        h3 { class: "text-lg font-medium text-gray-900 dark:text-white",
+                                                            "{template.name}"
                                                         }
-                                                        if template.is_default {
-                                                            span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                                                                "Default"
+                                                        p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
+                                                            "{template.description.as_deref().unwrap_or(\"\")}"
+                                                        }
+                                                        div { class: "flex items-center space-x-4 mt-2",
+                                                            span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                                                                "{template.template_type:?}"
+                                                            }
+                                                            if template.is_default {
+                                                                span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                                                                    "Default"
+                                                                }
                                                             }
                                                         }
                                                     }
-                                                }
-                                                div { class: "flex space-x-2",
-                                                    button {
-                                                        class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
-                                                        onclick: move |_| selected_template.set(Some(template.clone())),
-                                                        "View"
-                                                    }
-                                                    if !template.is_default {
+                                                    div { class: "flex space-x-2",
                                                         button {
-                                                            class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
-                                                            onclick: move |_| {
-                                                                spawn(async move {
-                                                                    let repo = crate::get_repository();
-                                                                    if let Err(e) = repo.delete_outreach_template(template.id).await {
-                                                                        log::error!("Failed to delete template: {:?}", e);
-                                                                    } else {
-                                                                        templates.restart();
-                                                                    }
-                                                                });
-                                                            },
-                                                            "Delete"
+                                                            class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
+                                                            onclick: move |_| selected_template.set(Some(template.clone())),
+                                                            "View"
+                                                        }
+                                                        if !template.is_default {
+                                                            button {
+                                                                class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
+                                                                onclick: move |_| {
+                                                                    let template_id = template.id;
+                                                                    spawn(async move {
+                                                                        let repo = crate::get_repository();
+                                                                        if let Err(e) = repo.delete_outreach_template(template_id).await {
+                                                                            log::error!("Failed to delete template: {:?}", e);
+                                                                        } else {
+                                                                            templates.restart();
+                                                                        }
+                                                                    });
+                                                                },
+                                                                "Delete"
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -231,20 +230,18 @@ pub fn Templates() -> Element {
                                 }
                             }
                         }
-                    }
-                    None => {
-                        rsx! {
+                        None => rsx! {
                             div { class: "p-8 text-center",
                                 div { class: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" }
                                 p { class: "text-gray-600 dark:text-gray-400", "Loading templates..." }
                             }
-                        }
+                        },
                     }
                 }
             }
 
             // Template Preview Modal
-            if let Some(template) = selected_template() {
+            {selected_template().map(|template| rsx! {
                 div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
                     div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto",
                         div { class: "p-6",
@@ -275,17 +272,17 @@ pub fn Templates() -> Element {
                                 }
                             }
 
-                            if let Some(subject) = &template.subject {
+    
+
+                            {template.subject.as_ref().map(|subject| rsx! {
                                 div { class: "mb-4",
                                     label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
                                         "Subject"
                                     }
-                                    div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md",
-                                        "{subject}"
-                                    }
+                                    div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md", "{subject}" }
                                 }
-                            }
-
+                            })}
+    
                             div { class: "mb-4",
                                 label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
                                     "Content"
@@ -294,7 +291,7 @@ pub fn Templates() -> Element {
                                     "{template.content}"
                                 }
                             }
-
+    
                             div { class: "flex justify-end",
                                 button {
                                     class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
@@ -305,7 +302,7 @@ pub fn Templates() -> Element {
                         }
                     }
                 }
-            }
+            })}
         }
     }
 }

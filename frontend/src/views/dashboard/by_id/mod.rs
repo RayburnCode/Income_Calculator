@@ -8,3 +8,4 @@ pub mod client;
 pub use client::ClientDetails;
 
 pub mod outreach;
+pub use outreach::{Timeline, OutreachTemplates};

@@ -59,6 +59,13 @@ pub fn Navbar() -> Element {
                         }
                         li {
                             Link {
+                                to: Route::CampaignManager {},
+                                class: "block py-2 px-3 text-theme-text-secondary rounded hover:bg-theme-bg-tertiary hover:text-theme-text-primary md:hover:bg-transparent md:border-0 md:p-0 transition-colors",
+                                "Campaign Manager"
+                            }
+                        }
+                        li {
+                            Link {
                                 to: Route::Settings {},
                                 class: "block py-2 px-3 text-theme-text-secondary rounded hover:bg-theme-bg-tertiary hover:text-theme-text-primary md:hover:bg-transparent md:border-0 md:p-0 transition-colors",
                                 "Settings"

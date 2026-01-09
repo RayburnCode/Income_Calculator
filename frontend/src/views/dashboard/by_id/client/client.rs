@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use crate::components::tab::{Tab, TabItem};
 use crate::views::dashboard::by_id::income_worksheet::Worksheet;
 use crate::views::dashboard::by_id::options_template::OptionsTemplate;
+use crate::views::dashboard::by_id::outreach::{OutreachTemplates, Timeline};
 use chrono::Utc;
 use shared::models::Status;
 use crate::views::dashboard::by_id::client::{ClientOverview};
@@ -192,6 +193,18 @@ pub fn ClientDetails(id: i32) -> Element {
             disabled: false,
             icon: None,
         },
+            TabItem {
+            label: "Outreach".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
+                    TabItem {
+            label: "Timeline".to_string(),
+            href: None,
+            disabled: false,
+            icon: None,
+        },
     ];
 
     rsx! {
@@ -280,6 +293,18 @@ pub fn ClientDetails(id: i32) -> Element {
                     2 => {
                         let content: Element = rsx! {
                             OptionsTemplate { id }
+                        };
+                        content
+                    }
+                    3 => {
+                        let content: Element = rsx! {
+                            OutreachTemplates { id }
+                        };
+                        content
+                    }
+                    4 => {
+                        let content: Element = rsx! {
+                            Timeline { id }
                         };
                         content
                     }

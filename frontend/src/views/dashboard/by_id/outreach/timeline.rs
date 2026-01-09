@@ -3,7 +3,7 @@ use shared::models::{TimelineEvent, TimelineEventType};
 use chrono::{DateTime, Utc};
 
 #[component]
-pub fn Timeline(borrower_id: i32) -> Element {
+pub fn Timeline(id: i32) -> Element {
     let timeline_events = use_signal(|| Vec::<TimelineEvent>::new());
     let is_loading = use_signal(|| true);
     let error_message = use_signal(|| None::<String>);
@@ -13,7 +13,7 @@ pub fn Timeline(borrower_id: i32) -> Element {
         let mut timeline_events = timeline_events.clone();
         let mut is_loading = is_loading.clone();
         let mut error_message = error_message.clone();
-        let client_id = borrower_id;
+        let client_id = id;
 
         spawn(async move {
             match repository::Repository::new().await {

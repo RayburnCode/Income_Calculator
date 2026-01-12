@@ -87,8 +87,10 @@ pub fn OptionsTemplate(id: i32) -> Element {
     }
 
     rsx! {
-        div { class: " mx-auto p-6 text-black",
-            h1 { class: "text-3xl font-bold text-gray-900 mb-8", "Mortgage Options Template" }
+        div { class: "max-w-full mx-auto p-4 sm:p-6 text-black",
+            h1 { class: "text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8",
+                "Mortgage Options Template"
+            }
 
             // Auto-save indicator
             div { class: "mb-4 p-3 bg-green-50 border border-green-200 rounded-lg",

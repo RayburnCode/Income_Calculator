@@ -36,18 +36,16 @@ pub fn Tab(props: TabProps) -> Element {
         class,
     } = props;
 
-    let active_classes = "inline-block p-4 text-white bg-gray-600 rounded-t-lg active border-b-2 border-accent";
-    let inactive_classes = "inline-block p-4 text-gray-600 rounded-t-lg hover:text-gray-800 hover:bg-theme-bg-tertiary border-b-2 border-transparent";
-    let disabled_classes = "inline-block p-4 text-white/50 rounded-t-lg cursor-not-allowed border-b-2 border-transparent";
+    let active_classes = "inline-block p-2 md:p-4 text-xs md:text-sm text-white bg-gray-600 rounded-t-lg active border-b-2 border-accent";
+    let inactive_classes = "inline-block p-2 md:p-4 text-xs md:text-sm text-gray-600 rounded-t-lg hover:text-gray-800 hover:bg-theme-bg-tertiary border-b-2 border-transparent";
+    let disabled_classes = "inline-block p-2 md:p-4 text-xs md:text-sm text-white/50 rounded-t-lg cursor-not-allowed border-b-2 border-transparent";
 
     rsx! {
         ul {
-            class: "flex flex-wrap text-sm font-medium text-center border-b border-theme-text-secondary/20 {class}",
+            class: "flex flex-nowrap overflow-x-auto text-xs md:text-sm font-medium text-center border-b border-theme-text-secondary/20 scrollbar-hide {class}",
             aria_label: "Tabs",
             for (index , tab) in tabs.iter().enumerate() {
-                li {
-                    key: "{index}",
-                    class: if index < tabs.len() - 1 { "me-2" } else { "" },
+                li { key: "{index}", class: "flex-shrink-0 me-1 md:me-2",
                     if tab.disabled {
                         a {
                             class: "{disabled_classes}",
@@ -55,7 +53,7 @@ pub fn Tab(props: TabProps) -> Element {
                             aria_disabled: "true",
                             tabindex: "-1",
                             if let Some(icon) = &tab.icon {
-                                span { class: "mr-2", "{icon}" }
+                                span { class: "mr-1 md:mr-2 text-xs md:text-sm", "{icon}" }
                             }
                             "{tab.label}"
                         }
@@ -72,7 +70,7 @@ pub fn Tab(props: TabProps) -> Element {
                             aria_selected: if index == active_tab { "true" } else { "false" },
                             tabindex: "0",
                             if let Some(icon) = &tab.icon {
-                                span { class: "mr-2", "{icon}" }
+                                span { class: "mr-1 md:mr-2 text-xs md:text-sm", "{icon}" }
                             }
                             "{tab.label}"
                         }

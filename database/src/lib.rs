@@ -63,15 +63,23 @@ pub fn get_database_url() -> Result<String, DatabaseError> {
     }
 
     // Use platform-specific application data directory
-    // macOS: ~/Library/Application Support/Income Calculator/
-    // Windows: C:\Users\<Username>\AppData\Roaming\Income Calculator\
-    // Linux: ~/.local/share/income-calculator/
-    let proj_dirs = directories::ProjectDirs::from("", "", "Income Calculator")
+    // macOS: ~/Library/Application Support/income_calculator_data/
+    // Windows: C:\Users\<Username>\AppData\Roaming\income_calculator_data\
+    // Linux: ~/.local/share/income_calculator_data/
+    let proj_dirs = directories::ProjectDirs::from("", "", "income_calculator_data")
         .ok_or_else(|| DatabaseError::PathError(
             "Could not determine application data directory. This might be a system configuration issue.".to_string()
         ))?;
     
     let data_dir = proj_dirs.data_dir();
+    
+    // Check if the data directory exists and is not a directory (e.g., it's a file)
+    if data_dir.exists() && !data_dir.is_dir() {
+        return Err(DatabaseError::PathError(format!(
+            "Database directory path '{}' exists but is not a directory. Please remove or rename the conflicting file.",
+            data_dir.display()
+        )));
+    }
     
     // Ensure the directory exists
     std::fs::create_dir_all(data_dir)

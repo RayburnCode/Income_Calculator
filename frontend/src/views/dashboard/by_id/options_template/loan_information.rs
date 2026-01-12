@@ -27,9 +27,97 @@ pub fn LoanInformationSection(data: LoanInformationData, on_change: EventHandler
     };
 
     rsx! {
-        div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
+        div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Loan Information" }
-            div { class: "overflow-x-auto",
+
+            // Mobile-first responsive layout: cards on mobile, table on larger screens
+            div { class: "block lg:hidden space-y-4",
+                // Property Type
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "block text-sm font-medium text-gray-700 mb-2", "Property Type" }
+                    select {
+                        value: "{local_data().property_type}",
+                        class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        onchange: move |evt: Event<FormData>| update_data("property_type", evt.value()),
+                        option { value: "sfr", "SFR" }
+                        option { value: "manufactured", "Manufactured" }
+                        option { value: "multiUnit", "Multi Unit" }
+                        option { value: "condo", "Condo" }
+                        option { value: "pud", "PUD" }
+                    }
+                }
+
+                // Occupancy
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "block text-sm font-medium text-gray-700 mb-2", "Occupancy" }
+                    select {
+                        value: "{local_data().occupancy}",
+                        class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        onchange: move |evt: Event<FormData>| update_data("occupancy", evt.value()),
+                        option { value: "primary", "Primary" }
+                        option { value: "secondary", "Secondary" }
+                        option { value: "investment", "Investment" }
+                    }
+                }
+
+                // Loan Type
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "block text-sm font-medium text-gray-700 mb-2", "Loan Type" }
+                    select {
+                        value: "{local_data().loan_type}",
+                        class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        onchange: move |evt: Event<FormData>| update_data("loan_type", evt.value()),
+                        option { value: "cnv", "CNV" }
+                        option { value: "fha", "FHA" }
+                        option { value: "va", "VA" }
+                        option { value: "nonQM", "Non-QM" }
+                    }
+                }
+
+                // Term (months)
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "block text-sm font-medium text-gray-700 mb-2", "Term (months)" }
+                    input {
+                        r#type: "number",
+                        value: "{local_data().term_months}",
+                        class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        oninput: move |evt: Event<FormData>| update_data("term_months", evt.value()),
+                    }
+                }
+
+                // Purpose
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "block text-sm font-medium text-gray-700 mb-2", "Purpose" }
+                    select {
+                        value: "{local_data().purpose}",
+                        class: "w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+                        onchange: move |evt: Event<FormData>| update_data("purpose", evt.value()),
+                        option { value: "purchase", "Purchase" }
+                        option { value: "cashOut", "Cash Out" }
+                        option { value: "refinance", "Refinance" }
+                        option { value: "irrrl", "IRRRL/Streamline" }
+                    }
+                }
+
+                // Appraisal Waiver
+                div { class: "bg-gray-50 p-3 rounded-lg",
+                    label { class: "flex items-center text-sm font-medium text-gray-700",
+                        input {
+                            r#type: "checkbox",
+                            checked: local_data().appraisal_waiver,
+                            class: "mr-2 w-4 h-4",
+                            onchange: move |evt: Event<FormData>| {
+                                let value = if evt.checked() { "true" } else { "false" };
+                                update_data("appraisal_waiver", value.to_string());
+                            },
+                        }
+                        "Appraisal Waiver"
+                    }
+                }
+            }
+
+            // Desktop table layout
+            div { class: "hidden lg:block overflow-x-auto",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {
                         tr { class: "bg-gray-50",

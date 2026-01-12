@@ -46,37 +46,37 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
     };
 
     rsx! {
-        div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
+        div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Consumer Debt" }
-            div { class: "overflow-x-auto",
+            div { class: "overflow-x-auto scrollbar-hide",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {
                         tr { class: "bg-gray-50",
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Debtor"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Type"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Balance"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Monthly"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Term"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Rate"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Omit"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Pay"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Action"
                             }
                         }
@@ -84,20 +84,20 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                     tbody {
                         for (index , debt) in local_data().consumer_debts.iter().enumerate() {
                             tr {
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "text",
                                         name: "debtorName",
                                         value: "{debt.debtor_name}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         oninput: move |e| update_debt(index, "debtor_name".to_string(), e.value()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     select {
                                         name: "creditType",
                                         value: "{debt.credit_type}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         onchange: move |e| update_debt(index, "credit_type".to_string(), e.value()),
                                         option { value: "", "" }
                                         option { value: "Installment", "Installment" }
@@ -106,57 +106,57 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         option { value: "Lease", "Lease" }
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         name: "balanceTotal",
                                         value: "{debt.balance}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         oninput: move |e| update_debt(index, "balance".to_string(), e.value()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         name: "monthlyDebtPayment",
                                         value: "{debt.monthly_payment}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         oninput: move |e| update_debt(index, "monthly_payment".to_string(), e.value()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         name: "termDebt",
                                         value: "{debt.term_months.unwrap_or(0)}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         oninput: move |e| update_debt(index, "term_months".to_string(), e.value()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         name: "rateDebt",
                                         value: "{debt.interest_rate.unwrap_or(0.0)}",
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                         oninput: move |e| update_debt(index, "interest_rate".to_string(), e.value()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2 text-center",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2 text-center",
                                     input {
                                         r#type: "checkbox",
                                         name: "omitDebt",
                                         checked: debt.omit_from_dti,
-                                        class: "w-4 h-4",
+                                        class: "w-3 h-3 sm:w-4 sm:h-4",
                                         onchange: move |e| update_debt(index, "omit_from_dti".to_string(), e.checked().to_string()),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2 text-center",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2 text-center",
                                     input {
                                         r#type: "checkbox",
                                         name: "paydebt",
                                         checked: debt.pay_off_at_closing,
-                                        class: "w-4 h-4",
+                                        class: "w-3 h-3 sm:w-4 sm:h-4",
                                         onchange: move |e| update_debt(
                                             index,
                                             "pay_off_at_closing".to_string(),
@@ -164,10 +164,10 @@ pub fn ConsumerDebtSection(data: ConsumerDebtData, on_change: EventHandler<Consu
                                         ),
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2 text-center",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2 text-center",
                                     button {
                                         r#type: "button",
-                                        class: "bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm",
+                                        class: "bg-red-500 hover:bg-red-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm",
                                         onclick: move |_| remove_debt(index),
                                         "Delete"
                                     }

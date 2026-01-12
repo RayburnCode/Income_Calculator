@@ -12,31 +12,31 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
 
     let pricing_options = local_data().pricing_options.clone();
     rsx! {
-        div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
+        div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Pricing" }
-            div { class: "overflow-x-auto",
+            div { class: "overflow-x-auto scrollbar-hide",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {
                         tr { class: "bg-gray-50",
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Description"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Rate"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "YSP %"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "YSP $"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "BD %"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "BD $"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Select"
                             }
                         }
@@ -45,7 +45,7 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                         // Render pricing options dynamically
                         {pricing_options.iter().enumerate().map(|(i, option)| rsx! {
                             tr {
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "text",
                                         value: "{option.description}",
@@ -53,10 +53,10 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                                             local_data.write().pricing_options[i].description = e.value();
                                             on_change(local_data());
                                         },
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         value: "{option.note_rate}",
@@ -66,10 +66,10 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                                                 on_change(local_data());
                                             }
                                         },
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         value: "{option.ysp_percentage}",
@@ -81,18 +81,18 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                                                 on_change(local_data());
                                             }
                                         },
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         value: "{option.ysp_percentage * total_loan_amount / 100.0:.2}",
                                         readonly: true,
-                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded bg-gray-50 text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         value: "{option.bd_percentage}",
@@ -104,18 +104,18 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                                                 on_change(local_data());
                                             }
                                         },
-                                        class: "w-full px-2 py-1 border rounded",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "number",
                                         value: "{option.bd_percentage * total_loan_amount / 100.0:.2}",
                                         readonly: true,
-                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded bg-gray-50 text-sm",
                                     }
                                 }
-                                td { class: "border border-gray-300 px-4 py-2 text-center",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2 text-center",
                                     input {
                                         r#type: "checkbox",
                                         checked: "{option.is_selected}",
@@ -123,7 +123,7 @@ pub fn PricingSection(data: PricingData, total_loan_amount: f64, on_change: Even
                                             local_data.write().pricing_options[i].is_selected = e.checked();
                                             on_change(local_data());
                                         },
-                                        class: "w-4 h-4",
+                                        class: "w-3 h-3 sm:w-4 sm:h-4",
                                     }
                                 }
                             }

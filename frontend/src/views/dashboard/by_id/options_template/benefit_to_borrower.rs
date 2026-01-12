@@ -112,46 +112,46 @@ pub fn BenefitToBorrowerSection(data: BenefitToBorrowerData, loan_purpose: Strin
         on_change.call(data);
     };
     rsx! {
-        div { class: "bg-white p-6 rounded-lg shadow-md mb-6",
+        div { class: "bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6",
             h4 { class: "text-lg font-semibold mb-4 text-black", "Benefit to the Borrower" }
-            div { class: "overflow-x-auto",
+            div { class: "overflow-x-auto scrollbar-hide",
                 table { class: "min-w-full table-auto border-collapse border border-gray-300",
                     thead {
                         tr { class: "bg-gray-50",
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 ""
                             }
                             if loan_purpose != "purchase" {
-                                th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                                th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                     "Existing Loan"
                                 }
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Proposed Loan"
                             }
-                            th { class: "border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
+                            th { class: "border border-gray-300 px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase",
                                 "Escrow"
                             }
                         }
                     }
                     tbody {
                         tr {
-                            td { class: "border border-gray-300 px-4 py-2 font-semibold",
+                            td { class: "border border-gray-300 px-2 sm:px-4 py-2 font-semibold",
                                 "PI:"
                             }
                             if loan_purpose != "purchase" {
-                                td { class: "border border-gray-300 px-4 py-2",
+                                td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                     input {
                                         r#type: "text",
                                         id: "existingPI",
                                         name: "existingPI",
                                         value: "{local_data().existing_pi}",
                                         readonly: true,
-                                        class: "w-full px-2 py-1 border rounded bg-gray-50",
+                                        class: "w-full px-1 sm:px-2 py-1 border rounded bg-gray-50 text-sm",
                                     }
                                 }
                             }
-                            td { class: "border border-gray-300 px-4 py-2",
+                            td { class: "border border-gray-300 px-2 sm:px-4 py-2",
                                 input {
                                     r#type: "number",
                                     id: "proposedPI",

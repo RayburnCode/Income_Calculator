@@ -178,17 +178,6 @@ pub fn OptionsTemplate(id: i32) -> Element {
                     }
                 },
             }
-
-            DebtToIncomeSection {
-                data: template_data().debt_to_income.clone(),
-                on_change: {
-                    let save_data_clone = save_data.clone();
-                    move |new_data: DebtToIncomeData| {
-                        template_data.write().debt_to_income = new_data.clone();
-                        save_data_clone(template_data());
-                    }
-                },
-            }
             OtherFeesSection {
                 data: template_data().other_fees.clone(),
                 on_change: {

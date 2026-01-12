@@ -22,8 +22,7 @@ pub use pricing::PricingSection;
 pub mod consumer_debt;
 pub use consumer_debt::ConsumerDebtSection;
 
-pub mod debt_to_income;
-pub use debt_to_income::DebtToIncomeSection;
+
 
 pub mod title_fees;
 pub use title_fees::TitleFeesSection;

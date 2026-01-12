@@ -53,6 +53,7 @@ pub fn TemplateUseModal(
                                 div { class: "mb-6",
 
                                 // TODO: Add functionality to send email, create timeline event, etc.
+
             
 
                                     h3 { class: "text-lg font-medium text-gray-900 dark:text-white mb-4", "Select a Template" }
@@ -107,11 +108,11 @@ pub fn TemplateUseModal(
                                             }
                                             p { class: "text-sm text-blue-800 dark:text-blue-200",
                                                 "Template variables have been automatically filled with {
-                                                                                                                    borrower.read_unchecked().as_ref()
-                                                                                                                        .and_then(|b| b.as_ref())
-                                                                                                                        .map(|b| b.name.clone())
-                                                                                                                        .unwrap_or_default()
-                                                                                                                }'s information."
+                                                                                                                                                    borrower.read_unchecked().as_ref()
+                                                                                                                                                        .and_then(|b| b.as_ref())
+                                                                                                                                                        .map(|b| b.name.clone())
+                                                                                                                                                        .unwrap_or_default()
+                                                                                                                                                }'s information."
                                             }
                                         }
                                     }

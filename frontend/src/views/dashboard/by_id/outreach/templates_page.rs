@@ -1,8 +1,5 @@
 use dioxus::prelude::*;
 use shared::models::{OutreachTemplate, TemplateType};
-use crate::components::input::Input;
-
-use crate::views::dashboard::by_id::outreach::templates::components::{TemplateUseModal, TemplatePreview};
 
 #[component]
 pub fn OutreachTemplates(id: i32) -> Element {
@@ -11,7 +8,7 @@ pub fn OutreachTemplates(id: i32) -> Element {
         repo.get_all_outreach_templates().await.unwrap_or_default()
     });
 
-    let mut borrower = use_resource(move || async move {
+    let borrower = use_resource(move || async move {
         let repo = crate::get_repository();
         match repo.get_borrower(id).await {
             Ok(Some(borrower)) => Some(borrower),
@@ -25,6 +22,7 @@ pub fn OutreachTemplates(id: i32) -> Element {
     let mut selected_template_for_use = use_signal(|| None::<OutreachTemplate>);
     let mut generated_content = use_signal(|| String::new());
     let mut generated_subject = use_signal(|| String::new());
+    let mut show_generated_view = use_signal(|| false);
     let mut new_template_name = use_signal(|| String::new());
     let mut new_template_type = use_signal(|| TemplateType::Email);
     let mut new_template_subject = use_signal(|| String::new());
@@ -64,219 +62,301 @@ pub fn OutreachTemplates(id: i32) -> Element {
     };
 
     // Function to use a template with borrower data
-    let mut use_template = move |template: OutreachTemplate| {
-        if let Some(Some(borrower_data)) = borrower.read_unchecked().as_ref() {
-            let content = crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(&template.content, borrower_data);
-            let subject = template.subject.as_ref()
-                .map(|s| crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(s, borrower_data));
+    let use_template = move |template: OutreachTemplate| {
+        spawn(async move {
+            if let Some(Some(borrower_data)) = borrower.read_unchecked().as_ref() {
+                let content = crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(&template.content, borrower_data);
+                let subject = template.subject.as_ref()
+                    .map(|s| crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(s, borrower_data));
 
-            generated_content.set(content);
-            if let Some(subject) = subject {
-                generated_subject.set(subject);
+                generated_content.set(content);
+                if let Some(subject) = subject {
+                    generated_subject.set(subject);
+                }
+                selected_template_for_use.set(Some(template));
+                show_generated_view.set(true);
+            } else {
+                log::warn!("Cannot use template: borrower data not available");
             }
-            selected_template_for_use.set(Some(template));
-        } else {
-            log::warn!("Cannot use template: borrower data not available");
-        }
+        });
     };
 
     rsx! {
         div { class: "space-y-6",
             // Header
             div { class: "flex justify-between items-center",
-                h1 { class: "text-2xl font-bold text-gray-900 dark:text-white", "Outreach Templates" }
-                div { class: "flex space-x-3",
-                    button {
-                        class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
-                        onclick: move |_| show_use_template.set(true),
-                        "Use Template"
-                    }
-                    button {
-                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
-                        onclick: move |_| show_create_form.set(true),
-                        "Create Template"
+                h1 { class: "text-2xl font-bold text-gray-900 dark:text-white",
+                    if show_generated_view() {
+                        "Generated Template"
+                    } else {
+                        "Outreach Templates"
                     }
                 }
-            }
-
-            // Use Template Modal
-            TemplateUseModal {
-                show_modal: show_use_template,
-                templates,
-                borrower,
-                selected_template: selected_template_for_use,
-                generated_content,
-                generated_subject,
-                on_use_template: use_template,
-            }
-
-            // Create Template Form
-            if show_create_form() {
-                div { class: "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
-                    h2 { class: "text-xl font-semibold text-gray-900 dark:text-white mb-4",
-                        "Create New Template"
-                    }
-
-                    div { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-4",
-                        div {
-                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                                "Template Name"
-                            }
-                            Input {
-                                placeholder: "e.g., Welcome Email",
-                                value: new_template_name(),
-                                oninput: move |e: FormEvent| new_template_name.set(e.value()),
-                            }
-                        }
-
-                        div {
-                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                                "Template Type"
-                            }
-                            select {
-                                class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
-                                value: "{new_template_type():?}",
-                                onchange: move |e| {
-                                    let value = e.value();
-                                    let template_type = match value.as_str() {
-                                        "Email" => TemplateType::Email,
-                                        "Letter" => TemplateType::Letter,
-                                        "DocumentRequest" => TemplateType::DocumentRequest,
-                                        "StatusUpdate" => TemplateType::StatusUpdate,
-                                        "WelcomeMessage" => TemplateType::WelcomeMessage,
-                                        "FollowUp" => TemplateType::FollowUp,
-                                        _ => TemplateType::Other,
-                                    };
-                                    new_template_type.set(template_type);
-                                },
-                                option { value: "Email", "Email" }
-                                option { value: "Letter", "Letter" }
-                                option { value: "DocumentRequest", "Document Request" }
-                                option { value: "StatusUpdate", "Status Update" }
-                                option { value: "WelcomeMessage", "Welcome Message" }
-                                option { value: "FollowUp", "Follow Up" }
-                                option { value: "Other", "Other" }
-                            }
-                        }
-                    }
-
-                    div { class: "mb-4",
-                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                            "Subject (for emails)"
-                        }
-                        Input {
-                            placeholder: "Email subject line",
-                            value: new_template_subject(),
-                            oninput: move |e: FormEvent| new_template_subject.set(e.value()),
-                        }
-                    }
-
-                    div { class: "mb-4",
-                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                            "Description"
-                        }
-                        textarea {
-                            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
-                            placeholder: "Brief description of this template",
-                            rows: 2,
-                            value: "{new_template_description()}",
-                            oninput: move |e| new_template_description.set(e.value()),
-                        }
-                    }
-
-                    div { class: "mb-4",
-                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                            "Content"
-                        }
-                        textarea {
-                            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono",
-                            placeholder: "Template content with placeholders like {{borrower_name}}, {{loan_amount}}, etc.",
-                            rows: 10,
-                            value: "{new_template_content()}",
-                            oninput: move |e| new_template_content.set(e.value()),
-                        }
-                    }
-
-                    div { class: "flex justify-end space-x-3",
+                div { class: "flex space-x-3",
+                    if show_generated_view() {
                         button {
-                            class: "px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors",
-                            onclick: move |_| show_create_form.set(false),
-                            "Cancel"
+                            class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                            onclick: move |_| {
+                                show_generated_view.set(false);
+                                selected_template_for_use.set(None);
+                                generated_content.set(String::new());
+                                generated_subject.set(String::new());
+                            },
+                            "Back to Templates"
+                        }
+                    } else {
+                        button {
+                            class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                            onclick: move |_| show_use_template.set(true),
+                            "Use Template"
                         }
                         button {
                             class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
-                            onclick: create_template,
+                            onclick: move |_| show_create_form.set(true),
                             "Create Template"
                         }
                     }
                 }
             }
 
-            // Templates List
-            div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md",
-                {
-                    match templates.read_unchecked().as_ref() {
-                        Some(templates_list) => {
-                            let templates_list = templates_list.clone();
-                            if templates_list.is_empty() {
-                                rsx! {
-                                    div { class: "p-8 text-center text-gray-500 dark:text-gray-400",
-                                        "No templates found. Create your first template to get started."
-                                    }
+            // Generated Template View
+            if show_generated_view() {
+                if let Some(template) = selected_template_for_use() {
+                    div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md p-6",
+                        div { class: "mb-6",
+                            h2 { class: "text-xl font-semibold text-gray-900 dark:text-white mb-2",
+                                "{template.name}"
+                            }
+                            p { class: "text-sm text-gray-600 dark:text-gray-400",
+                                "{template.description.as_deref().unwrap_or(\"\")}"
+                            }
+                            div { class: "flex items-center space-x-4 mt-2",
+                                span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                                    "{template.template_type:?}"
                                 }
-                            } else {
-                                rsx! {
-                                    div { class: "divide-y divide-gray-200 dark:divide-gray-700",
-                                        for template in templates_list {
-                                            {
-                                                let template_clone = template.clone();
-                                                let template_for_view = template.clone();
-                                                let template_for_delete = template.clone();
-                                                rsx! {
-                                                    div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
-                                                        div { class: "flex justify-between items-start",
-                                                            div { class: "flex-1",
-                                                                h3 { class: "text-lg font-medium text-gray-900 dark:text-white", "{template.name}" }
-                                                                p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
-                                                                    "{template.description.as_deref().unwrap_or(\"\")}"
-                                                                }
-                                                                div { class: "flex items-center space-x-4 mt-2",
-                                                                    span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-                                                                        "{template.template_type:?}"
+                            }
+                        }
+
+                        if !generated_subject().is_empty() {
+                            div { class: "mb-4",
+                                label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2",
+                                    "Subject"
+                                }
+                                div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md border font-medium",
+                                    "{generated_subject()}"
+                                }
+                            }
+                        }
+
+                        div { class: "mb-4",
+                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2",
+                                "Content"
+                            }
+                            div { class: "bg-gray-50 dark:bg-gray-700 p-4 rounded-md border whitespace-pre-wrap font-mono text-sm max-h-96 overflow-y-auto",
+                                "{generated_content()}"
+                            }
+                        }
+
+                        div { class: "flex justify-end space-x-3",
+                            button {
+                                class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                                onclick: move |_| {
+                                    // TODO: Implement send functionality
+                                    log::info!("Send template functionality to be implemented");
+                                },
+                                "Send {template.template_type:?}"
+                            }
+                            button {
+                                class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                                onclick: move |_| {
+                                    // TODO: Implement copy to clipboard
+                                    log::info!("Copy to clipboard functionality to be implemented");
+                                },
+                                "Copy to Clipboard"
+                            }
+                        }
+                    }
+                } else {
+                    div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center",
+                        p { class: "text-gray-600 dark:text-gray-400", "No template selected" }
+                    }
+                }
+            }
+
+            // Show template management UI only when not viewing generated content
+            if !show_generated_view() {
+                // Create Template Form
+                if show_create_form() {
+                    div { class: "bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md",
+                        h2 { class: "text-xl font-semibold text-gray-900 dark:text-white mb-4",
+                            "Create New Template"
+                        }
+
+                        div { class: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-4",
+                            div {
+                                label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
+                                    "Template Name"
+                                }
+                                input {
+                                    class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                                    r#type: "text",
+                                    placeholder: "e.g., Welcome Email",
+                                    value: "{new_template_name()}",
+                                    oninput: move |e| new_template_name.set(e.value()),
+                                }
+                            }
+
+                            div {
+                                label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
+                                    "Template Type"
+                                }
+                                select {
+                                    class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                                    value: "{new_template_type():?}",
+                                    onchange: move |e| {
+                                        let value = e.value();
+                                        let template_type = match value.as_str() {
+                                            "Email" => TemplateType::Email,
+                                            "Letter" => TemplateType::Letter,
+                                            "DocumentRequest" => TemplateType::DocumentRequest,
+                                            "StatusUpdate" => TemplateType::StatusUpdate,
+                                            "WelcomeMessage" => TemplateType::WelcomeMessage,
+                                            "FollowUp" => TemplateType::FollowUp,
+                                            _ => TemplateType::Other,
+                                        };
+                                        new_template_type.set(template_type);
+                                    },
+                                    option { value: "Email", "Email" }
+                                    option { value: "Letter", "Letter" }
+                                    option { value: "DocumentRequest", "Document Request" }
+                                    option { value: "StatusUpdate", "Status Update" }
+                                    option { value: "WelcomeMessage", "Welcome Message" }
+                                    option { value: "FollowUp", "Follow Up" }
+                                    option { value: "Other", "Other" }
+                                }
+                            }
+                        }
+
+                        div { class: "mb-4",
+                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
+                                "Subject (for emails)"
+                            }
+                            input {
+                                class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                                r#type: "text",
+                                placeholder: "Email subject line",
+                                value: "{new_template_subject()}",
+                                oninput: move |e| new_template_subject.set(e.value()),
+                            }
+                        }
+
+                        div { class: "mb-4",
+                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
+                                "Description"
+                            }
+                            textarea {
+                                class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                                placeholder: "Brief description of this template",
+                                rows: 2,
+                                value: "{new_template_description()}",
+                                oninput: move |e| new_template_description.set(e.value()),
+                            }
+                        }
+
+                        div { class: "mb-4",
+                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
+                                "Content"
+                            }
+                            textarea {
+                                class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono",
+                                placeholder: "Template content with placeholders like {{borrower_name}}, {{loan_amount}}, etc.",
+                                rows: 10,
+                                value: "{new_template_content()}",
+                                oninput: move |e| new_template_content.set(e.value()),
+                            }
+                        }
+
+                        div { class: "flex justify-end space-x-3",
+                            button {
+                                class: "px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors",
+                                onclick: move |_| show_create_form.set(false),
+                                "Cancel"
+                            }
+                            button {
+                                class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                                onclick: create_template,
+                                "Create Template"
+                            }
+                        }
+                    }
+                }
+
+                // Templates List
+                div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-md",
+                    {
+                        match templates.read_unchecked().as_ref() {
+                            Some(templates_list) => {
+                                let templates_list = templates_list.clone();
+                                if templates_list.is_empty() {
+                                    rsx! {
+                                        div { class: "p-8 text-center text-gray-500 dark:text-gray-400",
+                                            "No templates found. Create your first template to get started."
+                                        }
+                                    }
+                                } else {
+                                    rsx! {
+                                        div { class: "divide-y divide-gray-200 dark:divide-gray-700",
+                                            for template in templates_list {
+                                                {
+                                                    let template_clone = template.clone();
+                                                    let template_for_view = template.clone();
+                                                    let template_for_delete = template.clone();
+                                                    rsx! {
+                                                        div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
+                                                            div { class: "flex justify-between items-start",
+                                                                div { class: "flex-1",
+                                                                    h3 { class: "text-lg font-medium text-gray-900 dark:text-white", "{template.name}" }
+                                                                    p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
+                                                                        "{template.description.as_deref().unwrap_or(\"\")}"
                                                                     }
-                                                                    if template.is_default {
-                                                                        span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                                                                            "Default"
+                                                                    div { class: "flex items-center space-x-4 mt-2",
+                                                                        span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                                                                            "{template.template_type:?}"
+                                                                        }
+                                                                        if template.is_default {
+                                                                            span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                                                                                "Default"
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
-                                                            }
-                                                            div { class: "flex space-x-2",
-                                                                button {
-                                                                    class: "text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 text-sm font-medium",
-                                                                    onclick: move |_| use_template(template_clone.clone()),
-                                                                    "Use"
-                                                                }
-                                                                button {
-                                                                    class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
-                                                                    onclick: move |_| selected_template.set(Some(template_for_view.clone())),
-                                                                    "View"
-                                                                }
-                                                                if !template.is_default {
+                                                                div { class: "flex space-x-2",
                                                                     button {
-                                                                        class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
-                                                                        onclick: move |_| {
-                                                                            let template_id = template_for_delete.id;
-                                                                            spawn(async move {
-                                                                                let repo = crate::get_repository();
-                                                                                if let Err(e) = repo.delete_outreach_template(template_id).await {
-                                                                                    log::error!("Failed to delete template: {:?}", e);
-                                                                                } else {
-                                                                                    templates.restart();
-                                                                                }
-                                                                            });
-                                                                        },
-                                                                        "Delete"
+                                                                        class: "text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 text-sm font-medium",
+                                                                        onclick: move |_| use_template(template_clone.clone()),
+                                                                        "Use"
+                                                                    }
+                                                                    button {
+                                                                        class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
+                                                                        onclick: move |_| selected_template.set(Some(template_for_view.clone())),
+                                                                        "View"
+                                                                    }
+                                                                    if !template.is_default {
+                                                                        button {
+                                                                            class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
+                                                                            onclick: move |_| {
+                                                                                let template_id = template_for_delete.id;
+                                                                                spawn(async move {
+                                                                                    let repo = crate::get_repository();
+                                                                                    if let Err(e) = repo.delete_outreach_template(template_id).await {
+                                                                                        log::error!("Failed to delete template: {:?}", e);
+                                                                                    } else {
+                                                                                        templates.restart();
+                                                                                    }
+                                                                                });
+                                                                            },
+                                                                            "Delete"
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -288,67 +368,95 @@ pub fn OutreachTemplates(id: i32) -> Element {
                                     }
                                 }
                             }
+                            None => rsx! {
+                                div { class: "p-8 text-center",
+                                    div { class: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" }
+                                    p { class: "text-gray-600 dark:text-gray-400", "Loading templates..." }
+                                }
+                            },
                         }
-                        None => rsx! {
-                            div { class: "p-8 text-center",
-                                div { class: "animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4" }
-                                p { class: "text-gray-600 dark:text-gray-400", "Loading templates..." }
-                            }
-                        },
                     }
                 }
-            }
 
-            // Template Preview Modal
-            {selected_template().map(|template: OutreachTemplate| rsx! {
-                div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
-                    div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto",
-                        div { class: "p-6",
-                            div { class: "flex justify-between items-start mb-4",
-                                div {
-                                    h2 { class: "text-xl font-semibold text-gray-900 dark:text-white",
-                                        "{template.name}"
+                // Template Preview Modal
+                {selected_template().map(|template: OutreachTemplate| rsx! {
+                    div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
+                        div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto",
+                            div { class: "p-6",
+                                div { class: "flex justify-between items-start mb-4",
+                                    div {
+                                        h2 { class: "text-xl font-semibold text-gray-900 dark:text-white",
+                                            "{template.name}"
+                                        }
+                                        p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
+                                            "{template.description.as_deref().unwrap_or(\"\")}"
+                                        }
                                     }
-                                    p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
-                                        "{template.description.as_deref().unwrap_or(\"\")}"
-                                    }
-                                }
-                                button {
-                                    class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200",
-                                    onclick: move |_| selected_template.set(None),
-                                    svg {
-                                        class: "w-6 h-6",
-                                        fill: "none",
-                                        view_box: "0 0 24 24",
-                                        stroke: "currentColor",
-                                        path {
-                                            stroke_linecap: "round",
-                                            stroke_linejoin: "round",
-                                            stroke_width: "2",
-                                            d: "M6 18L18 6M6 6l12 12",
+                                    button {
+                                        class: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-200",
+                                        onclick: move |_| selected_template.set(None),
+                                        svg {
+                                            class: "w-6 h-6",
+                                            fill: "none",
+                                            view_box: "0 0 24 24",
+                                            stroke: "currentColor",
+                                            path {
+                                                stroke_linecap: "round",
+                                                stroke_linejoin: "round",
+                                                stroke_width: "2",
+                                                d: "M6 18L18 6M6 6l12 12",
+                                            }
                                         }
                                     }
                                 }
-                            }
 
     
 
-                            TemplatePreview {
-                                template: template.clone(),
-                                borrower: borrower.read_unchecked().as_ref().and_then(|b| b.clone()),
-                            }
+                                div { class: "space-y-4",
+                                    div { class: "flex items-center space-x-4",
+                                        span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                                            "{template.template_type:?}"
+                                        }
+                                        if template.is_default {
+                                            span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                                                "Default"
+                                            }
+                                        }
+                                    }
     
-                            div { class: "flex justify-end",
-                                button {
-                                    class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
-                                    onclick: move |_| selected_template.set(None),
-                                    "Close"
+                                    if let Some(subject) = &template.subject {
+                                        div {
+                                            label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2",
+                                                "Subject"
+                                            }
+                                            div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md border",
+                                                "{subject}"
+                                            }
+                                        }
+                                    }
+    
+                                    div {
+                                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2",
+                                            "Content"
+                                        }
+                                        div { class: "bg-gray-50 dark:bg-gray-700 p-4 rounded-md border whitespace-pre-wrap font-mono text-sm max-h-96 overflow-y-auto",
+                                            "{template.content}"
+                                        }
+                                    }
+                                }
+    
+                                div { class: "flex justify-end mt-6",
+                                    button {
+                                        class: "bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                                        onclick: move |_| selected_template.set(None),
+                                        "Close"
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            })}
+                })}
+            }
         }
     }
 }

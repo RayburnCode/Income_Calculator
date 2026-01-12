@@ -10,6 +10,11 @@ pub mod refinance;
 pub mod calculations;
 pub mod settings;
 
+// Sync system entities
+pub mod sync_log;
+pub mod sync_devices;
+pub mod sync_conflicts;
+
 // Re-export entities at the top level for backward compatibility
 pub use client::{borrower, timeline_events, outreach_templates, campaigns, ab_tests, note, document};
 pub use income::{consumer_debt, income_information, w2_jobs};

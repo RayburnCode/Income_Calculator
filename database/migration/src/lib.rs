@@ -16,6 +16,7 @@ mod m20260109_000006_create_campaigns_table;
 mod m20260109_000007_create_notes_table;
 mod m20260109_000008_create_documents_table;
 mod m20260109_000009_create_conditions_table;
+mod m20260112_000001_create_sync_tables;
 
 pub struct Migrator;
 
@@ -38,6 +39,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260109_000007_create_notes_table::Migration),
             Box::new(m20260109_000008_create_documents_table::Migration),
             Box::new(m20260109_000009_create_conditions_table::Migration),
+            Box::new(m20260112_000001_create_sync_tables::Migration),
         ]
     }
 } 

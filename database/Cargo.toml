@@ -11,11 +11,53 @@ path = "src/lib.rs"
 # Your database-related dependencies go here
 sea-orm = { version = "1.1.14", features = [ "sqlx-sqlite", "runtime-tokio-rustls", "with-chrono", "with-uuid" ] }
 sea-orm-migration = { version = "1.1.14", features = ["sqlx-sqlite", "runtime-tokio-rustls"] }
-#tokio = { version = "1.47.1", features = ["full"] }
+tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 directories = "5.0"
 
+# P2P and networking (optional - keeping your original libp2p for reference)
+libp2p = { version = "0.53", features = ["tcp", "dns", "tokio", "noise", "yamux", "ping", "identify", "request-response", "macros"], optional = true }
+
+# REST API for sync
+axum = "0.7"
+tower-http = { version = "0.5", features = ["cors"] }
+reqwest = { version = "0.11", features = ["json"] }
+
+# Cryptography
+sha2 = "0.10"
+ed25519-dalek = "2.1"
+base64 = "0.22"
+rand = "0.8"
+
+# UUID for device IDs
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Async traits
+async-trait = "0.1"
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
 
 migration = { path = "migration" }
 shared = { path = "../shared" }
+
+[features]
+default = ["rest-sync"]
+rest-sync = []  # REST API based sync (recommended)
+p2p-sync = ["libp2p"]  # Alternative P2P sync with libp2p
+sqlite = []
+
+[[example]]
+name = "sync_server"
+path = "../examples/sync_server.rs"
+
+[[example]]
+name = "sync_client"
+path = "../examples/sync_client.rs"
+
+[[example]]
+name = "track_change"
+path = "../examples/track_change.rs"
+
  

@@ -2,7 +2,7 @@
 use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::MigratorTrait;
 pub mod entities;
-
+pub mod local;
 pub use migration::Migrator;
 
 #[derive(Debug)]
@@ -92,4 +92,14 @@ pub fn get_database_url() -> Result<String, DatabaseError> {
     let url = format!("sqlite://{}?mode=rwc", db_path.display());
     
     Ok(url)
+}
+
+/// Get the database file path (useful for backups)
+pub fn get_database_path() -> Result<std::path::PathBuf, DatabaseError> {
+    let proj_dirs = directories::ProjectDirs::from("", "", "income_calculator_data")
+        .ok_or_else(|| DatabaseError::PathError(
+            "Could not determine application data directory.".to_string()
+        ))?;
+    
+    Ok(proj_dirs.data_dir().join("income_calculator.db"))
 }

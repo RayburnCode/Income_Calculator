@@ -28,5 +28,10 @@ pub use super::calculations::benefit_to_borrower::{self as BenefitToBorrower, En
 pub use super::calculations::pricing_options::{self as PricingOptions, Entity as PricingOptionsEntity};
 pub use super::calculations::savings_calculations::{self as SavingsCalculations, Entity as SavingsCalculationsEntity};
 
+// Sync entities
+pub use super::sync_log::{self as SyncLog, Entity as SyncLogEntity};
+pub use super::sync_devices::{self as SyncDevices, Entity as SyncDevicesEntity};
+pub use super::sync_conflicts::{self as SyncConflicts, Entity as SyncConflictsEntity};
+
 // Settings
 pub use super::settings::{self as Settings, Entity as SettingsEntity};

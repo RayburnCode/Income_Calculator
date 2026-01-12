@@ -19,15 +19,15 @@ struct AnalyticsData {
 #[component]
 pub fn Analytics() -> Element {
     let client = use_context::<repository::Repository>();
-    let mut analytics_data = use_signal(|| None::<AnalyticsData>);
+    let  analytics_data = use_signal(|| None::<AnalyticsData>);
     let mut is_loading = use_signal(|| true);
     let mut error_message = use_signal(|| None::<String>);
 
     // Date filtering state - default to month to date
     let today = Utc::now().date_naive();
     let month_start = NaiveDate::from_ymd_opt(today.year(), today.month(), 1).unwrap_or(today);
-    let mut start_date = use_signal(|| month_start);
-    let mut end_date = use_signal(|| today);
+    let  start_date = use_signal(|| month_start);
+    let  end_date = use_signal(|| today);
 
     // Load analytics data when dates change
     let load_data_fn = {

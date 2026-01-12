@@ -1,6 +1,5 @@
 use dioxus::prelude::*;
 use crate::components::Input;
-use client;
 use shared::models::{W2Job, W2JobsData};
 
 #[component]

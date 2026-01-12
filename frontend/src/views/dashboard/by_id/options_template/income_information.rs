@@ -46,12 +46,6 @@ pub fn IncomeInformationSection(data: IncomeInformationData, on_change: EventHan
         local_data.set(data.clone());
     });
 
-    // Update income selection
-    let mut update_income_selection = move |income_id: String, included: bool| {
-        // For now, this is just for display - actual income comes from W2 jobs
-        // In the future, this could allow excluding certain income sources
-        println!("Income selection updated: {} -> {}", income_id, included);
-    };
 
     // Update borrower income
     let mut update_borrower_income = move |value: f64| {

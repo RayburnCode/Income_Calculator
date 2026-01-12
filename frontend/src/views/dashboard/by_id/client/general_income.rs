@@ -16,7 +16,7 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
     // Load general income data when component mounts
     use_effect(move || {
         let resource_value = client_resource.read().clone();
-        let mut income_data = income_data.clone();
+        let  income_data = income_data.clone();
         let client_id = borrower_id;
 
         spawn(async move {

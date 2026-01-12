@@ -1,5 +1,5 @@
 pub mod by_id;
-pub use by_id::{Worksheet, OptionsTemplate, ClientDetails};
+//pub use by_id::{Worksheet, OptionsTemplate, ClientDetails};
 
 pub mod analytics;
 pub use analytics::Analytics;

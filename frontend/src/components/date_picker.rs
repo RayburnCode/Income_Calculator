@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use chrono::{Datelike, NaiveDate};
+use chrono::NaiveDate;
 
 #[derive(Props, PartialEq, Clone)]
 pub struct DatePickerProps {

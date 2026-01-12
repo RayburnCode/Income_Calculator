@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use crate::views::dashboard::by_id::income_worksheet::W2Jobs;
+use crate::views::dashboard::by_id::client::GeneralIncome;
 use crate::views::dashboard::by_id::outreach::timeline::Timeline;
 use super::client_info_card::ClientInfoCard;
 use shared::models::Status;
@@ -50,7 +50,7 @@ pub fn ClientOverview(
             h2 { class: "text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4",
                 "Income Information"
             }
-            W2Jobs { borrower_id: id }
+            GeneralIncome { borrower_id: id }
         }
 
         div { class: "mt-8",

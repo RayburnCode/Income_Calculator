@@ -188,13 +188,60 @@ pub struct IncomeSource {
     pub included_in_dti: bool,
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct GeneralIncomeEntry {
+    pub id: String,
+    pub income_type: String, // Will store the enum as string
+    pub source_name: String, // Employer name, property address, etc.
+    pub description: String, // Job title, investment type, etc.
+    pub monthly_amount: String,
+    pub annual_amount: String,
+    pub is_verified: bool,
+    pub verified_at: Option<String>,
+    pub notes: String,
+}
+
+impl Default for GeneralIncomeEntry {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::new_v4().to_string(),
+            income_type: "W-2 Employment".to_string(),
+            source_name: String::new(),
+            description: String::new(),
+            monthly_amount: String::new(),
+            annual_amount: String::new(),
+            is_verified: false,
+            verified_at: None,
+            notes: String::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct GeneralIncomeData {
+    pub entries: Vec<GeneralIncomeEntry>,
+    pub is_verified: bool,
+    pub verified_at: Option<String>,
+}
+
+impl Default for GeneralIncomeData {
+    fn default() -> Self {
+        Self {
+            entries: vec![GeneralIncomeEntry::default()],
+            is_verified: false,
+            verified_at: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Default)]
 pub struct IncomeInformationData {
     pub borrower_monthly_income: f64,
     pub coborrower_monthly_income: f64,
     pub front_end_ratio: f64,
     pub back_end_ratio: f64,
-    pub w2_jobs_data: Option<W2JobsData>,
+    pub general_income_data: Option<GeneralIncomeData>,
+    pub w2_jobs_data: Option<W2JobsData>, // Keep for backward compatibility
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

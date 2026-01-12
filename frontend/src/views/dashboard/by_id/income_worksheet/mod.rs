@@ -19,8 +19,6 @@ pub use commission::Commission;
 pub mod other_w2;
 pub use other_w2::OtherW2;
 
-pub mod w2_jobs;
-pub use w2_jobs::W2Jobs;
 
 pub mod social_security;
 pub use social_security::SocialSecurity;

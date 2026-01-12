@@ -47,14 +47,29 @@ pub fn ClientDocuments(id: i32) -> Element {
     
 
     rsx! {
-        Fragment {
-            div { class: "bg-neutral-primary-soft border border-default rounded-base p-6 shadow-xs",
-                div { class: "flex justify-between items-center mb-6",
-                    h2 { class: "text-2xl font-bold text-heading", "Documents" }
-                    button {
-                        class: "bg-blue-600 text-white px-4 py-2 rounded-base hover:bg-blue-700 transition-colors font-medium shadow-sm hover:shadow-md",
-                        onclick: move |_| show_upload_modal.set(true),
-                        "Upload Document"
+        div { class: "min-h-screen bg-gray-100 dark:bg-gray-900 p-6",
+            div { class: "max-w-7xl mx-auto",
+                // Header
+                div { class: "mb-8",
+                    h1 { class: "text-3xl font-bold text-gray-900 dark:text-gray-100",
+                        "Documents"
+                    }
+                    p { class: "text-gray-600 dark:text-gray-400 mt-2",
+                        "Manage and upload client documents"
+                    }
+                }
+
+                // Main Content
+                div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6",
+                    div { class: "flex justify-between items-center mb-6",
+                        h2 { class: "text-2xl font-bold text-gray-900 dark:text-gray-100",
+                            "Documents"
+                        }
+                        button {
+                            class: "bg-blue-600 text-white px-4 py-2 rounded-base hover:bg-blue-700 transition-colors font-medium shadow-sm hover:shadow-md",
+                            onclick: move |_| show_upload_modal.set(true),
+                            "Upload Document"
+                        }
                     }
 
                     // Documents List Section
@@ -191,7 +206,6 @@ pub fn ClientDocuments(id: i32) -> Element {
                             },
                         }
                     }
-                
                 }
 
                 // Upload Modal
@@ -261,4 +275,5 @@ pub fn ClientDocuments(id: i32) -> Element {
                 }
             }
         }
-    }}
+    }
+}

@@ -85,7 +85,7 @@ pub fn Search(props: SearchProps) -> Element {
                     },
                 }
                 button {
-                    class: "absolute end-1.5 bottom-1.5 text-white bg-brand hover:bg-brand-strong box-border border border-transparent focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none",
+                    class: "absolute end-1.5 bottom-1.5 text-white bg-green-600 hover:bg-green-700 box-border border border-transparent focus:ring-4 focus:ring-green-500 shadow-xs font-medium leading-5 rounded text-xs px-3 py-1.5 focus:outline-none",
                     r#type: "button",
                     "Search"
                 }

@@ -98,6 +98,37 @@ impl std::fmt::Display for CreditType {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum IncomeType {
+    W2Employment,
+    SelfEmployment,
+    RentalIncome,
+    InvestmentIncome,
+    SocialSecurity,
+    Pension,
+    Disability,
+    Alimony,
+    ChildSupport,
+    Other,
+}
+
+impl fmt::Display for IncomeType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            IncomeType::W2Employment => write!(f, "W-2 Employment"),
+            IncomeType::SelfEmployment => write!(f, "Self Employment"),
+            IncomeType::RentalIncome => write!(f, "Rental Income"),
+            IncomeType::InvestmentIncome => write!(f, "Investment Income"),
+            IncomeType::SocialSecurity => write!(f, "Social Security"),
+            IncomeType::Pension => write!(f, "Pension"),
+            IncomeType::Disability => write!(f, "Disability"),
+            IncomeType::Alimony => write!(f, "Alimony"),
+            IncomeType::ChildSupport => write!(f, "Child Support"),
+            IncomeType::Other => write!(f, "Other"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Status {
     Active,
     Inactive,
@@ -165,5 +196,20 @@ pub fn parse_status(s: &str) -> Status {
         "Rejected" => Status::Rejected,
         "Closed" => Status::Closed,
         _ => Status::Active,
+    }
+}
+
+pub fn parse_income_type(s: &str) -> IncomeType {
+    match s {
+        "Self Employment" => IncomeType::SelfEmployment,
+        "Rental Income" => IncomeType::RentalIncome,
+        "Investment Income" => IncomeType::InvestmentIncome,
+        "Social Security" => IncomeType::SocialSecurity,
+        "Pension" => IncomeType::Pension,
+        "Disability" => IncomeType::Disability,
+        "Alimony" => IncomeType::Alimony,
+        "Child Support" => IncomeType::ChildSupport,
+        "Other" => IncomeType::Other,
+        _ => IncomeType::W2Employment,
     }
 }

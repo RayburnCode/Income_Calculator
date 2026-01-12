@@ -33,3 +33,6 @@ pub use file_upload::{FileUpload, SelectedFile};
 
 pub mod analytics_card;
 pub use analytics_card::AnalyticsCard;
+
+pub mod date_picker;
+pub use date_picker::{DatePicker, DateRangePicker};

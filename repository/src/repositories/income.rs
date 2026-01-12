@@ -83,3 +83,31 @@ pub async fn get_total_income_sum(db: &DatabaseConnection) -> Result<f64, Box<dy
         .sum();
     Ok(total)
 }
+
+pub async fn get_total_income_sum_in_date_range(db: &DatabaseConnection, start_date: chrono::NaiveDate, end_date: chrono::NaiveDate) -> Result<f64, Box<dyn std::error::Error>> {
+    use sea_orm::{QueryFilter, ColumnTrait};
+    use chrono::NaiveDateTime;
+
+    let start_datetime = NaiveDateTime::new(start_date, chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap());
+    let end_datetime = NaiveDateTime::new(end_date, chrono::NaiveTime::from_hms_opt(23, 59, 59).unwrap());
+
+    let incomes = income_information::Entity::find()
+        .filter(income_information::Column::CreatedAt.gte(start_datetime))
+        .filter(income_information::Column::CreatedAt.lte(end_datetime))
+        .all(db)
+        .await?;
+
+    let incomes = income_information::Entity::find()
+        .filter(income_information::Column::CreatedAt.gte(start_datetime))
+        .filter(income_information::Column::CreatedAt.lte(end_datetime))
+        .all(db)
+        .await?;
+
+    let total: f64 = incomes.iter()
+        .map(|income| {
+            income.borrower_monthly_income.to_f64().unwrap_or(0.0) +
+            income.coborrower_monthly_income.to_f64().unwrap_or(0.0)
+        })
+        .sum();
+    Ok(total)
+}

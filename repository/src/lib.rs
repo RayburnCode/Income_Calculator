@@ -100,6 +100,11 @@ impl Repository {
         loan::LoanRepository::count(&db).await
     }
 
+    pub async fn get_total_loans_count_in_date_range(&self, start_date: chrono::NaiveDate, end_date: chrono::NaiveDate) -> Result<i64, Box<dyn std::error::Error>> {
+        let db = self.db().await;
+        loan::LoanRepository::count_in_date_range(&db, start_date, end_date).await
+    }
+
     // ===== Settings Operations =====
 
     pub async fn get_settings(&self) -> Result<shared::models::AppSettings, Box<dyn std::error::Error>> {
@@ -142,6 +147,11 @@ impl Repository {
     pub async fn get_total_income_sum(&self) -> Result<f64, Box<dyn std::error::Error>> {
         let db = self.db.lock().await;
         income::get_total_income_sum(&db).await
+    }
+
+    pub async fn get_total_income_sum_in_date_range(&self, start_date: chrono::NaiveDate, end_date: chrono::NaiveDate) -> Result<f64, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        income::get_total_income_sum_in_date_range(&db, start_date, end_date).await
     }
 
     // ===== Options Template Operations =====

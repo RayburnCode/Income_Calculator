@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
-use crate::components::AnalyticsCard;
+use chrono::{Datelike, NaiveDate, Utc};
+use crate::components::{AnalyticsCard, DateRangePicker};
 
 /// Analytics data structure
 #[derive(Clone, Debug)]
@@ -22,21 +23,50 @@ pub fn Analytics() -> Element {
     let mut is_loading = use_signal(|| true);
     let mut error_message = use_signal(|| None::<String>);
 
-    // Load analytics data on component mount
-    use_effect(move || {
+    // Date filtering state - default to month to date
+    let today = Utc::now().date_naive();
+    let month_start = NaiveDate::from_ymd_opt(today.year(), today.month(), 1).unwrap_or(today);
+    let mut start_date = use_signal(|| month_start);
+    let mut end_date = use_signal(|| today);
+
+    // Load analytics data when dates change
+    let load_data_fn = {
         let client_clone = client.clone();
-        spawn(async move {
-            match load_analytics_data(&client_clone).await {
-                Ok(data) => {
-                    analytics_data.set(Some(data));
-                    is_loading.set(false);
+        let start_date_clone = start_date.clone();
+        let end_date_clone = end_date.clone();
+        let analytics_data_clone = analytics_data.clone();
+        let is_loading_clone = is_loading.clone();
+        let error_message_clone = error_message.clone();
+        
+        move || {
+            let client = client_clone.clone();
+            let start = start_date_clone();
+            let end = end_date_clone();
+            let mut analytics_data = analytics_data_clone.clone();
+            let mut is_loading = is_loading_clone.clone();
+            let mut error_message = error_message_clone.clone();
+            
+            spawn(async move {
+                match load_analytics_data(&client, start, end).await {
+                    Ok(data) => {
+                        analytics_data.set(Some(data));
+                        is_loading.set(false);
+                    }
+                    Err(e) => {
+                        error_message.set(Some(format!("Failed to load analytics: {:?}", e)));
+                        is_loading.set(false);
+                    }
                 }
-                Err(e) => {
-                    error_message.set(Some(format!("Failed to load analytics: {:?}", e)));
-                    is_loading.set(false);
-                }
-            }
-        });
+            });
+        }
+    };
+
+    // Load analytics data on component mount and when dates change
+    use_effect({
+        let load_data_fn = load_data_fn.clone();
+        move || {
+            load_data_fn();
+        }
     });
 
     rsx! {
@@ -48,6 +78,35 @@ pub fn Analytics() -> Element {
                         "Analytics Dashboard"
                     }
                     p { class: "text-gray-600 mt-2", "Key metrics and insights for your business" }
+
+                    // Date filter controls
+                    div { class: "mt-6 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700",
+                        div { class: "flex flex-col lg:flex-row lg:items-end gap-4",
+                            div { class: "flex-1",
+                                DateRangePicker {
+                                    start_date,
+                                    end_date,
+                                    min_date: None,
+                                    max_date: Some(today),
+                                }
+                            }
+                            button {
+                                class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors",
+                                onclick: {
+                                    let load_data_fn = load_data_fn.clone();
+                                    move |_| {
+                                        is_loading.set(true);
+                                        error_message.set(None);
+                                        load_data_fn();
+                                    }
+                                },
+                                "Apply Filter"
+                            }
+                        }
+                        p { class: "text-sm text-gray-500 mt-2",
+                            "Filter analytics data by date range. Default shows month-to-date."
+                        }
+                    }
                 }
 
                 // Loading state
@@ -165,15 +224,15 @@ pub fn Analytics() -> Element {
 }
 
 /// Load analytics data from the database
-async fn load_analytics_data(client: &repository::Repository) -> Result<AnalyticsData, Box<dyn std::error::Error>> {
-    // Get total clients count
+async fn load_analytics_data(client: &repository::Repository, start_date: NaiveDate, end_date: NaiveDate) -> Result<AnalyticsData, Box<dyn std::error::Error>> {
+    // Get total clients count (for now, not filtered by date since clients are created once)
     let total_clients = client.get_total_clients_count().await? as usize;
 
     // For now, assume all borrowers are active (we can enhance this later with status tracking)
     let active_clients = total_clients;
 
-    // Get total income sum
-    let total_income = client.get_total_income_sum().await?;
+    // Get total income sum within date range
+    let total_income = client.get_total_income_sum_in_date_range(start_date, end_date).await?;
 
     let average_income = if total_clients > 0 {
         total_income / total_clients as f64
@@ -181,8 +240,8 @@ async fn load_analytics_data(client: &repository::Repository) -> Result<Analytic
         0.0
     };
 
-    // Get total loans count
-    let total_loans = client.get_total_loans_count().await? as usize;
+    // Get total loans count within date range
+    let total_loans = client.get_total_loans_count_in_date_range(start_date, end_date).await? as usize;
 
     // For now, assume no pending applications (we can enhance this later)
     let pending_applications = 0;

@@ -125,11 +125,12 @@ pub fn ClientNotes(id: i32) -> Element {
 
                                     div { class: "flex justify-between items-start mb-2",
                                         div { class: "flex items-center gap-2",
-                                            span { class: "text-xs text-gray-500",
-                                                "User ID: {note.user_id}"
-                                            }
+                                            span { class: "text-xs text-gray-500", "{note.user_id}" }
                                             span { class: "text-xs text-gray-500", "•" }
-                                            span { class: "text-xs text-gray-500", "{note.created_at}" }
+                                            span { class: "text-xs text-gray-500",
+                                                // Format timestamp to remove seconds
+                                                {note.created_at.format("%Y-%m-%d %H:%M").to_string()}
+                                            }
                                         }
                                         button {
                                             class: "text-red-600 hover:text-red-800 text-sm font-medium",

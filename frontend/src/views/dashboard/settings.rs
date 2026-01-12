@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use shared::models::AppSettings;
+use crate::components::ThemeToggle;
 
 #[component]
 pub fn Settings() -> Element {
@@ -103,6 +104,17 @@ pub fn Settings() -> Element {
                                         option { value: "dark", "Dark" }
                                         option { value: "system", "System" }
                                     }
+                                }
+                                div { class: "flex items-center justify-between",
+                                    div {
+                                        label { class: "text-sm font-medium text-gray-700",
+                                            "Quick Theme Toggle"
+                                        }
+                                        p { class: "text-sm text-gray-500",
+                                            "Switch between light and dark modes"
+                                        }
+                                    }
+                                    ThemeToggle {}
                                 }
                                 div { class: "flex items-center justify-between",
                                     div {

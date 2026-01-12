@@ -1,7 +1,6 @@
 use crate::Route;
 use dioxus::prelude::*;
-use crate::components::ThemeToggle;
-
+use crate::components::Search;
 const LOGO: Asset = asset!("/assets/percent.svg");
  
 #[component]
@@ -10,6 +9,7 @@ pub fn Navbar() -> Element {
     rsx! {
         nav { class: "text-theme-text-primary fixed w-full z-20 top-0 start-0 border-b border-theme-text-secondary/20 bg-theme-bg-primary/95 backdrop-blur-md shadow-sm",
             div { class: "flex flex-wrap items-center justify-between p-4",
+                // Left section - Logo
                 a { class: "flex items-center space-x-3 rtl:space-x-reverse",
                     img { alt: "Debt to Income Logo", class: "h-7", src: LOGO }
                     Link {
@@ -18,10 +18,17 @@ pub fn Navbar() -> Element {
                         "Income Calculator"
                     }
                 }
-                div { class: "flex items-center space-x-4",
-                    // Theme toggle button
-                    ThemeToggle {}
 
+                // Center section - Search bar
+                div { class: "flex-1 max-w-md mx-4 hidden md:block",
+                    Search {
+                        placeholder: "Search clients, loans, income...",
+                        class: "w-full",
+                    }
+                }
+
+                // Right section - Menu button
+                div { class: "flex items-center",
                     button {
                         aria_controls: "navbar-default",
                         aria_expanded: "false",
@@ -57,13 +64,7 @@ pub fn Navbar() -> Element {
                                 "Analytics"
                             }
                         }
-                        li {
-                            Link {
-                                to: Route::CampaignManager {},
-                                class: "block py-2 px-3 text-theme-text-secondary rounded hover:bg-theme-bg-tertiary hover:text-theme-text-primary md:hover:bg-transparent md:border-0 md:p-0 transition-colors",
-                                "Campaign Manager"
-                            }
-                        }
+
                         li {
                             Link {
                                 to: Route::Settings {},

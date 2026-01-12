@@ -194,29 +194,31 @@ pub fn ClientDetails(id: i32) -> Element {
             disabled: false,
             icon: None,
         },
-                    TabItem {
+        TabItem {
             label: "Notes".to_string(),
             href: None,
             disabled: false,
             icon: None,
-        },            TabItem {
+        },
+        TabItem {
             label: "Documents".to_string(),
             href: None,
             disabled: false,
             icon: None,
-        },            TabItem {
+        },
+        TabItem {
             label: "Conditions".to_string(),
             href: None,
             disabled: false,
             icon: None,
         },
-            TabItem {
+        TabItem {
             label: "Outreach".to_string(),
             href: None,
             disabled: false,
             icon: None,
         },
-                    TabItem {
+        TabItem {
             label: "Timeline".to_string(),
             href: None,
             disabled: false,
@@ -231,11 +233,10 @@ pub fn ClientDetails(id: i32) -> Element {
                 // Optional overlay for better text readability if needed
                 div { class: "absolute inset-0 bg-theme-bg-primary/20 dark:bg-theme-bg-secondary/30" }
 
-                // Client name, status, and tabs overlay
-                div { class: "absolute bottom-4 left-6 right-6 flex flex-col items-start gap-4",
-                    // Name and status on the top
-                    div { class: "pb-4",
-                        h1 { class: "text-2xl font-bold text-theme-text-primary dark:text-theme-text-secondary drop-shadow-lg",
+                // Client name and status overlay
+                div { class: "absolute bottom-4 left-6 right-6",
+                    div { class: "flex items-center justify-between",
+                        h1 { class: "text-2xl font-bold text-white dark:text-theme-text-secondary drop-shadow-lg",
                             {borrower().map(|b| b.name.clone()).unwrap_or_else(|| "Loading...".to_string())}
                         }
                         {
@@ -258,18 +259,20 @@ pub fn ClientDetails(id: i32) -> Element {
                                 })
                         }
                     }
+                }
+            }
 
-                    // Tabs below the name
-                    div {
-                        Tab {
-                            tabs,
-                            active_tab: *active_tab.read(),
-                            on_tab_change: Some(
-                                EventHandler::new(move |index: usize| {
-                                    active_tab.set(index);
-                                }),
-                            ),
-                        }
+            // Tabs below the banner
+            div { class: "bg-theme-bg-primary dark:bg-theme-bg-secondary border-b border-theme-border-200 dark:border-theme-border-700",
+                div { class: "px-6 pt-4",
+                    Tab {
+                        tabs,
+                        active_tab: *active_tab.read(),
+                        on_tab_change: Some(
+                            EventHandler::new(move |index: usize| {
+                                active_tab.set(index);
+                            }),
+                        ),
                     }
                 }
             }

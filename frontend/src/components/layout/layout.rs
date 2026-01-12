@@ -5,12 +5,15 @@ use crate::components::theme::use_theme;
 
 // Wrapper types to distinguish different f64 contexts
 #[derive(Clone, Copy)]
+#[allow(dead_code )]
 pub struct TotalIncome(pub Signal<f64>);
 
 #[derive(Clone, Copy)]
+#[allow(dead_code)]
 pub struct TotalDebt(pub Signal<f64>);
 
 #[derive(Clone, Copy)]
+#[allow(dead_code)]
 pub struct TotalHousing(pub Signal<f64>);
 
 

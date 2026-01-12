@@ -16,8 +16,8 @@ pub mod sync_devices;
 pub mod sync_conflicts;
 
 // Re-export entities at the top level for backward compatibility
-pub use client::{borrower, timeline_events, outreach_templates, campaigns, ab_tests, note, document};
-pub use income::{consumer_debt, income_information, w2_jobs};
+pub use client::{borrower, timeline_events, outreach_templates, campaigns, ab_tests, note, document, condition};
+pub use income::{consumer_debt, general_income_data, general_income_entries, income_information, w2_jobs};
 pub use loans::{existing_loans, loan_information, new_loan_details};
 pub use refinance::{mortgage_refinance, other_fees};
 pub use calculations::{benefit_to_borrower, pricing_options, savings_calculations};

@@ -5,6 +5,7 @@ use dioxus::prelude::*;
 use crate::components::layout::layout::TotalIncome;
 
 #[derive(Clone, PartialEq)]
+#[allow(dead_code)]
 struct IncomeItem {
     id: usize,
     description: String,

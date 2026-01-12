@@ -103,25 +103,6 @@ pub fn OptionsTemplate(id: i32) -> Element {
             }
 
             // All the sections with data binding
-            // Savings section - only show if loan purpose is NOT Purchase
-            {
-                let loan_purpose = template_data().loan_information.purpose.clone();
-                if loan_purpose != "purchase" {
-                    let save_data_clone = save_data.clone();
-                    rsx! {
-                        SavingsSection {
-                            data: template_data().savings.clone(),
-                            on_change: move |new_data: SavingsData| {
-                                template_data.write().savings = new_data.clone();
-                                save_data_clone(template_data());
-                            },
-                        }
-                    }
-                } else {
-                    rsx! {}
-                }
-            }
-
             LoanInformationSection {
                 data: template_data().loan_information.clone(),
                 on_change: {
@@ -237,6 +218,25 @@ pub fn OptionsTemplate(id: i32) -> Element {
                         save_data_clone(template_data());
                     }
                 },
+            }
+
+            // Savings section - only show if loan purpose is NOT Purchase
+            {
+                let loan_purpose = template_data().loan_information.purpose.clone();
+                if loan_purpose != "purchase" {
+                    let save_data_clone = save_data.clone();
+                    rsx! {
+                        SavingsSection {
+                            data: template_data().savings.clone(),
+                            on_change: move |new_data: SavingsData| {
+                                template_data.write().savings = new_data.clone();
+                                save_data_clone(template_data());
+                            },
+                        }
+                    }
+                } else {
+                    rsx! {}
+                }
             }
         }
     }

@@ -16,25 +16,24 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
     // Load general income data when component mounts
     use_effect(move || {
         let resource_value = client_resource.read().clone();
-        let  income_data = income_data.clone();
+        let mut income_data = income_data.clone();
         let client_id = borrower_id;
 
         spawn(async move {
             match resource_value.as_ref() {
                 Some(Ok(db_client)) => {
-                    // For now, we'll initialize with default data
-                    // In the future, this would load from database
-                    // match db_client.get_general_income_data(client_id).await {
-                    //     Ok(Some(data)) => {
-                    //         income_data.set(data);
-                    //     }
-                    //     Ok(None) => {
-                    //         // No data, keep default
-                    //     }
-                    //     Err(e) => {
-                    //         tracing::error!("Error loading general income: {:?}", e);
-                    //     }
-                    // }
+                    // Load general income data from database
+                    match db_client.get_general_income_data(client_id).await {
+                        Ok(Some(data)) => {
+                            income_data.set(data);
+                        }
+                        Ok(None) => {
+                            // No data, keep default
+                        }
+                        Err(e) => {
+                            tracing::error!("Error loading general income: {:?}", e);
+                        }
+                    }
                 }
                 Some(Err(e)) => {
                     tracing::error!("Database connection error: {:?}", e);
@@ -53,6 +52,33 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
             .sum::<f64>()
     });
 
+    // Function to save data to database
+    let save_to_database = {
+        let client_resource = client_resource.clone();
+        let income_data = income_data.clone();
+        let borrower_id = borrower_id;
+
+        move || {
+            let client_resource = client_resource.clone();
+            let income_data = income_data.clone();
+            let borrower_id = borrower_id;
+
+            spawn(async move {
+                if let Some(Ok(db_client)) = client_resource.read().as_ref() {
+                    let data = income_data();
+                    match db_client.save_general_income_data(borrower_id, data).await {
+                        Ok(_) => {
+                            tracing::info!("General income data saved successfully");
+                        }
+                        Err(e) => {
+                            tracing::error!("Error saving general income data: {:?}", e);
+                        }
+                    }
+                }
+            });
+        }
+    };
+
     let total_annual_income = use_memo(move || {
         income_data().entries.iter()
             .filter_map(|entry| entry.annual_amount.parse::<f64>().ok())
@@ -66,7 +92,7 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
         income_data.set(data);
         expanded_entry.set(Some(new_index));
 
-        // TODO: Auto-save to database
+        save_to_database();
     };
 
     let mut remove_income_entry = move |index: usize| {
@@ -87,7 +113,7 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
                 }
             }
 
-            // TODO: Auto-save to database
+            save_to_database();
         }
     };
 
@@ -106,7 +132,7 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
         }
         income_data.set(data);
 
-        // TODO: Auto-save to database
+        save_to_database();
     };
 
     let toggle_verified = move |_| {
@@ -119,7 +145,7 @@ pub fn GeneralIncome(borrower_id: i32) -> Element {
         }
         income_data.set(data);
 
-        // TODO: Auto-save to database
+        save_to_database();
     };
 
     let mut toggle_expanded = move |index: usize| {

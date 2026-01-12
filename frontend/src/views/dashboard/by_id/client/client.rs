@@ -107,6 +107,13 @@ pub fn ClientDetails(id: i32) -> Element {
         let edit_status = edit_status.clone();
         let edit_email = edit_email.clone();
         let edit_phone = edit_phone.clone();
+        let edit_date_of_birth = edit_date_of_birth.clone();
+        let edit_social_security_number = edit_social_security_number.clone();
+        let edit_address = edit_address.clone();
+        let edit_city = edit_city.clone();
+        let edit_state = edit_state.clone();
+        let edit_zip_code = edit_zip_code.clone();
+        let edit_mailing_address_different = edit_mailing_address_different.clone();
         
         move || {
             let mut borrower_clone = borrower.clone();
@@ -151,6 +158,13 @@ pub fn ClientDetails(id: i32) -> Element {
         let mut edit_status = edit_status.clone();
         let mut edit_email = edit_email.clone();
         let mut edit_phone = edit_phone.clone();
+        let mut edit_date_of_birth = edit_date_of_birth.clone();
+        let mut edit_social_security_number = edit_social_security_number.clone();
+        let mut edit_address = edit_address.clone();
+        let mut edit_city = edit_city.clone();
+        let mut edit_state = edit_state.clone();
+        let mut edit_zip_code = edit_zip_code.clone();
+        let mut edit_mailing_address_different = edit_mailing_address_different.clone();
         
         move || {
             // Reset edit fields to current borrower data

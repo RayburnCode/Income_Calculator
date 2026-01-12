@@ -8,9 +8,12 @@ pub use super::client::campaigns::{self as Campaigns, Entity as CampaignsEntity}
 pub use super::client::ab_tests::{self as ABTests, Entity as ABTestsEntity};
 pub use super::client::note::{self as Note, Entity as NoteEntity};
 pub use super::client::document::{self as Document, Entity as DocumentEntity};
+pub use super::client::condition::{self as Condition, Entity as ConditionEntity};
 
 // Income entities
 pub use super::income::consumer_debt::{self as ConsumerDebt, Entity as ConsumerDebtEntity};
+pub use super::income::general_income_data::{self as GeneralIncomeData, Entity as GeneralIncomeDataEntity};
+pub use super::income::general_income_entries::{self as GeneralIncomeEntries, Entity as GeneralIncomeEntriesEntity};
 pub use super::income::income_information::{self as IncomeInformation, Entity as IncomeInformationEntity};
 pub use super::income::w2_jobs::{self as W2Jobs, Entity as W2JobsEntity};
 

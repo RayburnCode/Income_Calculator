@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use shared::models::Status;
+use chrono;
 
 #[component]
 pub fn ClientInfoCard(
@@ -24,6 +25,20 @@ pub fn ClientInfoCard(
     let status_text = if let Some(borrower_data) = borrower() {
         if let Some(status) = borrower_data.status {
             status.to_string()
+        } else {
+            "N/A".to_string()
+        }
+    } else {
+        "Loading...".to_string()
+    };
+
+    let ssn_display = if let Some(borrower_data) = borrower() {
+        if let Some(ssn) = &borrower_data.social_security_number {
+            if ssn.len() >= 4 {
+                format!("***-**-{}", &ssn[ssn.len()-4..])
+            } else {
+                "N/A".to_string()
+            }
         } else {
             "N/A".to_string()
         }
@@ -143,6 +158,79 @@ pub fn ClientInfoCard(
                             class: "mt-1 text-black block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500",
                             value: "{edit_social_security_number()}",
                             oninput: move |evt| edit_social_security_number.set(evt.value()),
+                        }
+                    }
+                } else {
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Full Name"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            if let Some(borrower_data) = borrower() {
+                                "{borrower_data.name}"
+                            } else {
+                                "Loading..."
+                            }
+                        }
+                    }
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Status"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            "{status_text}"
+                        }
+                    }
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Email"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            if let Some(borrower_data) = borrower() {
+                                "{borrower_data.email.as_deref().unwrap_or(\"N/A\")}"
+                            } else {
+                                "Loading..."
+                            }
+                        }
+                    }
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Phone Number"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            if let Some(borrower_data) = borrower() {
+                                if let Some(phone) = &borrower_data.phone_number {
+                                    "{format_phone_number(phone)}"
+                                } else {
+                                    "N/A"
+                                }
+                            } else {
+                                "Loading..."
+                            }
+                        }
+                    }
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Date of Birth"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            if let Some(borrower_data) = borrower() {
+                                if let Some(dob) = borrower_data.date_of_birth {
+                                    "{dob.format(\"%B %d, %Y\")}"
+                                } else {
+                                    "N/A"
+                                }
+                            } else {
+                                "Loading..."
+                            }
+                        }
+                    }
+                    div {
+                        label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300",
+                            "Social Security Number"
+                        }
+                        p { class: "mt-1 text-sm text-gray-900 dark:text-gray-100",
+                            "{ssn_display}"
                         }
                     }
                 }

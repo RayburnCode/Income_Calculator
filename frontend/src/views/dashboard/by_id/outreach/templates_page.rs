@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 use shared::models::{OutreachTemplate, TemplateType};
 use crate::components::input::Input;
 
+use crate::views::dashboard::by_id::outreach::templates::components::{TemplateUseModal, TemplatePreview};
+
 #[component]
 pub fn OutreachTemplates(id: i32) -> Element {
     let mut templates = use_resource(|| async {
@@ -9,8 +11,20 @@ pub fn OutreachTemplates(id: i32) -> Element {
         repo.get_all_outreach_templates().await.unwrap_or_default()
     });
 
+    let mut borrower = use_resource(move || async move {
+        let repo = crate::get_repository();
+        match repo.get_borrower(id).await {
+            Ok(Some(borrower)) => Some(borrower),
+            _ => None,
+        }
+    });
+
     let mut selected_template = use_signal(|| None::<OutreachTemplate>);
     let mut show_create_form = use_signal(|| false);
+    let mut show_use_template = use_signal(|| false);
+    let mut selected_template_for_use = use_signal(|| None::<OutreachTemplate>);
+    let mut generated_content = use_signal(|| String::new());
+    let mut generated_subject = use_signal(|| String::new());
     let mut new_template_name = use_signal(|| String::new());
     let mut new_template_type = use_signal(|| TemplateType::Email);
     let mut new_template_subject = use_signal(|| String::new());
@@ -49,16 +63,51 @@ pub fn OutreachTemplates(id: i32) -> Element {
         });
     };
 
+    // Function to use a template with borrower data
+    let mut use_template = move |template: OutreachTemplate| {
+        if let Some(Some(borrower_data)) = borrower.read_unchecked().as_ref() {
+            let content = crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(&template.content, borrower_data);
+            let subject = template.subject.as_ref()
+                .map(|s| crate::views::dashboard::by_id::outreach::templates::engine::TemplateEngine::replace_variables(s, borrower_data));
+
+            generated_content.set(content);
+            if let Some(subject) = subject {
+                generated_subject.set(subject);
+            }
+            selected_template_for_use.set(Some(template));
+        } else {
+            log::warn!("Cannot use template: borrower data not available");
+        }
+    };
+
     rsx! {
         div { class: "space-y-6",
             // Header
             div { class: "flex justify-between items-center",
                 h1 { class: "text-2xl font-bold text-gray-900 dark:text-white", "Outreach Templates" }
-                button {
-                    class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
-                    onclick: move |_| show_create_form.set(true),
-                    "Create Template"
+                div { class: "flex space-x-3",
+                    button {
+                        class: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                        onclick: move |_| show_use_template.set(true),
+                        "Use Template"
+                    }
+                    button {
+                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors",
+                        onclick: move |_| show_create_form.set(true),
+                        "Create Template"
+                    }
                 }
+            }
+
+            // Use Template Modal
+            TemplateUseModal {
+                show_modal: show_use_template,
+                templates,
+                borrower,
+                selected_template: selected_template_for_use,
+                generated_content,
+                generated_subject,
+                on_use_template: use_template,
             }
 
             // Create Template Form
@@ -179,47 +228,57 @@ pub fn OutreachTemplates(id: i32) -> Element {
                                 rsx! {
                                     div { class: "divide-y divide-gray-200 dark:divide-gray-700",
                                         for template in templates_list {
-                                            div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
-                                                div { class: "flex justify-between items-start",
-                                                    div { class: "flex-1",
-                                                        h3 { class: "text-lg font-medium text-gray-900 dark:text-white",
-                                                            "{template.name}"
-                                                        }
-                                                        p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
-                                                            "{template.description.as_deref().unwrap_or(\"\")}"
-                                                        }
-                                                        div { class: "flex items-center space-x-4 mt-2",
-                                                            span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-                                                                "{template.template_type:?}"
-                                                            }
-                                                            if template.is_default {
-                                                                span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                                                                    "Default"
+                                            {
+                                                let template_clone = template.clone();
+                                                let template_for_view = template.clone();
+                                                let template_for_delete = template.clone();
+                                                rsx! {
+                                                    div { class: "p-4 hover:bg-gray-50 dark:hover:bg-gray-700",
+                                                        div { class: "flex justify-between items-start",
+                                                            div { class: "flex-1",
+                                                                h3 { class: "text-lg font-medium text-gray-900 dark:text-white", "{template.name}" }
+                                                                p { class: "text-sm text-gray-600 dark:text-gray-400 mt-1",
+                                                                    "{template.description.as_deref().unwrap_or(\"\")}"
+                                                                }
+                                                                div { class: "flex items-center space-x-4 mt-2",
+                                                                    span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+                                                                        "{template.template_type:?}"
+                                                                    }
+                                                                    if template.is_default {
+                                                                        span { class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                                                                            "Default"
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                    }
-                                                    div { class: "flex space-x-2",
-                                                        button {
-                                                            class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
-                                                            onclick: move |_| selected_template.set(Some(template.clone())),
-                                                            "View"
-                                                        }
-                                                        if !template.is_default {
-                                                            button {
-                                                                class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
-                                                                onclick: move |_| {
-                                                                    let template_id = template.id;
-                                                                    spawn(async move {
-                                                                        let repo = crate::get_repository();
-                                                                        if let Err(e) = repo.delete_outreach_template(template_id).await {
-                                                                            log::error!("Failed to delete template: {:?}", e);
-                                                                        } else {
-                                                                            templates.restart();
-                                                                        }
-                                                                    });
-                                                                },
-                                                                "Delete"
+                                                            div { class: "flex space-x-2",
+                                                                button {
+                                                                    class: "text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200 text-sm font-medium",
+                                                                    onclick: move |_| use_template(template_clone.clone()),
+                                                                    "Use"
+                                                                }
+                                                                button {
+                                                                    class: "text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 text-sm font-medium",
+                                                                    onclick: move |_| selected_template.set(Some(template_for_view.clone())),
+                                                                    "View"
+                                                                }
+                                                                if !template.is_default {
+                                                                    button {
+                                                                        class: "text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 text-sm font-medium",
+                                                                        onclick: move |_| {
+                                                                            let template_id = template_for_delete.id;
+                                                                            spawn(async move {
+                                                                                let repo = crate::get_repository();
+                                                                                if let Err(e) = repo.delete_outreach_template(template_id).await {
+                                                                                    log::error!("Failed to delete template: {:?}", e);
+                                                                                } else {
+                                                                                    templates.restart();
+                                                                                }
+                                                                            });
+                                                                        },
+                                                                        "Delete"
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -241,7 +300,7 @@ pub fn OutreachTemplates(id: i32) -> Element {
             }
 
             // Template Preview Modal
-            {selected_template().map(|template| rsx! {
+            {selected_template().map(|template: OutreachTemplate| rsx! {
                 div { class: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50",
                     div { class: "bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto",
                         div { class: "p-6",
@@ -274,22 +333,9 @@ pub fn OutreachTemplates(id: i32) -> Element {
 
     
 
-                            {template.subject.as_ref().map(|subject| rsx! {
-                                div { class: "mb-4",
-                                    label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                                        "Subject"
-                                    }
-                                    div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md", "{subject}" }
-                                }
-                            })}
-    
-                            div { class: "mb-4",
-                                label { class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1",
-                                    "Content"
-                                }
-                                div { class: "bg-gray-50 dark:bg-gray-700 p-3 rounded-md whitespace-pre-wrap font-mono text-sm",
-                                    "{template.content}"
-                                }
+                            TemplatePreview {
+                                template: template.clone(),
+                                borrower: borrower.read_unchecked().as_ref().and_then(|b| b.clone()),
                             }
     
                             div { class: "flex justify-end",

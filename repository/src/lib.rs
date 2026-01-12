@@ -154,6 +154,22 @@ impl Repository {
         income::get_total_income_sum_in_date_range(&db, start_date, end_date).await
     }
 
+    // ===== General Income Operations =====
+    pub async fn save_general_income_data(&self, borrower_id: i32, data: shared::models::GeneralIncomeData) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        general_income::save_general_income_data(&db, borrower_id, data).await
+    }
+
+    pub async fn get_general_income_data(&self, borrower_id: i32) -> Result<Option<shared::models::GeneralIncomeData>, Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        general_income::get_general_income_data(&db, borrower_id).await
+    }
+
+    pub async fn delete_general_income_data(&self, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {
+        let db = self.db.lock().await;
+        general_income::delete_general_income_data(&db, borrower_id).await
+    }
+
     // ===== Options Template Operations =====
     // Delegated to options_template module (complex operations)
     pub async fn save_options_template(&self, template: shared::models::OptionsTemplateData, borrower_id: i32) -> Result<(), Box<dyn std::error::Error>> {

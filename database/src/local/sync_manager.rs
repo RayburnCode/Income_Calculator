@@ -4,7 +4,7 @@ use std::net::SocketAddr;
 use tokio::task::JoinHandle;
 
 use super::change_tracker::{ChangeTracker, DeviceManager, SyncError};
-use super::conflict_resolver::{ConflictResolver, ConflictResolution};
+//use super::conflict_resolver::{ConflictResolver, ConflictResolution};
 use super::api::create_sync_api;
 
 /// Main synchronization manager
@@ -221,6 +221,7 @@ pub mod crypto {
 
 #[cfg(test)]
 mod tests {
+    #[allow(unused)]
     use super::*;
 
     #[tokio::test]

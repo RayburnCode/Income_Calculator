@@ -1,6 +1,6 @@
 //! Campaigns repository - handles campaign CRUD operations
 
-use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait, QueryOrder, QueryFilter, ColumnTrait};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, QueryOrder, QueryFilter, ColumnTrait};
 use shared::models::*;
 use database::entities::{campaigns, ab_tests};
 use crate::converters::*;

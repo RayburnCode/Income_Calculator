@@ -15,7 +15,7 @@ This implementation provides a secure, production-ready peer-to-peer database sy
 
 ## Architecture
 
-```
+```sh
 ┌─────────────┐         Tailscale VPN          ┌─────────────┐
 │  Device A   │◄──────────────────────────────►│  Device B   │
 │             │    Encrypted Connection        │             │

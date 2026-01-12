@@ -54,7 +54,7 @@ curl -X POST http://100.64.0.6:8080/devices/authorize \
   -d '{"device_id": "DEVICE_A_ID"}'
 ```
 
-### 6. Sync!
+### 6. Sync
 
 ```bash
 # From Device A, sync with Device B

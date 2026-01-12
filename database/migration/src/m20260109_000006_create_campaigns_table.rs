@@ -1,5 +1,4 @@
 use sea_orm_migration::prelude::*;
-use chrono;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

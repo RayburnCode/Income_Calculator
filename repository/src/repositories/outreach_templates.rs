@@ -1,6 +1,6 @@
 //! Outreach Templates repository - handles template CRUD operations
 
-use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, PaginatorTrait, QueryOrder, QueryFilter, ColumnTrait};
+use sea_orm::{DatabaseConnection, EntityTrait, ActiveModelTrait, Set, QueryOrder, QueryFilter, ColumnTrait};
 use shared::models::*;
 use database::entities::outreach_templates;
 use crate::converters::*;
